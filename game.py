@@ -1,17 +1,12 @@
 import numpy as np
 from scipy.stats import wald
 import random
+import time
 
 import globalvars
 import util
-import time
-
-#import maps
-#import mapgui
-#import goblin
-
-import cv2
-
+import ship
+import maps
 
 class Universe(object):    
     def __init__(self):
@@ -19,6 +14,7 @@ class Universe(object):
         
         #generate player
         #generate ship
+        self.ship = ship.Ark()
         #generate universe
         self.generate_map()
         #place ship in universe
