@@ -1,0 +1,3 @@
+title=Space Nomads
+author=Derp
+orientation=portrait
