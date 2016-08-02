@@ -1,3 +1,4 @@
+import random
 
 import util
 
@@ -10,4 +11,11 @@ class Map(object): #more or less just a container for all of the things that hap
         self.ship = ship #convenience link to get location information
 
     def update(self,secs):
-        pass        
+    
+        if self.ship is not None:
+            loc = self.ship.get_location()
+            
+        #one event every hour or so?
+        num = util.sround( random.random()*secs/7200. )
+
+            
