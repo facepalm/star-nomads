@@ -14,7 +14,7 @@ class Universe(object):
         
         #generate player
         #generate ship
-        self.ship = ship.Ark()
+        self.ship = ship.Premise()
         #generate universe
         self.generate_map()
         #place ship in universe

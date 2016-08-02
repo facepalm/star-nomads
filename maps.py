@@ -8,4 +8,6 @@ class Map(object): #more or less just a container for all of the things that hap
         self.objects = [] #popped events.  Mostly just little stuff like resource finds
         
         self.ship = ship #convenience link to get location information
-        
+
+    def update(self,secs):
+        pass        
