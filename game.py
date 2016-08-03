@@ -17,6 +17,9 @@ class Universe(object):
         self.ship = ship.Premise()
         #generate universe
         self.map = maps.Map()
+        globalvars.root.screen_manager.add_widget(self.map.display)
+        #globalvars.root.onNextScreen(self.map.display.name, transition='None')
+        
         #place ship in universe
         #spawn a couple of immediate events
             #one long-term, nearby
