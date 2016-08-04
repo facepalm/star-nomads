@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.stats import wald
 import random
 import time
 

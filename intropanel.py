@@ -1,5 +1,5 @@
 import kivy
-kivy.require('1.9.2')
+kivy.require('1.9.1')
 
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout

@@ -21,7 +21,7 @@ except Exception as ex:
     
 def start():  
     if use_gps:       
-        gps.start()
+        gps.start(1000, 0)
         gps_on = True
 
 def stop():
@@ -31,9 +31,9 @@ def stop():
     
 def get_location():
     import random
-    global lat, lon
-    lat += (random.random() )/10
-    lon += (random.random() )/10
+    #global lat, lon
+    #lat += (random.random() )/10
+    #lon += (random.random() )/10
     #if random.random() < 0.05: 
     #    print 'should trigger!'
     #    return [10,10]

@@ -1,5 +1,5 @@
 import kivy
-kivy.require('1.9.2')
+kivy.require('1.9.1')
 
 from kivy.app import App
 from kivy.uix.anchorlayout import AnchorLayout

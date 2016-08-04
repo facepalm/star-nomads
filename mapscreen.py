@@ -31,6 +31,10 @@ kv = '''
         Label:
             pos_hint: {'center_x': 0., 'center_y': 1.0}
             text: '%f %f' % (self.parent.parent.location[0], self.parent.parent.location[1])
+        Label:
+            pos: 0,-30
+            text: 'GPS off'
+            id: gpslabel
     FloatLayout:
         id: mapoverlay  
         index: 5 
@@ -65,7 +69,7 @@ class MapScreen(Screen):
         
     def update(self,dt):
         self.location = gps.get_location()
-        
+        self.ids['gpslabel'].text = 'ON' if gps.use_gps else 'OFF'
         return self.displayed
         
     def on_location(self, *args):
@@ -74,6 +78,7 @@ class MapScreen(Screen):
         
         self.curr_loc = self.location
         self.ids['stars'].shift(dx,dy)
+        
     #    print args
     #    print 'loc changed!'        
                 

@@ -32,7 +32,7 @@ class Starfield(Widget):
         self.rectangles = []
 
         for idx in xrange(3):
-            star_size = 1
+            star_size = 2
 
             # create a texture, defaults to rgb / ubyte
             self.texture = Texture.create(size=self.size, colorfmt='rgba')
