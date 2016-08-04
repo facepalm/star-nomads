@@ -24,7 +24,10 @@ class Ark(Ship): #Player ship, or potentially player ship
         self.style = 'Generic' #Warship Worldship Junkship       
         
     def get_location(self):
+        self.location = gps.get_location()
+        
         return gps.get_location()        
+        
         
 class Premise(Ark): #default ship 
     def __init__(self):

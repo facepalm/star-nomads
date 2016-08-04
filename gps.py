@@ -30,7 +30,14 @@ def stop():
         gps_on = False
     
 def get_location():
-    return lat, lon    
+    import random
+    global lat, lon
+    lat += (random.random() )/10
+    lon += (random.random() )/10
+    #if random.random() < 0.05: 
+    #    print 'should trigger!'
+    #    return [10,10]
+    return [lat, lon]    
     
 if __name__ == "__main__":
     print use_gps, get_location(), gps_on
