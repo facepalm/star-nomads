@@ -4,7 +4,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.uix.image import Image
-from kivy.uix.scatter import Scatter
+from kivy.uix.scatter import ScatterPlane
 from kivy.graphics.texture import Texture
 from kivy.app import App
 from kivy.clock import Clock
@@ -22,19 +22,20 @@ kv = '''
     
     Starfield:
         id: stars
-    ScatterPlane:
+    MapScatterPlane:
         id: mapscale
         index: 0
         pos: 0,0 #self.parent.width/2,self.parent.height/2
         do_collide_after_children: True
         auto_bring_to_front: False
         do_rotation: False
+        mapxy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
         
         canvas:
             Line:
                 points: [0, 0, 10, 10, 10, 0]
-            Translate: 
-                xy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
+            #Translate: 
+            #    xy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
              
             
                                 
@@ -81,33 +82,46 @@ class MapScreen(Screen):
         gps.stop()
         
     def update(self,dt):
-        self.location = gps.get_location()
+        #self.location = gps.get_location()
         self.ids['gpslabel'].text = 'ON' if gps.use_gps else 'OFF'
         return self.displayed
         
     def on_location(self, *args):
+        print 'called'
         dy = self.location[0] - self.curr_loc[0] 
         dx = self.location[1] - self.curr_loc[1]
         
         self.curr_loc = self.location
         self.ids['stars'].shift(dx,dy)
         
+        #print 'map',self.ids['mapscale'].mapxy
+        self.ids['mapscale'].mapxy = [self.width/2 - self.location[1],self.height/2 - self.location[0]]
+        self.ids['mapscale'].update_mapxy()
+        
     #    print args
     #    print 'loc changed!'        
                 
-class MapScatter(Scatter):
-    pass
-    '''def __init__(self,**kwargs):
-        super(MapScatter,self).__init__(**kwargs)                
+class MapScatterPlane(ScatterPlane):
+    mapxy = ListProperty([0,0])
+    
+    def __init__(self,**kwargs):
+        super(MapScatterPlane,self).__init__(**kwargs)                
+        self.trans = None
+     
         
-        with self.canvas.before:
-            PushMatrix()                                             
-            Translate(self.parent.location[1],self.parent.location[0]) 
-            
-            
-        with self.canvas.after:
-            PopMatrix()   '''
-        
+    def update_mapxy(self,*args):   
+        #print self.mapxy
+        if self.trans:
+            self.trans.xy = self.mapxy[0],self.mapxy[1]
+        else:     
+            with self.canvas.before:
+                PushMatrix()                                             
+                self.trans = Translate(self.mapxy[0],self.mapxy[1]) 
+                
+                
+            with self.canvas.after:
+                PopMatrix()   
+                pass
     
     
 

@@ -18,6 +18,7 @@ class Map(object): #more or less just a container for all of the things that hap
     
         if self.ship is not None:
             loc = self.ship.get_location()
+            self.display.location = loc
             
         #one event every hour or so?
         num = util.sround( random.random()*secs/7200. )

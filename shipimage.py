@@ -42,9 +42,10 @@ class ShipImage(Image):
 
     def on_touch_down(self, touch):
         touch.push()
+        print touch.pos
         touch.apply_transform_2d(self.to_parent)
         touched = self.collide_point(*touch.pos)
-        print self.pos, touch.pos
+        print self.center, touch.pos
         touch.pop()
         if touched:
             self.pressed = touch.pos
@@ -52,6 +53,9 @@ class ShipImage(Image):
             # the touch further to the children.
             return False
         return super(ShipImage, self).on_touch_down(touch)
+
+    def on_coords(self,*args):
+        self.center = self.coords
 
     def on_pressed(self, instance, pos):
         print ('Ship ',self.ship.shipclass,', pressed at {pos}'.format(pos=pos))

@@ -32,7 +32,7 @@ def stop():
 def get_location():
     import random
     global lat, lon
-    lat += (random.random() )/10000
+    lon += (random.random() )/1
     #lon += (random.random() )/10
     #if random.random() < 0.05: 
     #    print 'should trigger!'
