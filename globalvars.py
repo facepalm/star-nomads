@@ -7,6 +7,7 @@ config = {
     'ZOOM' : 15,
     'GRAPHICS' : 'pyglet',
     'AUTOLOAD': True,
+    'MAP SCALING': 10000
 }
 
 def save_config():

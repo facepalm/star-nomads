@@ -4,10 +4,12 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.uix.image import Image
+from kivy.uix.scatter import Scatter
 from kivy.graphics.texture import Texture
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import ListProperty
+from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix, Translate
 
 import globalvars
 import gps
@@ -20,21 +22,32 @@ kv = '''
     
     Starfield:
         id: stars
-    Scatter:
+    ScatterPlane:
         id: mapscale
         index: 0
-        pos: self.parent.width/2,self.parent.height/2
+        pos: 0,0 #self.parent.width/2,self.parent.height/2
         do_collide_after_children: True
         auto_bring_to_front: False
         do_rotation: False
         
+        canvas:
+            Line:
+                points: [0, 0, 10, 10, 10, 0]
+            Translate: 
+                xy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
+             
+            
+                                
+        
         Label:
-            pos_hint: {'center_x': 0., 'center_y': 1.0}
+            center: 0,0 #_hint: {'center_x': 0., 'center_y': 1.0}
             text: '%f %f' % (self.parent.parent.location[0], self.parent.parent.location[1])
         Label:
-            pos: 0,-30
+            center: 0,-30
             text: 'GPS off'
             id: gpslabel
+        
+            
     FloatLayout:
         id: mapoverlay  
         index: 5 
@@ -73,8 +86,8 @@ class MapScreen(Screen):
         return self.displayed
         
     def on_location(self, *args):
-        dx = self.location[0] - self.curr_loc[0] 
-        dy = self.location[1] - self.curr_loc[1]
+        dy = self.location[0] - self.curr_loc[0] 
+        dx = self.location[1] - self.curr_loc[1]
         
         self.curr_loc = self.location
         self.ids['stars'].shift(dx,dy)
@@ -82,6 +95,18 @@ class MapScreen(Screen):
     #    print args
     #    print 'loc changed!'        
                 
+class MapScatter(Scatter):
+    pass
+    '''def __init__(self,**kwargs):
+        super(MapScatter,self).__init__(**kwargs)                
+        
+        with self.canvas.before:
+            PushMatrix()                                             
+            Translate(self.parent.location[1],self.parent.location[0]) 
+            
+            
+        with self.canvas.after:
+            PopMatrix()   '''
         
     
     

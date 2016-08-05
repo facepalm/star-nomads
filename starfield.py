@@ -25,7 +25,7 @@ class Starfield(Widget):
         #Clock.schedule_interval(self.scroll, 0)
         self.x = 0
         self.y = 0
-        self.scale = 1
+        self.scale = 1000
 
     def on_size(self, *largs):
         self.canvas.clear()
@@ -67,8 +67,8 @@ class Starfield(Widget):
             modifier /= 2
 
     def shift(self, dx, dy):
-        self.x += dx/self.scale
-        self.y += dy/self.scale
+        self.x += dx*self.scale
+        self.y += dy*self.scale
         modifier = 0.3
         for rectangle in self.rectangles:
             rectangle.tex_coords = -(self.x * modifier), -(self.y * modifier), -(self.x * modifier + 1), -(self.y * modifier),  -(self.x * modifier + 1), -(self.y * modifier + 1), -(self.x * modifier), -(self.y * modifier + 1)

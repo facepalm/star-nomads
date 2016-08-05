@@ -14,7 +14,10 @@
    id="svg6559"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 46">
+   sodipodi:docname="ArkSymbol.svg"
+   inkscape:export-filename="/home/brad/Useless_Stuff/Coding/star-nomads/img/ark/MapSymbolSmall.png"
+   inkscape:export-xdpi="24.800564"
+   inkscape:export-ydpi="24.800564">
   <defs
      id="defs6561" />
   <sodipodi:namedview
@@ -24,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="316.80636"
-     inkscape:cy="536.30389"
+     inkscape:zoom="0.7"
+     inkscape:cx="510.12621"
+     inkscape:cy="488.77549"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -55,7 +58,7 @@
      id="layer1">
     <path
        sodipodi:type="arc"
-       style="fill:#00a000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1;stroke-width:12;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1;stroke-width:12;stroke-miterlimit:4;stroke-dasharray:none"
        id="path6567"
        sodipodi:cx="347.49246"
        sodipodi:cy="512.94073"
@@ -66,13 +69,13 @@
        sodipodi:end="7.8701281"
        sodipodi:open="true" />
     <path
-       style="fill:#00a000;fill-opacity:1;stroke:none;stroke-opacity:1;stroke-width:12;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-opacity:1;stroke-width:12;stroke-miterlimit:4;stroke-dasharray:none"
        d="m 394.74249,475.31254 c 26.69929,32.60832 8.8547,75.43881 -16.3537,89.7377 l 0.0396,50.92604 c 0.23847,5.86132 2.73973,10.65814 5.87161,13.07226 l 52.0859,49.5572 -0.0301,-196.95644 c -0.53099,-3.20702 -1.49272,-5.18517 -5.95202,-6.08422 z"
        id="path7083"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccc" />
     <path
-       style="fill:#00a000;fill-opacity:1;stroke:none"
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
        d="m 347.49248,392.35268 -76.55561,77.25059 34.76205,-0.31567 c 12.22868,-11.5021 24.80043,-16.41647 41.79356,-16.92069 z m 0,-0.0498 0,60.07589 c 17.03488,0.0435 31.7759,6.93448 41.86913,16.86608 l 34.57589,0.35714 z"
        id="path7093"
        inkscape:connector-curvature="0"
@@ -82,6 +85,6 @@
        inkscape:connector-curvature="0"
        id="path7125"
        d="m 300.21077,475.31254 c -26.69929,32.60832 -8.8547,75.43881 16.3537,89.7377 l -0.0396,50.92604 c -0.23847,5.86132 -2.73973,10.65814 -5.87161,13.07226 l -52.0859,49.5572 0.0301,-196.95644 c 0.53099,-3.20702 1.49272,-5.18517 5.95202,-6.08422 z"
-       style="fill:#00a000;fill-opacity:1;stroke:none;stroke-opacity:1;stroke-width:12;stroke-miterlimit:4;stroke-dasharray:none" />
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-opacity:1;stroke-width:12;stroke-miterlimit:4;stroke-dasharray:none" />
   </g>
 </svg>

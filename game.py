@@ -16,6 +16,7 @@ class Universe(object):
         self.ship = ship.Premise()
         #generate universe
         self.map = maps.Map()
+        self.map.new_player_ship(self.ship)
         globalvars.root.screen_manager.add_widget(self.map.display)
         #globalvars.root.onNextScreen(self.map.display.name, transition='None')
         
