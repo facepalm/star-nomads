@@ -2,6 +2,9 @@ import random
 
 import util
 import mapscreen
+import event
+
+EVENT_TC = 7200.
 
 class Map(object): #more or less just a container for all of the things that happen in space
     def __init__(self, ship=None):
@@ -13,15 +16,19 @@ class Map(object): #more or less just a container for all of the things that hap
         
         self.display = mapscreen.MapScreen()
         #self.display.add_widget(self.ship.image)
+        self.event_mgr = event.EventManager()
 
     def update(self,secs):
-    
+        loc = None
         if self.ship is not None:
             loc = self.ship.get_location()
             self.display.location = loc
             
-        #one event every hour or so?
-        num = util.sround( random.random()*secs/7200. )
+        #one event every hour or so?        
+        num = util.sround( random.random()*secs/EVENT_TC )
+        for i in range(num):
+            #new event at current location... ish
+            self.event_mgr.new(loc)
         
     def new_player_ship(self,ship):
         #TODO remove old ship if present?

@@ -25,7 +25,7 @@ class Starfield(Widget):
         #Clock.schedule_interval(self.scroll, 0)
         self.x = 0
         self.y = 0
-        self.scale = 1000
+        self.scale = .001000
 
     def on_size(self, *largs):
         self.canvas.clear()

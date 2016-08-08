@@ -6,10 +6,12 @@ gps_on = False
 lat = 0
 lon = 0
 
+gps_scale = 100000
+
 def update_location(**kwargs):
     print 'lat: {lat}, lon: {lon}'.format(**kwargs)
-    lat = kwargs['lat']
-    lon = kwargs['lon']
+    lat = kwargs['lat'] * gps_scale
+    lon = kwargs['lon'] * gps_scale
 
 try:
     gps.configure(on_location=update_location)
@@ -32,7 +34,7 @@ def stop():
 def get_location():
     import random
     global lat, lon
-    lon += (random.random() )/1
+    lon += (random.random() )/1 #* gps_scale/100000
     #lon += (random.random() )/10
     #if random.random() < 0.05: 
     #    print 'should trigger!'
