@@ -17,7 +17,7 @@ ship_dict = {   'Ark': {'prefix':'img/ark/', 'coords':[26,41]},
 class ShipImage(Image):
     pressed     = ListProperty([0, 0])       
     coords      = ListProperty([0, 0])
-    bearing     = NumericProperty(90)
+    bearing     = NumericProperty(45)
        
     def __init__(self,**kwargs):
         self.ship = kwargs['ship'] 
@@ -42,10 +42,11 @@ class ShipImage(Image):
 
     def on_touch_down(self, touch):
         touch.push()
-        print touch.pos
-        touch.apply_transform_2d(self.to_parent)
+        #print touch.pos
+        #print 'parent',self.to_window(touch.pos[0],touch.pos[1],relative=True)
+        touch.apply_transform_2d(self.to_local)
         touched = self.collide_point(*touch.pos)
-        print self.center, touch.pos
+        #print self.center, touch.pos
         touch.pop()
         if touched:
             self.pressed = touch.pos
@@ -56,7 +57,10 @@ class ShipImage(Image):
         return super(ShipImage, self).on_touch_down(touch)
 
     def on_coords(self,*args):
-        self.center = self.coords
+        self.center = self.coords       
+        
+    def on_bearing(self,*args):        
+        self.place_image()
 
     def on_pressed(self, instance, pos):
         print ('Ship ',self.ship.shipclass,', pressed at {pos}'.format(pos=pos))
@@ -75,24 +79,25 @@ class ShipImage(Image):
                      
         if self.rotation:
             self.rotation.angle = -self.bearing
-            self.rotation.origin = np.array(self.texture.size)/2        
+            self.rotation.origin = self.center
+            
         else:
             with self.canvas.before:
                 PushMatrix()
                        
-                ph = self.pos
+                ph = self.center
                 x = ph[0]
                 y = ph[1]
                  
                 
-                self.rotation = Rotate(angle= -self.bearing, origin = (0,0) )#- np.array(ship_dict[self.ship.shipclass]['coords'])) 
+                self.rotation = Rotate(angle= -self.bearing, origin = self.center )
                 print self.pos,  self.rotation.origin
                 
             with self.canvas.after:
                 
                 #self.occupied_indicator = [Color( 0.5, 0.5, 0.5, 0.5 ), Line(circle=( 2000*x,2000*y, 20), width=3)]
                 PopMatrix()                                       
-                     
+                pass
                         
                       
         

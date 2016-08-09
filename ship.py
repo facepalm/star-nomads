@@ -39,7 +39,9 @@ class Ark(Ship): #Player ship, or potentially player ship
         
     def update(self,dt):
         self.location = gps.get_location()
+        self.bearing = gps.get_bearing()
         self.image.coords = self.location        
+        self.image.bearing = self.bearing
         
         
 class Premise(Ark): #default ship 

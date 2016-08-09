@@ -31,7 +31,7 @@ kv = '''
         id: mapscale
         index: 0
         scale: 2.
-        pos: 0,0 #self.parent.width/2,self.parent.height/2
+        pos: self.parent.width/2,self.parent.height/2
         do_collide_after_children: True
         auto_bring_to_front: False
         do_rotation: False
@@ -92,15 +92,17 @@ class MapScreen(Screen):
         return self.displayed
         
     def on_location(self, *args):
-        dy = self.location[0] - self.curr_loc[0] 
-        dx = self.location[1] - self.curr_loc[1]
+        dx = self.location[0] - self.curr_loc[0] 
+        dy = self.location[1] - self.curr_loc[1]
         
         self.curr_loc = self.location
         self.ids['stars'].shift(dx,dy)
         
         #print 'map',self.ids['mapscale'].mapxy
-        self.ids['mapscale'].mapxy = [self.width/2 - self.location[1]*self.ids['mapscale'].scale,self.height/2 - self.location[0]*self.ids['mapscale'].scale]
+        self.ids['mapscale'].mapxy = [self.width/2 - self.location[0]*self.ids['mapscale'].scale,self.height/2 - self.location[1]*self.ids['mapscale'].scale]
         self.ids['mapscale'].update_mapxy()
+        self.ids['mapscale'].x -= dx*globalvars.config['MAP SCALING']
+        self.ids['mapscale'].y -= dy*globalvars.config['MAP SCALING']
         
     def spawn_ping(self,**kwargs):
         self.ids['mapscale'].ping(**kwargs)  
@@ -113,7 +115,7 @@ class MapScreen(Screen):
             self.spawn_ping(location=e.location,extent=50., delay = float(util.vec_dist(loc,e.location)/PING_SPEED),color=color_scheme[e.category] if e.category in color_scheme else [1.,1.,1.,1.],speed_factor=1.5)
         
     def ship_loc(self):
-        return np.array([self.location[1],self.location[0]])        
+        return np.array([self.location[0],self.location[1]])        
         
     #    print args
     #    print 'loc changed!'        
@@ -129,14 +131,15 @@ class MapScatterPlane(ScatterPlane):
      
         
     def update_mapxy(self,*args):   
-        if self.trans:
+        pass#self.pos = self.mapxy
+        '''if self.trans:
             self.trans.xy = self.mapxy[0],self.mapxy[1]
         else:     
             with self.canvas.before:
                 PushMatrix()                                             
                 self.trans = Translate(self.mapxy[0],self.mapxy[1])                                 
             with self.canvas.after:
-                PopMatrix()   
+                PopMatrix()  ''' 
 
     
     def ping(self,location=None,extent=10,duration=None,delay=0.,color=[1.,1.,1.,1.],speed_factor=1.0):

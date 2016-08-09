@@ -5,6 +5,8 @@ use_gps = True
 gps_on = False
 lat = 0
 lon = 0
+bearing = 0
+speed = 0
 
 gps_scale = 100000
 
@@ -12,6 +14,8 @@ def update_location(**kwargs):
     print 'lat: {lat}, lon: {lon}'.format(**kwargs)
     lat = kwargs['lat'] * gps_scale
     lon = kwargs['lon'] * gps_scale
+    bearing = kwargs['bearing']
+    speed = kwargs['speed']
 
 try:
     gps.configure(on_location=update_location)
@@ -39,7 +43,10 @@ def get_location():
     #if random.random() < 0.05: 
     #    print 'should trigger!'
     #    return [10,10]
-    return [lat, lon]    
+    return [lon, lat]    
+    
+def get_bearing():
+    return bearing    
     
 if __name__ == "__main__":
     print use_gps, get_location(), gps_on
