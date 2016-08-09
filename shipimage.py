@@ -27,7 +27,7 @@ class ShipImage(Image):
             
         super(ShipImage, self).__init__(**kwargs)
         
-        self.size = self.texture.size
+        self.size = [self.texture.size[0]/2, self.texture.size[1]/2]
         
         self.rotation = None
         
@@ -49,6 +49,7 @@ class ShipImage(Image):
         touch.pop()
         if touched:
             self.pressed = touch.pos
+            print "ship pressed"
             # we consumed the touch. return False here to propagate
             # the touch further to the children.
             return False

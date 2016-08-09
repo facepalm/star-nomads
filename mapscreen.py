@@ -30,6 +30,7 @@ kv = '''
     MapScatterPlane:
         id: mapscale
         index: 0
+        scale: 2.
         pos: 0,0 #self.parent.width/2,self.parent.height/2
         do_collide_after_children: True
         auto_bring_to_front: False
@@ -98,7 +99,7 @@ class MapScreen(Screen):
         self.ids['stars'].shift(dx,dy)
         
         #print 'map',self.ids['mapscale'].mapxy
-        self.ids['mapscale'].mapxy = [self.width/2 - self.location[1],self.height/2 - self.location[0]]
+        self.ids['mapscale'].mapxy = [self.width/2 - self.location[1]*self.ids['mapscale'].scale,self.height/2 - self.location[0]*self.ids['mapscale'].scale]
         self.ids['mapscale'].update_mapxy()
         
     def spawn_ping(self,**kwargs):
@@ -132,10 +133,10 @@ class MapScatterPlane(ScatterPlane):
             self.trans.xy = self.mapxy[0],self.mapxy[1]
         else:     
             with self.canvas.before:
-                #PushMatrix()                                             
+                PushMatrix()                                             
                 self.trans = Translate(self.mapxy[0],self.mapxy[1])                                 
             with self.canvas.after:
-                pass#PopMatrix()   
+                PopMatrix()   
 
     
     def ping(self,location=None,extent=10,duration=None,delay=0.,color=[1.,1.,1.,1.],speed_factor=1.0):

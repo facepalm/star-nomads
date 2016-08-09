@@ -14,6 +14,7 @@ class Event(object):
         
         self.color = [0.5,0.5,1.,1.]       
         
+        self.discovered = False
         
         self.spawn_in  = random.random() * 7200.
         self.expire_in = 3600.*24 * (1+ random.random())
