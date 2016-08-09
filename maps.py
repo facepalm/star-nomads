@@ -14,7 +14,7 @@ class Map(object): #more or less just a container for all of the things that hap
         
         self.ship = ship #convenience link to get location information
         
-        self.display = mapscreen.MapScreen()
+        self.display = mapscreen.MapScreen(map=self)
         #self.display.add_widget(self.ship.image)
         self.event_mgr = event.EventManager()
 
@@ -28,7 +28,13 @@ class Map(object): #more or less just a container for all of the things that hap
         num = util.sround( random.random()*secs/EVENT_TC )
         for i in range(num):
             #new event at current location... ish
-            self.event_mgr.new(loc)
+            new_event = self.event_mgr.new(loc)
+            if new_event:
+                #ping location
+                pass
+                #self.display.spawn_ping(location=new_event.location,extent=100.,color=new_event.color)
+        if random.random() < 0.1:
+            self.display.event_ping()                
         
     def new_player_ship(self,ship):
         #TODO remove old ship if present?

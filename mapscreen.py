@@ -10,10 +10,15 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import ListProperty
 from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix, Translate
+from kivy.animation import Animation
 
 import globalvars
 import gps
 import starfield
+import numpy as np
+import util
+
+PING_SPEED = 50.
 
 kv = '''
 <MapScreen@Screen>:
@@ -36,9 +41,7 @@ kv = '''
                 points: [0, 0, 10, 10, 10, 0]
             #Translate: 
             #    xy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
-             
-            
-                                
+                                                         
         
         Label:
             center: 0,0 #_hint: {'center_x': 0., 'center_y': 1.0}
@@ -69,6 +72,7 @@ class MapScreen(Screen):
         self.displayed = False
         self.curr_loc = [0,0]
         
+        
     def on_pre_enter(self):
         gps.start()
         self.displayed = True
@@ -87,7 +91,6 @@ class MapScreen(Screen):
         return self.displayed
         
     def on_location(self, *args):
-        print 'called'
         dy = self.location[0] - self.curr_loc[0] 
         dx = self.location[1] - self.curr_loc[1]
         
@@ -98,6 +101,19 @@ class MapScreen(Screen):
         self.ids['mapscale'].mapxy = [self.width/2 - self.location[1],self.height/2 - self.location[0]]
         self.ids['mapscale'].update_mapxy()
         
+    def spawn_ping(self,**kwargs):
+        self.ids['mapscale'].ping(**kwargs)  
+        
+    def event_ping(self, extent=100, color_scheme={}):        
+        loc = self.ship_loc()
+        self.spawn_ping(location=loc,extent=extent,delay=0.,color=color_scheme['MAIN'] if 'MAIN' in color_scheme else [1,1,1,1])
+        events = self.map.event_mgr.fetch(loc,extent)
+        for e in events:
+            self.spawn_ping(location=e.location,extent=50., delay = float(util.vec_dist(loc,e.location)/PING_SPEED),color=color_scheme[e.category] if e.category in color_scheme else [1.,1.,1.,1.],speed_factor=1.5)
+        
+    def ship_loc(self):
+        return np.array([self.location[1],self.location[0]])        
+        
     #    print args
     #    print 'loc changed!'        
                 
@@ -107,22 +123,36 @@ class MapScatterPlane(ScatterPlane):
     def __init__(self,**kwargs):
         super(MapScatterPlane,self).__init__(**kwargs)                
         self.trans = None
+        self.update_mapxy()
+        
      
         
     def update_mapxy(self,*args):   
-        #print self.mapxy
         if self.trans:
             self.trans.xy = self.mapxy[0],self.mapxy[1]
         else:     
             with self.canvas.before:
-                PushMatrix()                                             
-                self.trans = Translate(self.mapxy[0],self.mapxy[1]) 
-                
-                
+                #PushMatrix()                                             
+                self.trans = Translate(self.mapxy[0],self.mapxy[1])                                 
             with self.canvas.after:
-                PopMatrix()   
-                pass
+                pass#PopMatrix()   
+
     
+    def ping(self,location=None,extent=10,duration=None,delay=0.,color=[1.,1.,1.,1.],speed_factor=1.0):
+        if not duration: duration = extent/(PING_SPEED*speed_factor)
+        img = PingImage(source = 'img/ping/ping.png', pos=location.tolist(),color=color,size=[1,1],opacity = 0., allow_stretch=True)
+        #print location, duration, delay, img
+        self.add_widget(img)
+        anim = Animation(opacity=0.,duration=delay) + Animation(opacity=1.,duration=0.01) + Animation(size=[extent*2.,extent*2.], center=img.center, opacity=0., duration=duration) + Animation(opacity=0.,duration=0.5)
+        #anim = Animation(size=[extent*2.,extent*2.], center=img.center,duration=duration)  
+        anim.bind(on_complete = img.remove_self) 
+        anim.start(img)
+
+        
+class PingImage(Image):
+    def remove_self(self, *args):
+        if self.parent: self.parent.remove_widget(self)
+        
     
 
 

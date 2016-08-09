@@ -12,12 +12,13 @@ class Event(object):
         self.location = kwargs['location']
         self.category = kwargs['etype'] if 'etype' in kwargs else 'Generic'
         
+        self.color = [0.5,0.5,1.,1.]       
         
         
         self.spawn_in  = random.random() * 7200.
         self.expire_in = 3600.*24 * (1+ random.random())
         
-        self.exclusion_radius = 10
+        self.exclusion_radius = 50
         
     def update(self,secs):
         if self.spawn_in > 0:
@@ -25,6 +26,7 @@ class Event(object):
             if self.spawn_in < 0:
                 print 'Event spawning at', self.location
                 #spawn logic
+                self.state = 'SPAWNED'
         else:    
             self.expire_in -= secs
             if self.expire_in < 0:
@@ -63,6 +65,9 @@ class EventManager(object):
             e = Event(etype=e_type, location=newloc)
             self.events.append(e)
             
+            return e
+        return None                        
+            
     def update(self,secs):
         live_events = []
         for e in self.events:
@@ -70,4 +75,14 @@ class EventManager(object):
                 live_events.append(e)
 
         self.events = live_events                
+                    
+    def fetch(self,location,distance=100,active_only=True):
+        out = []
+        location = np.array(location)
+        for e in self.events:
+            print  util.vec_dist(location,e.location), e.state
+            if util.vec_dist(location,e.location) < distance:
+                if not active_only or e.state not in ['EXPIRED','RESOLVED','UNSPAWNED']:
+                    out.append(e)
+        return out                                                
                     
