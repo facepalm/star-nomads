@@ -4,7 +4,7 @@ import util
 import mapscreen
 import event
 
-EVENT_TC = 7200.
+EVENT_TC = 720.
 
 class Map(object): #more or less just a container for all of the things that happen in space
     def __init__(self, ship=None):
