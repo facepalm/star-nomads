@@ -34,9 +34,13 @@ def register(obj, oid=''):
     new_id = oid if oid else str(uuid.uuid4())
     try:
         globalvars.ids[new_id] = obj
+        obj.id = new_id
     except:
         assert False, "global id collision!"
     return new_id
+
+def unregister(obj):
+    globalvars.ids.pop(obj.id)
 
 def quad_mean(x,y,wx=1,wy=1):
     return pow( (1.0*wx*x*x + wy*y*y)/(wx + wy) ,0.5)

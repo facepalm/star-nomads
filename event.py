@@ -5,25 +5,38 @@ import numpy as np
 
 class Event(object):
     def __init__(self,**kwargs):
-        self.id = util.register(self)
+        util.register(self)
+        
+        self.state = 'UNSPAWNED'
         
         self.location = kwargs['location']
+        self.category = kwargs['etype'] if 'etype' in kwargs else 'Generic'
         
-        self.scan_strength = 1 
-        self.current_scan = 0
         
-        self.timeout = 3600.
+        
+        self.spawn_in  = random.random() * 7200.
+        self.expire_in = 3600.*24 * (1+ random.random())
         
         self.exclusion_radius = 10
         
     def update(self,secs):
-        self.timeout -= secs
+        if self.spawn_in > 0:
+            self.spawn_in -= secs
+            if self.spawn_in < 0:
+                print 'Event spawning at', self.location
+                #spawn logic
+        else:    
+            self.expire_in -= secs
+            if self.expire_in < 0:
+                print 'Event expiring at', self.location
+                self.state = 'EXPIRED'
+                util.unregister(self) #will no longer update
             
 class EventManager(object):
     jitter = 100 
 
     def __init__(self):
-        self.id = util.register(self)
+        util.register(self)
         
         self.events = []
         
@@ -49,4 +62,12 @@ class EventManager(object):
             print 'New event of type',e_type,' at',newloc
             e = Event(etype=e_type, location=newloc)
             self.events.append(e)
+            
+    def update(self,secs):
+        live_events = []
+        for e in self.events:
+            if e.state not in ['EXPIRED','RESOLVED']:
+                live_events.append(e)
+
+        self.events = live_events                
                     
