@@ -3,6 +3,8 @@ import random
 
 import numpy as np
 
+import eventpanel
+
 class Event(object):
     def __init__(self,**kwargs):
         util.register(self)
@@ -10,16 +12,18 @@ class Event(object):
         self.state = 'UNSPAWNED'
         
         self.location = kwargs['location']
-        self.category = kwargs['etype'] if 'etype' in kwargs else 'Generic'
+        self.category = kwargs['etype'] if 'etype' in kwargs else 'generic'
         
         self.color = [0.5,0.5,1.,1.]       
         
-        self.discovered = False
+        self.discovered = True #False
         
         self.spawn_in  = random.random() * 7200.
         self.expire_in = 3600.*24 * (1+ random.random())
         
         self.exclusion_radius = 50
+        
+        self.mapimage = eventpanel.EventMapImage(event=self)
         
     def update(self,secs):
         if self.spawn_in > 0:
@@ -47,7 +51,7 @@ class EventManager(object):
         if loc is None: return
         
         #pick event type
-        e_type = 'Generic'
+        e_type = 'generic'
         
         #pick event location
         offset = np.array([(random.random()-0.5)*self.jitter,(random.random()-0.5)*self.jitter])
@@ -77,7 +81,7 @@ class EventManager(object):
 
         self.events = live_events                
                     
-    def fetch(self,location,distance=100,active_only=True):
+    def fetch_all(self,location,distance=100,active_only=True):
         out = []
         location = np.array(location)
         for e in self.events:
@@ -85,5 +89,14 @@ class EventManager(object):
             if util.vec_dist(location,e.location) < distance:
                 if not active_only or e.state not in ['EXPIRED','RESOLVED','UNSPAWNED']:
                     out.append(e)
-        return out                                                
+        return out         
+        
+    def fetch_nearest(self,location,distance=100,active_only=True):
+        events = self.fetch_all(location,distance,active_only)
+        out = None
+        for e in events:
+            if not out or util.vec_dist(np.array(location),e.location) < util.vec_dist(np.array(location),out.location):
+                out = e
+        return out                
+            
                     

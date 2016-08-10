@@ -31,14 +31,15 @@ class Map(object): #more or less just a container for all of the things that hap
             new_event = self.event_mgr.new(loc)
             if new_event:
                 #ping location
-                pass
+                self.display.add_widget(new_event.mapimage)
                 #self.display.spawn_ping(location=new_event.location,extent=100.,color=new_event.color)
         if random.random() < 0.1:
             self.display.event_ping()                
             
-        events = self.event_mgr.fetch(loc,10.)#TODO update with sensor strength
+        events = self.event_mgr.fetch_all(loc,10.)#TODO update with sensor strength
         for e in events:            
             if not e.discovered: e.discovered = True
+            
         
     def new_player_ship(self,ship):
         #TODO remove old ship if present?

@@ -99,6 +99,8 @@ class MapScreen(Screen):
         
         self.curr_loc = self.location
         self.ids['stars'].shift(dx,dy)
+        #print self.ids['stars'].scale
+        self.ids['stars'].scale = 0.001*globalvars.config['MAP SCALING']*self.ids['mapscale'].scale
         
         #print 'map',self.ids['mapscale'].mapxy
         self.ids['mapscale'].mapxy = [self.width/2 - self.location[0]*self.ids['mapscale'].scale,self.height/2 - self.location[1]*self.ids['mapscale'].scale]
@@ -112,7 +114,7 @@ class MapScreen(Screen):
     def event_ping(self, extent=100, color_scheme={}):        
         loc = self.ship_loc()
         self.spawn_ping(location=loc,extent=extent,delay=0.,color=color_scheme['MAIN'] if 'MAIN' in color_scheme else [1,1,1,1])
-        events = self.map.event_mgr.fetch(loc,extent)
+        events = self.map.event_mgr.fetch_all(loc,extent)
         for e in events:
             self.spawn_ping(location=e.location,extent=50., delay = float(util.vec_dist(loc,e.location)/PING_SPEED),color=color_scheme[e.category] if e.category in color_scheme else [1.,1.,1.,1.],speed_factor=1.5)
         

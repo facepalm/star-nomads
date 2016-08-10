@@ -18,6 +18,8 @@ class Universe(object):
         self.map = maps.Map()
         self.map.new_player_ship(self.ship)
         globalvars.root.screen_manager.add_widget(self.map.display)
+        
+        self.map.update(0)
         #globalvars.root.onNextScreen(self.map.display.name, transition='None')
         
         #place ship in universe
