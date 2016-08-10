@@ -24,6 +24,7 @@ kv = '''
 <MapScreen@Screen>:
     name: 'star map'    
     pos_hint: {'center_x': 0.5, 'center_y': .5}
+           
     
     Starfield:
         id: stars
@@ -37,21 +38,8 @@ kv = '''
         do_rotation: False
         mapxy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
         
-        canvas:
-            Line:
-                points: [0, 0, 10, 10, 10, 0]
-            #Translate: 
-            #    xy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
-                                                         
-        
-        Label:
-            center: 0,0 #_hint: {'center_x': 0., 'center_y': 1.0}
-            text: '%f %f' % (self.parent.parent.location[0], self.parent.parent.location[1])
-        Label:
-            center: 0,-30
-            text: 'GPS off'
-            id: gpslabel
-        
+      
+                                                                                 
             
     FloatLayout:
         id: mapoverlay  
@@ -60,6 +48,20 @@ kv = '''
             pos_hint: {'top': 1.00, 'right': 1.00}
             size_hint: 0.15,0.15
             text: 'Build'
+            
+    StackLayout:  
+        id: debugoverlay  
+        orientation: 'tb-lr' 
+        Label:
+            pos_hint: {'top': 1.00, 'left': 0.05}
+            size_hint: None,0.05
+            text: '%f %f' % (self.parent.parent.location[0], self.parent.parent.location[1])
+            id: loclabel 
+        Label:
+            pos_hint: {'top': 0.95, 'left': 0.05}
+            size_hint: None,0.05
+            text: 'GPS off'
+            id: gpslabel              
 '''
 
 Builder.load_string(kv)

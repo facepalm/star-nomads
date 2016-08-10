@@ -11,6 +11,7 @@ speed = 0
 gps_scale = 100000
 
 def update_location(**kwargs):
+    global lat, lon, bearing, scale
     print 'lat: {lat}, lon: {lon}'.format(**kwargs)
     lat = kwargs['lat'] * gps_scale
     lon = kwargs['lon'] * gps_scale
