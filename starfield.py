@@ -32,18 +32,19 @@ class Starfield(Widget):
         self.rectangles = []
 
         for idx in xrange(3):
-            star_size = 2
+            star_size = 3
 
             # create a texture, defaults to rgb / ubyte
             self.texture = Texture.create(size=self.size, colorfmt='rgba')
             self.texture.wrap = 'repeat'
 
             # create a white star's pixel array (255)
-            texture_size = star_size * 4
+            texture_size = star_size * star_size * 4
             buf = [255 for x in xrange(texture_size)]
 
+
             # then, convert the array to a ubyte string
-            buf = ''.join(map(chr, buf))
+            buf = ''.join(map(chr, buf))            
 
             for x in xrange(int(self.density * 256)):
                 # then blit the buffer randomly across the texture
