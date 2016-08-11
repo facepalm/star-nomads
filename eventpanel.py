@@ -13,14 +13,13 @@ class EventMapImage(Image):
     def __init__(self,**kwargs):
         self.event = kwargs['event']
         self.source = 'img/event/'+self.event.category+'/MapSymbol.png'
-        
+        #self.allow_stretch=True
         super(EventMapImage, self).__init__(**kwargs)
         
-        self.size = [self.texture.size[0]/20, self.texture.size[1]/20]
-        print self.size
+        self.size = [10,10]
         
         self.color = self.event.color
-        self.center = self.event.location.tolist()
+        self.pos = self.event.location.tolist()
         
         self.opacity = 1 if self.event.discovered else 0
                 

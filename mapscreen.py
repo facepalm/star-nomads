@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
+from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.uix.scatter import ScatterPlane
 from kivy.graphics.texture import Texture
@@ -53,13 +54,13 @@ kv = '''
         id: debugoverlay  
         orientation: 'tb-lr' 
         Label:
-            pos_hint: {'top': 1.00, 'left': 0.05}
-            size_hint: None,0.05
-            text: '%f %f' % (self.parent.parent.location[0], self.parent.parent.location[1])
+            pos_hint: {'top': 1.00, 'left': 0.1}
+            size_hint: 0.2,0.05
+            text: '%02.02e %02.02e' % (self.parent.parent.location[0], self.parent.parent.location[1])
             id: loclabel 
         Label:
-            pos_hint: {'top': 0.95, 'left': 0.05}
-            size_hint: None,0.05
+            pos_hint: {'top': 0.95, 'left': 0.1}
+            size_hint: 0.2,0.05
             text: 'GPS off'
             id: gpslabel              
 '''
@@ -79,10 +80,13 @@ class MapScreen(Screen):
     def on_pre_enter(self):
         gps.start()
         self.displayed = True
-        if self.map is not None:
-            if self.map.ship is not None:
-                pass
-        Clock.schedule_interval(self.update, 0.1)               
+        
+        min_side = min(Window.width, Window.height)
+        globalvars.config['MAP SCALING'] = 3#(min_side - 200)/200.
+        self.ids['mapscale'].scale = globalvars.config['MAP SCALING']
+        print 'Resolution information:',Window.width, Window.height, globalvars.config['MAP SCALING']
+        
+        #Clock.schedule_interval(self.update, 0.1)               
                 
     def on_leave(self):  
         self.displayed = False              
@@ -105,8 +109,12 @@ class MapScreen(Screen):
         #print 'map',self.ids['mapscale'].mapxy
         self.ids['mapscale'].mapxy = [self.width/2 - self.location[0]*self.ids['mapscale'].scale,self.height/2 - self.location[1]*self.ids['mapscale'].scale]
         self.ids['mapscale'].update_mapxy()
-        self.ids['mapscale'].x -= dx*globalvars.config['MAP SCALING']
-        self.ids['mapscale'].y -= dy*globalvars.config['MAP SCALING']
+        #self.ids['mapscale'].x = -globalvars.config['MAP SCALING']*self.location[0] + self.width/2 #dx*2#globalvars.config['MAP SCALING']
+        #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
+        
+        anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration=0.5, t = 'in_out_quad' )
+        anim.start(self.ids['mapscale'])
+        #print self.ids['mapscale'].x, self.ids['mapscale'].y
         
     def spawn_ping(self,**kwargs):
         self.ids['mapscale'].ping(**kwargs)  

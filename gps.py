@@ -40,6 +40,7 @@ def get_location():
     import random
     global lat, lon
     if not use_gps: lon += (random.random() )/1 #* gps_scale/100000
+    if not use_gps: lat += (random.random() )/1
     #lon += (random.random() )/10
     #if random.random() < 0.05: 
     #    print 'should trigger!'
