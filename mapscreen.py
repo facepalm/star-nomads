@@ -82,7 +82,7 @@ class MapScreen(Screen):
         self.displayed = True
         
         min_side = min(Window.width, Window.height)
-        globalvars.config['MAP SCALING'] = 3#(min_side - 200)/200.
+        globalvars.config['MAP SCALING'] = (min_side - 200)/200.
         self.ids['mapscale'].scale = globalvars.config['MAP SCALING']
         print 'Resolution information:',Window.width, Window.height, globalvars.config['MAP SCALING']
         
@@ -107,15 +107,19 @@ class MapScreen(Screen):
         self.ids['stars'].scale = 0.001*globalvars.config['MAP SCALING']*self.ids['mapscale'].scale
         
         #print 'map',self.ids['mapscale'].mapxy
-        self.ids['mapscale'].mapxy = [self.width/2 - self.location[0]*self.ids['mapscale'].scale,self.height/2 - self.location[1]*self.ids['mapscale'].scale]
-        self.ids['mapscale'].update_mapxy()
+        self.ids['mapscale'].mapxys = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2, self.ids['mapscale'].scale]
+        
         #self.ids['mapscale'].x = -globalvars.config['MAP SCALING']*self.location[0] + self.width/2 #dx*2#globalvars.config['MAP SCALING']
         #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
         
-        anim = Animation( pos = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2], duration= 0.5 )
-        anim.start(self.ids['mapscale'])
+        if not self.ids['mapscale'].touched:
+            anim = Animation( scale = globalvars.config['MAP SCALING'], pos = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2], duration= 0.5 , t='in_out_sine')        
+            anim &= Animation( scale = globalvars.config['MAP SCALING'], duration= 0.5)       
+            anim.start(self.ids['mapscale'])
+            
+        self.ids['mapscale'].update_mapxy()
         
-        print Clock.time()
+        #print Clock.time()
         #print self.ids['mapscale'].x, self.ids['mapscale'].y
         
     def spawn_ping(self,**kwargs):
@@ -126,7 +130,8 @@ class MapScreen(Screen):
         self.spawn_ping(location=loc,extent=extent,delay=0.,color=color_scheme['MAIN'] if 'MAIN' in color_scheme else [1,1,1,1])
         events = self.map.event_mgr.fetch_all(loc,extent)
         for e in events:
-            self.spawn_ping(location=e.location,extent=50., delay = float(util.vec_dist(loc,e.location)/PING_SPEED),color=color_scheme[e.category] if e.category in color_scheme else [1.,1.,1.,1.],speed_factor=1.5)
+            dist = util.vec_dist(loc,e.location)
+            self.spawn_ping(location=e.location,extent=float(50.*(dist/100.)), delay = float(util.vec_dist(loc,e.location)/PING_SPEED),duration=1.0,color=color_scheme[e.category] if e.category in color_scheme else [1.,1.,1.,1.],speed_factor=1.5)
         
     def ship_loc(self):
         return np.array([self.location[0],self.location[1]])        
@@ -135,16 +140,19 @@ class MapScreen(Screen):
     #    print 'loc changed!'        
                 
 class MapScatterPlane(ScatterPlane):
-    mapxy = ListProperty([0,0])
+    mapxys = ListProperty([0,0,1])
     
     def __init__(self,**kwargs):
         super(MapScatterPlane,self).__init__(**kwargs)                
         self.trans = None
         self.update_mapxy()
+        self.touched = False
         
-     
+    def on_transform_with_touch(self,touch):
+        self.touched = True    
         
-    def update_mapxy(self,*args):   
+    def update_mapxy(self,*args): 
+        self.touched=False  
         pass#self.pos = self.mapxy
         '''if self.trans:
             self.trans.xy = self.mapxy[0],self.mapxy[1]

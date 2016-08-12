@@ -74,7 +74,6 @@ class Starfield(Widget):
                    
 
     def update(self,dt):
-        print dt, self.x, self.y
         modifier = 0.3
         for rectangle in self.rectangles:
             #rectangle.tex_coords = -(self.x * modifier), -(self.y * modifier), -(self.x * modifier + 1), -(self.y * modifier),  -(self.x * modifier + 1), -(self.y * modifier + 1), -(self.x * modifier), -(self.y * modifier + 1)

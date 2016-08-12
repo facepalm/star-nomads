@@ -38,7 +38,7 @@ class Map(object): #more or less just a container for all of the things that hap
             
         events = self.event_mgr.fetch_all(loc,10.)#TODO update with sensor strength
         for e in events:            
-            if not e.discovered: e.discovered = True
+            if not e.discovered: e.discover()
             
         
     def new_player_ship(self,ship):

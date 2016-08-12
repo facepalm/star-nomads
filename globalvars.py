@@ -3,7 +3,7 @@ import json
 ids=dict()
 
 config = {
-    'TIME FACTOR' : 60,
+    'TIME FACTOR' : 360,
     'ZOOM' : 15,
     'GRAPHICS' : 'pyglet',
     'AUTOLOAD': True,

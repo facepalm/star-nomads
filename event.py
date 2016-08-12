@@ -16,7 +16,7 @@ class Event(object):
         
         self.color = [0.5,0.5,1.,1.]       
         
-        self.discovered = True #False
+        self.discovered = False
         
         self.spawn_in  = random.random() * 7200.
         self.expire_in = 3600.*24 * (1+ random.random())
@@ -38,6 +38,19 @@ class Event(object):
                 print 'Event expiring at', self.location
                 self.state = 'EXPIRED'
                 util.unregister(self) #will no longer update
+                
+    def discover(self):
+        self.discovered = True        
+        self.mapimage.opacity = 1        
+        
+    def on_pressed(self): #the player has touched us
+        print "Event triggered!"
+        self.state='RESOLVED'
+        self.suicide()
+        
+    def suicide(self):
+        util.unregister(self) #will no longer update        
+        self.mapimage.suicide()
             
 class EventManager(object):
     jitter = 100 

@@ -19,7 +19,27 @@ class EventMapImage(Image):
         self.size = [10,10]
         
         self.color = self.event.color
-        self.pos = self.event.location.tolist()
+        self.center = self.event.location.tolist()
         
         self.opacity = 1 if self.event.discovered else 0
+        
+    def on_touch_down(self, touch):
+        touch.push()
+        touch.apply_transform_2d(self.to_local)
+        touched = self.collide_point(*touch.pos)
+        touch.pop()
+        if touched and self.opacity > 0:
+            self.pressed = touch.pos
+            print "Event pressed"
+            self.event.on_pressed()
+            # we consumed the touch. return False here to propagate
+            # the touch further to the children.
+            return False
+        return super(EventMapImage, self).on_touch_down(touch)     
+
+    def suicide(self):
+        if self.parent:
+            self.parent.remove_widget(self)           
+        
+        
                 
