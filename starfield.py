@@ -9,6 +9,7 @@ from kivy.graphics.texture import Texture
 from kivy.lang import Builder
 from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.widget import Widget
+from kivy.animation import Animation
 
 
 class Starfield(Widget):
@@ -22,10 +23,10 @@ class Starfield(Widget):
         super(Starfield, self).__init__(**kwargs)
         self.on_size()
 
-        #Clock.schedule_interval(self.scroll, 0)
+        Clock.schedule_interval(self.update, 1.0)
         self.x = 0
         self.y = 0
-        self.scale = .001000
+        self.scale = .01000
 
     def on_size(self, *largs):
         self.canvas.clear()
@@ -70,11 +71,16 @@ class Starfield(Widget):
     def shift(self, dx, dy):
         self.x += dx*self.scale
         self.y += dy*self.scale
+                   
+
+    def update(self,dt):
+        print dt, self.x, self.y
         modifier = 0.3
         for rectangle in self.rectangles:
-            rectangle.tex_coords = -(self.x * modifier), -(self.y * modifier), -(self.x * modifier + 1), -(self.y * modifier),  -(self.x * modifier + 1), -(self.y * modifier + 1), -(self.x * modifier), -(self.y * modifier + 1)
-            modifier /= 2            
-
+            #rectangle.tex_coords = -(self.x * modifier), -(self.y * modifier), -(self.x * modifier + 1), -(self.y * modifier),  -(self.x * modifier + 1), -(self.y * modifier + 1), -(self.x * modifier), -(self.y * modifier + 1)
+            anim = Animation(tex_coords = [(self.x * modifier), (self.y * modifier), (self.x * modifier + 1), (self.y * modifier),  (self.x * modifier + 1), (self.y * modifier + 1), (self.x * modifier), (self.y * modifier + 1)], duration = 1.0 )
+            anim.start(rectangle)
+            modifier /= 2 
 
 class TestApp(App):
     def build(self):

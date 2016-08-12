@@ -1,4 +1,6 @@
 
+import time
+
 from plyer import gps
 
 use_gps = True
@@ -9,6 +11,8 @@ bearing = 0
 speed = 0
 
 gps_scale = 100000
+last_update=0
+
 
 def update_location(**kwargs):
     global lat, lon, bearing, scale
@@ -38,9 +42,11 @@ def stop():
     
 def get_location():
     import random
-    global lat, lon
-    if not use_gps: lon += (random.random() )/1 #* gps_scale/100000
-    if not use_gps: lat += (random.random() )/1
+    global lat, lon, last_update
+    tc = 1 if not last_update else (time.clock()-last_update)*10
+    last_update = time.clock()
+    if not use_gps: lon += tc*(random.random() ) #* gps_scale/100000
+    if not use_gps: lat += tc*(random.random() )
     #lon += (random.random() )/10
     #if random.random() < 0.05: 
     #    print 'should trigger!'

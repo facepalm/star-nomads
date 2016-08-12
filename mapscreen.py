@@ -54,8 +54,8 @@ kv = '''
         id: debugoverlay  
         orientation: 'tb-lr' 
         Label:
-            pos_hint: {'top': 1.00, 'left': 0.1}
-            size_hint: 0.2,0.05
+            pos_hint: {'top': 1.00, 'left': 0.2}
+            size_hint: 0.5,0.05
             text: '%02.02e %02.02e' % (self.parent.parent.location[0], self.parent.parent.location[1])
             id: loclabel 
         Label:
@@ -112,8 +112,10 @@ class MapScreen(Screen):
         #self.ids['mapscale'].x = -globalvars.config['MAP SCALING']*self.location[0] + self.width/2 #dx*2#globalvars.config['MAP SCALING']
         #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
         
-        anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration=0.5, t = 'in_out_quad' )
+        anim = Animation( pos = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2], duration= 0.5 )
         anim.start(self.ids['mapscale'])
+        
+        print Clock.time()
         #print self.ids['mapscale'].x, self.ids['mapscale'].y
         
     def spawn_ping(self,**kwargs):

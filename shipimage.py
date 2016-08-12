@@ -1,6 +1,7 @@
 from kivy.uix.image import Image
 from kivy.properties import ListProperty, NumericProperty, ObjectProperty
 from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix
+from kivy.animation import Animation
 
 import numpy as np
 
@@ -57,7 +58,9 @@ class ShipImage(Image):
         return super(ShipImage, self).on_touch_down(touch)
 
     def on_coords(self,*args):
-        self.center = self.coords       
+        #self.center = self.coords       
+        anim = Animation(center = self.coords,duration=0.5)
+        anim.start(self)
         
     def on_bearing(self,*args):        
         self.place_image()
