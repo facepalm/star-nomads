@@ -23,12 +23,12 @@ class ShipImage(Image):
     def __init__(self,**kwargs):
         self.ship = kwargs['ship'] 
         if self.ship:   
-            self.source = ship_dict[self.ship.shipclass]['prefix']+ '/MapSymbolSmall.png'
+            self.source = ship_dict[self.ship.shipclass]['prefix']+ '/MapShip.png'
         #print self.source, self.ship.shipclass
-            
+        kwargs['mipmap'] = True
         super(ShipImage, self).__init__(**kwargs)
         
-        self.size = [self.texture.size[0]/2, self.texture.size[1]/2]
+        self.size = [20,30]#[self.texture.size[0]/2, self.texture.size[1]/2]
         
         self.rotation = None
         
