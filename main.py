@@ -48,6 +48,11 @@ class GameRoot(AnchorLayout):
             self.screen_manager.current = self.list_of_prev_screens.pop()
             return True
         return False
+        
+    def switchScreen(self,next_screen, transition='Slide'):
+        if not self.screen_manager.has_screen(next_screen.name):
+            self.screen_manager.add_widget( next_screen )
+        self.onNextScreen(next_screen.name)        
 
 class GameApp(App):
 

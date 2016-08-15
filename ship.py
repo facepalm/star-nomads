@@ -53,9 +53,7 @@ class Ark(Ship): #Player ship, or potentially player ship
         #go to ship screen
         if self.screen is None:
             self.screen = shippanel.ShipScreen(ship=self)
-        if not globalvars.root.screen_manager.has_screen(self.screen.name):
-            globalvars.root.screen_manager.add_widget( self.screen )
-        globalvars.root.onNextScreen(self.screen.name)
+        globalvars.root.switchScreen(self.screen)
         print 'screen added'
         
         
@@ -66,6 +64,6 @@ class Premise(Ark): #default ship
         self.style = 'Premise'
         
         self.rooms = [  {'size':1, 'loc':   [0  ,0  ], 'module': None },
-                        {'size':1, 'loc':   [100,0  ], 'module': None } ]
+                        {'size':2, 'loc':   [100,0  ], 'module': None } ]
                         
                                 
