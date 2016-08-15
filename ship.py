@@ -4,13 +4,15 @@ import time
 import gps
 import util
 import shipimage
+import shippanel
+import globalvars
 
 class Ship(object):
     def __init__(self):
         self.id = util.register(self)
         self.rooms = []        
         self.crew = 0
-        self.shipclass = 'Generic'
+        if not hasattr(self, 'shipclass'): self.shipclass = 'Generic'
         if not hasattr(self, 'faction'): self.faction = 'NPC'
         
         self.location = [0, 0]
@@ -23,6 +25,9 @@ class Ship(object):
         
     def get_location(self):
         return self.location
+        
+    def touched(self):
+        pass
 
 class Ark(Ship): #Player ship, or potentially player ship
     def __init__(self):        
@@ -30,6 +35,7 @@ class Ark(Ship): #Player ship, or potentially player ship
         self.shipclass = 'Ark'
         self.faction = 'Player'  
         self.image = shipimage.ShipImage(ship=self)
+        self.screen = None
         Ship.__init__(self)
         
     def get_location(self):
@@ -42,6 +48,16 @@ class Ark(Ship): #Player ship, or potentially player ship
         self.bearing = gps.get_bearing()
         self.image.coords = self.location        
         self.image.bearing = self.bearing
+        
+    def touched(self):
+        #go to ship screen
+        if self.screen is None:
+            self.screen = shippanel.ShipScreen(ship=self)
+        if not globalvars.root.screen_manager.has_screen(self.screen.name):
+            globalvars.root.screen_manager.add_widget( self.screen )
+        globalvars.root.onNextScreen(self.screen.name)
+        print 'screen added'
+        
         
         
 class Premise(Ark): #default ship 

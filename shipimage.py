@@ -51,6 +51,7 @@ class ShipImage(Image):
         touch.pop()
         if touched:
             self.pressed = touch.pos
+            self.ship.touched()
             print "ship pressed"
             # we consumed the touch. return False here to propagate
             # the touch further to the children.
@@ -69,6 +70,7 @@ class ShipImage(Image):
         print ('Ship ',self.ship.shipclass,', pressed at {pos}'.format(pos=pos))
         #print self.planet.type, self.planet.resources.raw, self.planet.subtype if hasattr(self.planet,'subtype') else ''
         print globalvars.root
+        
         
         '''pname = util.short_id(self.planet.id)+'-planet'
         if not globalvars.root.screen_manager.has_screen(pname):
