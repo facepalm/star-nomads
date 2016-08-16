@@ -86,6 +86,6 @@ class Premise(Ark): #default ship
                         {'size':2, 'loc':   [-125,-100], 'module': None },
                         {'size':2, 'loc':   [125 ,-100], 'module': None },
                         {'size':2, 'loc':   [-200,-250], 'module': None },
-                        {'size':2, 'loc':   [ 200,-250], 'module': None },]
+                        {'size':2, 'loc':   [ 200,-250], 'module': None }]
                         
                                 

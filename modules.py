@@ -50,6 +50,20 @@ class Storage(Module):
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
         
+class Bridge(Module): #small dedicated bridge
+    def __init__(self,**kwargs):
+        Module.__init__(self,**kwargs)
+        self.size = 1
+        self.crew_managed = 10
+        
+class BridgeSz2(Bridge):
+    def __init__(self,**kwargs):
+        Bridge.__init__(self,**kwargs)
+        
+        self.size = 2                    
+        self.power_draw = 1
+        self.crew_needed = 100        
+        self.crew_managed = 1000
         
         
 def maintenance_descriptor(maint=0.5):
