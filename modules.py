@@ -39,6 +39,7 @@ class Module(object):
                         
             #check recipes
             for r in self.recipe:
+                pass
                 #check if we have input
                 #check if we can store output
                 #do it

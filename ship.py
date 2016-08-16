@@ -63,7 +63,29 @@ class Premise(Ark): #default ship
         Ark.__init__(self)
         self.style = 'Premise'
         
-        self.rooms = [  {'size':1, 'loc':   [0  ,0  ], 'module': None },
-                        {'size':2, 'loc':   [100,0  ], 'module': None } ]
+        self.rooms = [  #inner hub 
+                        {'size':3, 'loc':   [0   , 125], 'module': None },
+                        {'size':2, 'loc':   [0   ,  10], 'module': None },
+                        {'size':2, 'loc':   [0   , 240], 'module': None },
+                        {'size':1, 'loc':   [110 , 170], 'module': None },
+                        {'size':1, 'loc':   [-110, 170], 'module': None },
+                        {'size':1, 'loc':   [-110,  75], 'module': None },
+                        {'size':1, 'loc':   [110 ,  75], 'module': None },
+                        
+                        #outer circle
+                        {'size':1, 'loc':   [-200, 175], 'module': None },
+                        {'size':1, 'loc':   [-150, 260], 'module': None },                         
+                        {'size':1, 'loc':   [-50 , 320], 'module': None },
+                        {'size':1, 'loc':   [50  , 320], 'module': None },
+                        {'size':1, 'loc':   [150 , 260], 'module': None }, 
+                        {'size':1, 'loc':   [200 , 175], 'module': None },
+                                               
+                        #wings 
+                        {'size':3, 'loc':   [-200,   0], 'module': None },
+                        {'size':3, 'loc':   [200 ,   0], 'module': None },
+                        {'size':2, 'loc':   [-125,-100], 'module': None },
+                        {'size':2, 'loc':   [125 ,-100], 'module': None },
+                        {'size':2, 'loc':   [-200,-250], 'module': None },
+                        {'size':2, 'loc':   [ 200,-250], 'module': None },]
                         
                                 
