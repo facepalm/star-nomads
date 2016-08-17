@@ -36,7 +36,7 @@ class Map(object): #more or less just a container for all of the things that hap
         if random.random() < 0.1:
             self.display.event_ping()                
             
-        events = self.event_mgr.fetch_all(loc,10.)#TODO update with sensor strength
+        events = self.event_mgr.fetch_all(loc,self.ship.sensor_strength())
         for e in events:            
             if not e.discovered: e.discover()
             

@@ -7,6 +7,8 @@ import shipimage
 import shippanel
 import globalvars
 
+import modules
+
 class Ship(object):
     def __init__(self):
         self.id = util.register(self)
@@ -18,6 +20,14 @@ class Ship(object):
         self.location = [0, 0]
         self.bearing = 0
         
+        self.active_sensors={}
+        self.passive_sensors={}
+        self.crew_managed = {}
+        self.housing = {}
+        
+        self.crew = {   'Civilian'  : 0, 
+                        'Trained Crew' : 0 }
+        
         if not hasattr(self, 'image'): self.image = shipimage.ShipImage(ship=self)
                 
     def update(self,secs):
@@ -28,6 +38,10 @@ class Ship(object):
         
     def touched(self):
         pass
+        
+    def sensor_strength(self,active=False):
+        if active: return max(self.active_sensors.values()) if self.active_sensors else 0
+        return max(self.passive_sensors.values()) if self.passive_sensors else 0       
 
 class Ark(Ship): #Player ship, or potentially player ship
     def __init__(self):        
@@ -75,7 +89,7 @@ class Premise(Ark): #default ship
                         #outer circle
                         {'size':1, 'loc':   [-200, 175], 'module': None },
                         {'size':1, 'loc':   [-150, 260], 'module': None },                         
-                        {'size':1, 'loc':   [-50 , 320], 'module': None },
+                        {'size':1, 'loc':   [-50 , 320], 'module': modules.SensorSuite(ship=self) },
                         {'size':1, 'loc':   [50  , 320], 'module': None },
                         {'size':1, 'loc':   [150 , 260], 'module': None }, 
                         {'size':1, 'loc':   [200 , 175], 'module': None },
