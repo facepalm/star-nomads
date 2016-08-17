@@ -34,7 +34,7 @@ class Map(object): #more or less just a container for all of the things that hap
                 self.display.ids['mapscale'].add_widget(new_event.mapimage)
                 #self.display.spawn_ping(location=new_event.location,extent=100.,color=new_event.color)
         if random.random() < 0.1:
-            self.display.event_ping()                
+            self.display.event_ping(extent=self.ship.sensor_strength(active=True))                
             
         events = self.event_mgr.fetch_all(loc,self.ship.sensor_strength())
         for e in events:            
