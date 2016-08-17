@@ -13,6 +13,8 @@ from kivy.properties import ListProperty
 from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix, Translate
 from kivy.animation import Animation
 from kivy.uix.button import Button
+from kivy.metrics import Metrics
+
 
 import numpy as np
 
@@ -40,12 +42,15 @@ kv = '''
             #Image:
  
 <RoomButton@Button>:
-    size: 40,40
+    size: '40dp','40dp'
     size_hint: None, None     
                            
 '''
 
 Builder.load_string(kv)
+
+def densFix(coords):
+    return (np.array(coords) * Metrics.density).tolist()
 
 class RoomButton(Button):
     pass
@@ -56,8 +61,8 @@ class ShipScreen(Screen):
         
         self.ship = kwargs['ship'] #TODO catch errors if missing
         #print shipimage.ship_dict,self.ship.shipclass,'prefix', '/ShipRoomsRotate.png'
-        interior_img = Image(source=shipimage.ship_dict[self.ship.shipclass]['prefix']+ '/ShipRooms.png',color=[0.2,0.2,0.2,1.], allow_stretch=False, size_hint= [None, None])
-        interior_img.size = interior_img.texture.size
+        interior_img = Image(source=shipimage.ship_dict[self.ship.shipclass]['prefix']+ '/ShipRooms.png',color=[0.2,0.2,0.2,1.], allow_stretch=True, size_hint= [None, None])
+        interior_img.size = densFix(interior_img.texture.size)
         interior_img.pos_hint= {'center_x': .5, 'center_y': .5}
         self.ids['shiplayout'].add_widget(interior_img)
         self.ids['shiplayout'].size = (np.array(interior_img.size)+100).tolist()
@@ -68,7 +73,7 @@ class ShipScreen(Screen):
             butt.text = str(r['size'])
             #room_name = 'room'+str(r['size'])+'_'
             #room_name += 'empty.png' if not r['module'] else 'full.png'
-            b_center = np.array(self.ids['shiplayout'].center)+np.array(r['loc'])        
+            b_center = np.array(self.ids['shiplayout'].center)+np.array(r['loc'])*Metrics.density        
             #print r_center, np.array(self.ids['shiplayout'].center),np.array(r['loc'])       
             #room_img = Image(source='img/room/'+room_name, center = r_center.tolist(), size=[40,40], size_hint= [None, None])
             butt.center = b_center.tolist()
