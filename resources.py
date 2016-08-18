@@ -3,6 +3,15 @@ import math
 import numpy as np
 import random
 
+resources = {
+                'Metallics': {'name':'Metallics', 'restype':'Basic', 'baseval':10},
+                'Hydrates': {'name':'Hydrates', 'restype':'Basic', 'baseval':10},
+                'Silicates': {'name':'Silicates', 'restype':'Basic', 'baseval':10},
+                
+                'DeplPhleb': {'name':'Depleted Phlebotinum', 'restype':'Basic', 'baseval':10e6},
+                'ChrgPhleb': {'name':'Charged Phlebotinum', 'restype':'Basic', 'baseval':20e6},
+            }
+
 class ResourceModel(object):
     def __init__(self):
         self.res = dict()
@@ -13,7 +22,15 @@ class ResourceModel(object):
     
     def sub(self, res_name, res_amt):
         if res_name not in self.res: self.res[res_name] = Resource(res_name)
-        self.res[res_nam].sub(res_amt)    
+        return self.res[res_nam].sub(res_amt)  
+        
+    def has(self, res_name, res_amt):
+        if res_name not in self.res: self.res[res_name] = Resource(res_name)
+        return self.res[res_nam].has(res_amt) 
+        
+    def amount(self, res_name):
+        if res_name not in self.res: self.res[res_name] = Resource(res_name)
+        return self.res[res_nam].amount
 
 
 class Resource(object):
@@ -35,6 +52,9 @@ class Resource(object):
         out = min(self.amount,amt)
         self.amount -= out
         return out
+        
+    def has(self,amt):
+        return self.amout >= amt
         
     def update(self,dt):
         diffsum = (self.demand - self.supply)/(self.demand + self.supply)

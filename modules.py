@@ -35,6 +35,14 @@ class Module(object):
     def update(self, secs):
         timeslice = min(1.,secs/util.seconds(1, 'day'))
         
+        if not self.toggled:
+            self.active = False
+            self.status = 'Mothballed'
+            self.ship.power_use[self.id] = 0
+            self.ship.crew_use[self.id] = 0
+            self.active = False
+            return 
+        
         #print self.crew_needed, self.ship.crew_use[self.id], self.ship.crew_available(3, 0)
         if self.ship.crew_available(self.crew_needed, offset=self.ship.crew_use[self.id]):  
             self.ship.crew_use[self.id] = self.crew_needed
@@ -47,13 +55,7 @@ class Module(object):
         if self.maint_reqr:
             #crew have a chance to repair
             if self.crewed and random.random() < timeslice: #TODO scale with condition - crappy modules take longer to repair
-                self.maint_reqr = False
-                
-        if not self.toggled:
-            self.active = False
-            self.status = 'Mothballed'
-            self.ship.power_use[self.id] = 0
-            return   
+                self.maint_reqr = False                          
             
         if self.maint_reqr:
             self.active = False
@@ -141,7 +143,30 @@ class Storage(Module):
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
         
+        self.storage_type = 'Basic'
+        self.storage_amt = 1000
+        self.crew_needed = 1
         
+    def update(self,secs):        
+        Module.update(self,secs)
+        if self.storage_type not in self.ship.storage: self.ship.storage[self.storage_type] = dict()
+        self.ship.storage[self.storage_type][self.id] = self.storage_amt if self.crewed else 0
+        
+class StorageSz2(Storage):
+    def __init__(self,**kwargs):
+        Storage.__init__(self,**kwargs)
+        
+        self.storage_type = 'Basic'
+        self.storage_amt = 10000       
+        self.crew_needed = 5 
+        
+class StorageSz3(Storage):
+    def __init__(self,**kwargs):
+        Storage.__init__(self,**kwargs)
+        
+        self.storage_type = 'Basic'
+        self.storage_amt = 100000  
+        self.crew_needed = 25        
         
         
 class Bridge(Module): #small dedicated bridge
@@ -185,7 +210,7 @@ class Reactor(Module):
     def update(self,secs):
         Module.update(self,secs)
         self.ship.power[self.id] = self.power_supplied if self.active else 0
-        print self.status
+        #print self.status
             
         
 class PhlebDrive(Reactor):
