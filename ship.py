@@ -12,7 +12,7 @@ import globalvars
 import modules
 
 def power_scaling(power=1):
-    return 3 * 10**power
+    return 10**power
 
 class Ship(object):
     def __init__(self):
@@ -32,6 +32,7 @@ class Ship(object):
         self.power = {}
         self.power_use={}
         self.crew_use={}
+        self.storage = {}
         
         self.crew = {   'Civilian'  : 0, 
                         'Trained Crew' : 0 }
@@ -53,7 +54,7 @@ class Ship(object):
         
     def power_available(self, amt, offset = 0):
         if amt == 0: return True
-        power = sum([power_scaling(x) for x in self.power.values() ])
+        power = sum([3*power_scaling(x) for x in self.power.values() ])
         p_u = sum([power_scaling(x) for x in self.power_use.values() ])
         print power, p_u        
         return power - p_u + offset >= amt
@@ -99,8 +100,8 @@ class Premise(Ark): #default ship
         
         self.rooms = [  #inner hub 
                         {'size':3, 'loc':   [0   , 125], 'module': modules.PhlebGenerator(ship=self) },
-                        {'size':2, 'loc':   [0   ,  10], 'module': None },
-                        {'size':2, 'loc':   [0   , 240], 'module': None },
+                        {'size':2, 'loc':   [0   ,  10], 'module': modules.Quarters(ship=self) },
+                        {'size':2, 'loc':   [0   , 240], 'module': modules.BridgeSz2(ship=self) },
                         {'size':1, 'loc':   [110 , 170], 'module': None },
                         {'size':1, 'loc':   [-110, 170], 'module': None },
                         {'size':1, 'loc':   [-110,  75], 'module': None },
@@ -117,8 +118,8 @@ class Premise(Ark): #default ship
                         #wings 
                         {'size':3, 'loc':   [-200,   0], 'module': None },
                         {'size':3, 'loc':   [200 ,   0], 'module': None },
-                        {'size':2, 'loc':   [-125,-100], 'module': None },
-                        {'size':2, 'loc':   [125 ,-100], 'module': None },
+                        {'size':2, 'loc':   [-125,-100], 'module': modules.Quarters(ship=self) },
+                        {'size':2, 'loc':   [125 ,-100], 'module': None }, #trade dock
                         {'size':2, 'loc':   [-200,-250], 'module': None },
                         {'size':2, 'loc':   [ 200,-250], 'module': None }]
 
