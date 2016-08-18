@@ -124,20 +124,20 @@ class Premise(Ark): #default ship
                         {'size':2, 'loc':   [0   ,  10], 'module': modules.Quarters(ship=self) },
                         {'size':2, 'loc':   [0   , 240], 'module': modules.BridgeSz2(ship=self) },
                         {'size':1, 'loc':   [110 , 170], 'module': None }, #antimatter storage
-                        {'size':1, 'loc':   [-110, 170], 'module': None },
-                        {'size':1, 'loc':   [-110,  75], 'module': None },
-                        {'size':1, 'loc':   [110 ,  75], 'module': None },
+                        {'size':1, 'loc':   [-110, 170], 'module': None }, #life support
+                        {'size':1, 'loc':   [-110,  75], 'module': None }, #hyperdrive core?
+                        {'size':1, 'loc':   [110 ,  75], 'module': None }, #CPU core?
                         
                         #outer circle
-                        {'size':1, 'loc':   [-200, 175], 'module': None },
+                        {'size':1, 'loc':   [-200, 175], 'module': None }, #weapon?
                         {'size':1, 'loc':   [-150, 260], 'module': None },                         
                         {'size':1, 'loc':   [-50 , 320], 'module': modules.SensorSuite(ship=self) },
                         {'size':1, 'loc':   [50  , 320], 'module': None }, #weapon?
-                        {'size':1, 'loc':   [150 , 260], 'module': None }, 
-                        {'size':1, 'loc':   [200 , 175], 'module': modules.Storage(ship=self) },
+                        {'size':1, 'loc':   [150 , 260], 'module': modules.Storage(ship=self) }, 
+                        {'size':1, 'loc':   [200 , 175], 'module': None }, #asteroid processing
                                                
                         #wings 
-                        {'size':3, 'loc':   [-200,   0], 'module': None },
+                        {'size':3, 'loc':   [-200,   0], 'module': None }, #dry dock
                         {'size':3, 'loc':   [200 ,   0], 'module': None },
                         {'size':2, 'loc':   [-125,-100], 'module': modules.Quarters(ship=self) },
                         {'size':2, 'loc':   [125 ,-100], 'module': None }, #trade dock
