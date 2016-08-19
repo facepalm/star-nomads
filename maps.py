@@ -1,8 +1,11 @@
 import random
+import numpy as np
 
 import util
 import mapscreen
 import event
+import asteroid
+
 
 EVENT_TC = 720.
 
@@ -25,6 +28,7 @@ class Map(object): #more or less just a container for all of the things that hap
         if self.ship is not None:
             loc = self.ship.get_location()
             self.display.location = loc
+            print self.systemcoord(loc)
             
         #one event every hour or so?        
         num = util.sround( random.random()*secs/EVENT_TC )
@@ -50,6 +54,13 @@ class Map(object): #more or less just a container for all of the things that hap
         
         #hand to mapscreen        
         self.display.ids['mapscale'].add_widget(self.ship.image)
-         
 
+    def spawn(self,item,loc):
+        if item=='asteroid':
+            ast = asteroid.Asteroid(location=loc,curmap=self)
+            
+    def systemcoord(self,loc):
+        nloc = np.array(loc) // 1000
+        return nloc.round().tolist()
+        
             

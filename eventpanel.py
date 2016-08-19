@@ -1,6 +1,7 @@
 from kivy.uix.image import Image
 from kivy.properties import ListProperty, NumericProperty, ObjectProperty
 from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix
+import os
 
 import numpy as np
 
@@ -12,7 +13,8 @@ class EventMapImage(Image):
     
     def __init__(self,**kwargs):
         self.event = kwargs['event']
-        self.source = 'img/event/'+self.event.category+'/MapSymbol.png'
+        efilename = 'img/event/'+self.event.category+'/MapSymbol.png'
+        self.source = efilename if os.path.exists(efilename) else 'img/event/generic/MapSymbol.png'
         #self.allow_stretch=True
         super(EventMapImage, self).__init__(**kwargs)
         

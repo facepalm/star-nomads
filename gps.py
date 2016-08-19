@@ -45,8 +45,8 @@ def get_location():
     global lat, lon, last_update
     tc = 1 if not last_update else (time.clock()-last_update)*10
     last_update = time.clock()
-    if not use_gps: lon += tc*(random.random() ) #* gps_scale/100000
-    if not use_gps: lat += tc*(random.random() )
+    if not use_gps: lon += 5*tc*(random.random() ) #* gps_scale/100000
+    if not use_gps: lat += 5*tc*(random.random() )
     #lon += (random.random() )/10
     #if random.random() < 0.05: 
     #    print 'should trigger!'
