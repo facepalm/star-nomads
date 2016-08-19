@@ -53,7 +53,16 @@ def densFix(coords):
     return (np.array(coords) * Metrics.density).tolist()
 
 class RoomButton(Button):
-    pass
+    def __init__(self, **kwargs):
+        self.room = kwargs['room']
+        Button.__init__(self,**kwargs)
+        
+        self.background_color = [0.3,0.3,0.3,1.0]
+        if self.room:
+            self.background_color = [0.8,0.8,0.8,1.0] #TODO room symbols
+            if self.room.active:
+                self.background_color = [0.2,1.0,0.2,1.0] #TODO edit of room symbol
+                
 
 class ShipScreen(Screen):
     def __init__(self,**kwargs):
@@ -61,7 +70,12 @@ class ShipScreen(Screen):
         
         self.ship = kwargs['ship'] #TODO catch errors if missing
         #print shipimage.ship_dict,self.ship.shipclass,'prefix', '/ShipRoomsRotate.png'
-        interior_img = Image(source=shipimage.ship_dict[self.ship.shipclass]['prefix']+ '/ShipRooms.png',color=[0.2,0.2,0.2,1.], allow_stretch=True, size_hint= [None, None])
+        
+        
+        
+        
+    def on_pre_enter(self):
+        interior_img = Image(source=shipimage.ship_dict[self.ship.shipclass]['prefix']+ '/ShipRooms.png',color=[0.5,0.5,0.5,1.], allow_stretch=True, size_hint= [None, None])
         interior_img.size = densFix(interior_img.texture.size)
         interior_img.pos_hint= {'center_x': .5, 'center_y': .5}
         self.ids['shiplayout'].add_widget(interior_img)
@@ -69,7 +83,7 @@ class ShipScreen(Screen):
         
         #add rooms
         for r in self.ship.rooms:
-            butt = RoomButton()
+            butt = RoomButton(room = r['module'])
             butt.text = str(r['size'])
             #room_name = 'room'+str(r['size'])+'_'
             #room_name += 'empty.png' if not r['module'] else 'full.png'
@@ -84,4 +98,7 @@ class ShipScreen(Screen):
         
         #add panels
         #add status
+        
+    def on_leave(self):  
+        self.ids['shiplayout'].clear_widgets()               
         

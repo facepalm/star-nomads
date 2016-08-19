@@ -149,5 +149,5 @@ class Premise(Ark): #default ship
                                 
     def update(self,dt):
         Ark.update(self,dt)                                
-        print self.storage 
+        #print self.storage 
        
