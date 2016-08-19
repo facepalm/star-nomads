@@ -126,11 +126,11 @@ class Premise(Ark): #default ship
                         {'size':1, 'loc':   [110 , 170], 'module': None }, #antimatter storage
                         {'size':1, 'loc':   [-110, 170], 'module': None }, #life support
                         {'size':1, 'loc':   [-110,  75], 'module': None }, #hyperdrive core?
-                        {'size':1, 'loc':   [110 ,  75], 'module': None }, #CPU core?
+                        {'size':1, 'loc':   [110 ,  75], 'module': None }, #research lab
                         
                         #outer circle
                         {'size':1, 'loc':   [-200, 175], 'module': None }, #weapon?
-                        {'size':1, 'loc':   [-150, 260], 'module': None },                         
+                        {'size':1, 'loc':   [-150, 260], 'module': None }, #xeno bay                        
                         {'size':1, 'loc':   [-50 , 320], 'module': modules.SensorSuite(ship=self) },
                         {'size':1, 'loc':   [50  , 320], 'module': None }, #weapon?
                         {'size':1, 'loc':   [150 , 260], 'module': modules.Storage(ship=self) }, 
@@ -138,11 +138,11 @@ class Premise(Ark): #default ship
                                                
                         #wings 
                         {'size':3, 'loc':   [-200,   0], 'module': None }, #dry dock
-                        {'size':3, 'loc':   [200 ,   0], 'module': None },
-                        {'size':2, 'loc':   [-125,-100], 'module': modules.Quarters(ship=self) },
+                        {'size':3, 'loc':   [200 ,   0], 'module': None }, #nano factory
+                        {'size':2, 'loc':   [-125,-100], 'module': modules.StorageSz2(ship=self) },
                         {'size':2, 'loc':   [125 ,-100], 'module': None }, #trade dock
-                        {'size':2, 'loc':   [-200,-250], 'module': None },
-                        {'size':2, 'loc':   [ 200,-250], 'module': modules.StorageSz2(ship=self) }]
+                        {'size':2, 'loc':   [-200,-250], 'module': None }, #impulse drive
+                        {'size':2, 'loc':   [ 200,-250], 'module': None }] #foundry
 
         self.crew = {   'Civilian'  : random.randint(200,600), 
                         'Trained Crew' : random.randint(200,600) }                        
