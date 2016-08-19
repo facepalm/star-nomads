@@ -9,6 +9,8 @@ EVENT_TC = 720.
 class Map(object): #more or less just a container for all of the things that happen in space
     def __init__(self, ship=None):
         self.id = util.register(self)
+        self.mapseed = random.random()*10000
+        
         self.events = [] #list for unpopped events - do we even need this here?
         self.objects = [] #popped events.  Mostly just little stuff like resource finds
         

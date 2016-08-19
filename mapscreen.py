@@ -114,7 +114,7 @@ class MapScreen(Screen):
         
         if not self.ids['mapscale'].touched:
             anim = Animation( scale = globalvars.config['MAP SCALING'], pos = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2], duration= 0.5 , t='in_out_sine')        
-            anim &= Animation( scale = globalvars.config['MAP SCALING'], duration= 0.5)       
+            anim &= Animation( scale = globalvars.config['MAP SCALING'], duration= 1.0)       
             anim.start(self.ids['mapscale'])
             
         self.ids['mapscale'].update_mapxy()

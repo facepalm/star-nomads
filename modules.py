@@ -257,6 +257,25 @@ class SensorSuite(Module):
         else:                     
             self.ship.active_sensors[self.id] = 0
             self.ship.passive_sensors[self.id] = 10
+            
+            
+class AsteroidProcessing(Module):
+    def __init__(self,**kwargs):
+        Module.__init__(self,**kwargs)
+        
+        self.power_needed = 1
+        self.crew_needed = 5
+        self.asteroid = None
+        
+    def update(self,secs):        
+        Module.update(self,secs)        
+        self.ship.asteroid_processing[self.id] = 0 if self.active else 1
+
+    def process_asteroid(self,ast):
+        if self.asteroid or self.active or not ast: return False
+        self.activity = {'Name':'Processing Material', 'Inputs':{}, 'Outputs':ast.components, 'Duration' : ast.size()*util.seconds(1,'hour')}
+        return True
+            
         
 def maintenance_descriptor(maint=0.5):
     if maint > 0.9:
