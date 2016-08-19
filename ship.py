@@ -36,6 +36,7 @@ class Ship(object):
         self.power_use={}
         self.crew_use={}
         self.storage = {}
+        self.asteroid_processing = {}
         
         self.crew = {   'Civilian'  : 0, 
                         'Trained Crew' : 0 }
@@ -149,5 +150,5 @@ class Premise(Ark): #default ship
                                 
     def update(self,dt):
         Ark.update(self,dt)                                
-        print self.storage 
+        #print self.storage 
        

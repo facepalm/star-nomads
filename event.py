@@ -39,14 +39,22 @@ class Event(object):
                 self.state = 'EXPIRED'
                 util.unregister(self) #will no longer update
                 
-    def discover(self):
+    def discover(self,curmap=None):
         self.discovered = True        
         self.mapimage.opacity = 1        
+        if self.category == 'asteroid':
+            #spawn asteroid
+            if curmap:
+                curmap.spawn('asteroid',self.loc)
+            self.state='RESOLVED'
+            self.suicide()
+            
         
     def on_pressed(self): #the player has touched us
         print "Event triggered!"
-        self.state='RESOLVED'
-        self.suicide()
+        if self.category == 'generic':
+            self.state='RESOLVED'
+            self.suicide()
         
     def suicide(self):
         util.unregister(self) #will no longer update        
@@ -64,7 +72,7 @@ class EventManager(object):
         if loc is None: return
         
         #pick event type
-        e_type = 'generic'
+        e_type = random.choice(['generic','asteroid'])
         
         #pick event location
         offset = np.array([(random.random()-0.5)*self.jitter,(random.random()-0.5)*self.jitter])
