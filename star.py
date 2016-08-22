@@ -95,6 +95,7 @@ class Star(object):
         
         self.snow_line = 3 * pow( self.luminosity ,0.5)
         self.ice_line = 10 * pow( self.luminosity ,0.5)
+        self.system_line = 40 * pow( self.luminosity ,0.5)
         
         self.explored = 0.0
         self.orbiting_bodies = []

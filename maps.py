@@ -10,6 +10,8 @@ import gps
 
 
 EVENT_TC = 720.
+M_TO_AU = 10.
+M_TO_LY = 1000.
 
 class Map(object): #more or less just a container for all of the things that happen in space
     def __init__(self, ship=None):
@@ -64,7 +66,7 @@ class Map(object): #more or less just a container for all of the things that hap
         loc = self.systemcoord(loc)
         for x in np.linspace(loc[0]-dist*self.density,loc[0]+dist*self.density,num=dist*2+1):
             for y in np.linspace(loc[1]-dist*self.density,loc[1]+dist*self.density,num=dist*2+1):
-                newloc = (int(x),int(y))
+                newloc = (int(round(x)),int(round(y)))
                 print newloc
                 if newloc not in self.stars:
                     print 'Adding new star at',newloc
@@ -72,6 +74,19 @@ class Map(object): #more or less just a container for all of the things that hap
                     if self.stars[newloc]: 
                         print self.stars[newloc].info()
                         self.display.ids['mapscale'].add_widget(self.stars[newloc].primary_image())
+        
+    def which_system(self,loc=None):
+        if loc is None: loc = self.display.location
+        loc = self.systemcoord(loc)
+        newloc = (int(round(loc[0])),int(round(loc[1])))        
+        #TODO search for closest system instead
+        if self.stars[newloc] is None: return None
+        dist = util.vec_dist(np.array(newloc),self.stars[newloc].loc)
+        dist /= M_TO_AU
+        if dist < self.stars[newloc].system_line: return self.stars[newloc]
+        return None
+        
+                
         
     def new_player_ship(self,ship):
         #TODO remove old ship if present?
