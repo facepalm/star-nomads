@@ -13,12 +13,13 @@ import util
 
 def initialize_star(location,density,seed):
     random.seed(seed)
-    np.random.seed(seed)
+    np.random.seed(seed if seed < 4000000000 else seed//1000000)
     if random.random() < 0.1: return None #chance there's no star here
     primary_star_mass = np.random.wald(mean=1.0, scale=1.5, size=1)
-    randomness = 0.5
+    randomness = 0.25
     dl = np.array([random.gauss(0,randomness),random.gauss(0,randomness)])
-    loc = dl*density + np.array(location)*density
+    loc = dl*density + np.array(location)
+    print loc
     star = Star(primary_star_mass,loc,seed=seed)
     return star
     
