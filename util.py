@@ -20,6 +20,11 @@ import math
 GLOBAL_X=0
 GLOBAL_Y=0
 
+def get_skew(skew = 'linear'):
+    if skew == 'linear':
+        return random.gauss(0,0.25)
+    return 0
+
 def sround(num):
     base = math.floor(num)    
     return int(base + 1) if random.random() < num%1 else int(base)       

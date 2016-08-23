@@ -76,6 +76,9 @@ class MapScreen(Screen):
         self.displayed = False
         self.curr_loc = [0,0]
         
+        self.ids['stars'].density = 500./self.map.density
+        self.ids['stars'].on_size()
+        
         
     def on_pre_enter(self):
         gps.start()
@@ -95,6 +98,7 @@ class MapScreen(Screen):
     def update(self,dt):
         #self.location = gps.get_location()
         self.ids['gpslabel'].text = 'ON' if gps.use_gps else 'OFF'
+        self.ids['mapscale'].touched=False  
         return self.displayed
         
     def on_location(self, *args):
@@ -113,11 +117,11 @@ class MapScreen(Screen):
         #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
         
         if not self.ids['mapscale'].touched:
-            anim = Animation( scale = globalvars.config['MAP SCALING'], pos = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2], duration= 0.5 , t='in_out_sine')        
+            anim = Animation( scale = globalvars.config['MAP SCALING'], pos = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2], duration= 1.0 , t='in_out_sine')        
             anim &= Animation( scale = globalvars.config['MAP SCALING'], duration= 1.0)       
             anim.start(self.ids['mapscale'])
             
-        self.ids['mapscale'].update_mapxy()
+        #self.ids['mapscale'].update_mapxy()
         
         #print Clock.time()
         #print self.ids['mapscale'].x, self.ids['mapscale'].y
