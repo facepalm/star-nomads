@@ -60,7 +60,7 @@ class ShipImage(Image):
 
     def on_coords(self,*args):
         #self.center = self.coords       
-        anim = Animation(center = self.coords,duration=0.5)
+        anim = Animation(center = self.coords,duration=1.)
         anim.start(self)
         
     def on_bearing(self,*args):        
