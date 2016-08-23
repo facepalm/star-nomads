@@ -63,11 +63,13 @@ class Map(object): #more or less just a container for all of the things that hap
             
     def update_starmap(self,loc=None,dist=3):
         if loc is None: loc = self.display.location
+        print loc, self.systemcoord(loc)
         loc = self.systemcoord(loc)
+        
         for x in np.linspace(loc[0]-dist*self.density,loc[0]+dist*self.density,num=dist*2+1):
             for y in np.linspace(loc[1]-dist*self.density,loc[1]+dist*self.density,num=dist*2+1):
                 newloc = (int(round(x)),int(round(y)))
-                print newloc
+                #print newloc
                 if newloc not in self.stars:
                     print 'Adding new star at',newloc
                     self.stars[newloc] = star.initialize_star(newloc,self.density,int(abs(self.mapseed+y*x+x+y)))
@@ -101,7 +103,7 @@ class Map(object): #more or less just a container for all of the things that hap
             ast = asteroid.Asteroid(location=loc,curmap=self)
             
     def systemcoord(self,loc):
-        nloc = np.array(loc) // self.density
+        nloc = self.density * (np.array(loc) // self.density)
         return nloc.round().tolist()
         
             
