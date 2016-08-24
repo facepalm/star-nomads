@@ -11,7 +11,7 @@ import math
 
 import util
 
-img_scale = 100.
+img_scale = 50.
 
 #manager for planet images & icons
 planet_dict = { 'Brown-Dwarf': ['browndwarf'],
@@ -67,7 +67,7 @@ def load_primary(planet, imagename):
     return img
     
 def load_orbital(planet, imagename, radius=1.0):
-    img = OrbitImage(source=imagename,allow_stretch=True,size_hint=(None, None),planet=planet)  
+    img = OrbitImage(source=imagename,allow_stretch=True,mipmap=True,size_hint=(None, None),planet=planet)  
     sz = img.texture.size
     minlen= min(sz[0],sz[1])
     size = (round(img_scale*radius*sz[0]/minlen),round(img_scale*radius*sz[1]/minlen))        
@@ -150,7 +150,7 @@ class OrbitImage(PlanetImage):
         
         primloc = self.planet.primary.loc
         
-        orbit_scale = 10 #helpful to reposition orbits
+        orbit_scale = 1.5 #helpful to reposition orbits
         
         orbit_dist = globalvars.M_TO_AU * self.orbit#math.log(self.orbit+1,orbit_scale)
         
