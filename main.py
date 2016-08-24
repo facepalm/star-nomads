@@ -60,6 +60,9 @@ class GameApp(App):
         super(GameApp, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.onBackBtn)
 
+    def on_pause(self,*args):
+        return True
+
     def onBackBtn(self, window, key, *args):
         """ To be called whenever user presses Back/Esc key """
         # 27 is back press number code
