@@ -10,7 +10,7 @@ import gps
 
 
 EVENT_TC = 720.
-M_TO_AU = 10.
+
 M_TO_LY = 1000.
 
 class Map(object): #more or less just a container for all of the things that happen in space
@@ -26,7 +26,7 @@ class Map(object): #more or less just a container for all of the things that hap
         
         self.ship = ship #convenience link to get location information
         
-        self.density = int(500 / random.random()**1.5) #avg disctance between stars, where 1 km == 1 ly TODO galaxy map?
+        self.density = int(500 / random.random()**1.25) #avg disctance between stars, where 1 km == 1 ly TODO galaxy map?
         print 'Star distance',self.density
         
         self.display = mapscreen.MapScreen(map=self)
@@ -72,10 +72,11 @@ class Map(object): #more or less just a container for all of the things that hap
                 #print newloc
                 if newloc not in self.stars:
                     print 'Adding new star at',newloc
-                    self.stars[newloc] = star.initialize_star(newloc,self.density,int(abs(self.mapseed+y*x+x+y)))
+                    self.stars[newloc] = star.initialize_star(newloc,self.density,int(abs(self.mapseed+y*x+x+y)),self.display.ids['mapscale'])
                     if self.stars[newloc]: 
                         print self.stars[newloc].info()
-                        self.display.ids['mapscale'].add_widget(self.stars[newloc].primary_image())
+                        #self.display.ids['mapscale'].add_widget(self.stars[newloc].primary_image())
+
         
     def which_system(self,loc=None):
         if loc is None: loc = self.display.location
@@ -84,7 +85,7 @@ class Map(object): #more or less just a container for all of the things that hap
         #TODO search for closest system instead
         if self.stars[newloc] is None: return None
         dist = util.vec_dist(np.array(newloc),self.stars[newloc].loc)
-        dist /= M_TO_AU
+        dist /= globalvars.M_TO_AU
         if dist < self.stars[newloc].system_line: return self.stars[newloc]
         return None
         
