@@ -2,6 +2,8 @@ import json
 
 ids=dict()
 
+M_TO_AU = 10.
+
 config = {
     'TIME FACTOR' : 360,
     'ZOOM' : 15,

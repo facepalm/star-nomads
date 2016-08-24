@@ -8,10 +8,12 @@ from kivy.uix.image import Image
 from kivy.uix.floatlayout import FloatLayout
 from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix
 
+import planetimages
+
 import globalvars
 import util
 
-def initialize_star(location,density,seed):
+def initialize_star(location,density,seed,widget):
     random.seed(seed)
     np.random.seed(seed if seed < 4000000000 else seed//1000000)
     if random.random() < 0.1: return None #chance there's no star here
@@ -21,6 +23,14 @@ def initialize_star(location,density,seed):
     loc = dl*density + np.array(location)
     print loc
     star = Star(primary_star_mass,loc,seed=seed)
+    widget.add_widget(star.primary_image())
+    
+    num_plan = random.randrange(4)
+    masses = 1E24*10**(np.random.random( size=max(num_plan,1))*8 - 3)
+    for p in range(num_plan):
+        newp = Planet(mass=masses[p],sun=star,orbit = random.random()*20)
+        star.orbiting_bodies.append(newp)
+        widget.add_widget(newp.orbit_image)
     return star
     
 
@@ -106,7 +116,7 @@ class Star(object):
 
     def primary_image(self):
         frac = 0.5        
-        return Image(source='img/sun/generic_sun.png',color=self.color,mipmap=True,center=self.loc.tolist(),allow_stretch=True,size_hint=(None, None),size=(round(75*frac*self.radius), round(75*frac*self.radius)))
+        return Image(source='img/sun/generic_sun.png',color=self.color,mipmap=True,pos=self.loc.tolist(),allow_stretch=True,size_hint=(None, None),size=(round(75*frac*self.radius), round(75*frac*self.radius)))
         
     def random_habitable_orbit(self):
         return (random.random()*0.6 + 0.8) * pow( self.luminosity ,0.5)
@@ -122,3 +132,142 @@ class Star(object):
         
     def add_exploration(self,amt=0.0001,limit=0.1):
         if self.explored < limit: self.explored += amt   
+        
+        
+        
+        
+class Planet(object):
+    def __init__(self,mass=None,sun=None,orbit=None,name=None, logger=None):
+        util.register(self)
+        self.is_sun = False
+        self.mass = mass if mass else 1E21*random.paretovariate(2)
+        self.name = name if name else 'Planet'#util.planet_name(self)
+        self.primary=sun
+        self.orbit = orbit        
+        
+        #estimate radius, based off Earth
+        self.radius = 6400000 *pow(self.mass/6E24,0.3)
+                
+        #calculate orbital period
+        #T = 2pi*sqrt(a^3/u)
+        mu = 6.674E-11 * self.primary.mass
+        mmu = 6.674E-11 * self.mass
+        a = self.orbit * 149597870700.
+        self.orbital_period = 2 * math.pi * pow(pow(a,3)/mu,0.5)
+        
+        #self.launch_dv = pow( mmu/ (self.radius + 500000) , 0.5 )
+        
+        if logger:
+            self.logger = logging.getLogger(logger.name + '.' + self.name)
+        else: 
+            self.logger = logging.getLogger(util.generic_logger.name + '.' + self.name)
+    
+        self.color = None #assign color to enable tinting
+        self.img_name = 'generic_sun.png'        
+        self.img_radius = 0.25
+        
+        if self.mass > 1E29: 
+            self.type = 'INVALID' #actually a sun.  Throw an error, this shouldnt happen
+        elif self.mass > 1E28: 
+            self.type = 'Brown dwarf' #counting this as a planet, since they have negligible radiation    
+            self.img_radius = 0.5
+        elif self.mass > 1E26:
+            self.type = 'Gas giant'
+            self.img_radius = 0.5
+            '''if self.orbit < self.sun.ice_line:
+                self.type = 'Gas giant' 
+                saturation = 255.0
+                self.color = random.choice([np.array([255, 141, 110,255])/saturation, np.array([255, 198, 110,255])/saturation])
+                #self.radius = 
+            else:
+                saturation = 255.0
+                self.type = 'Ice giant'
+                self.color = random.choice([np.array([228, 250, 250,255])/saturation, np.array([11, 41, 255, 255])/saturation])
+            self.img_name = 'generic_sun.png'''
+            
+        elif self.mass > 1E23:
+            self.type = 'Planet' #rocky world, but capable of retaining an atmosphere, even if barely
+        elif self.mass > 1E21:
+            self.type = 'Dwarf planet' #larger moons and asteroids, rounded
+            self.img_radius = 0.2
+        else:
+            self.type = 'Planetoid' #small moons, asteroids, rocks, etc
+            self.img_name = 'generic_asteroid.png'
+            self.img_radius = 0.10
+    
+    
+        self.explored = 0.0
+        #self.resources = planetresources.PlanetResources(self)
+        self.occupied = 0
+        #self.initialize_sites()
+        
+        self.orbiting_bodies = []
+        
+        self.orbit_pos = random.random()*2*3.14159
+        
+        
+        self.image = planetimages.random_image(self)
+        
+
+        #self.generate_primary_image()        
+        self.generate_orbital_image()                        
+        
+        #self.view = systempanel.SystemView(primary=self)
+        #self.view = systempanel.SystemScreen(name=util.short_id(self.id)+"-system",primary=self)
+        
+    def escape_velocity(self):
+        mmu = 6.674E-11 * self.mass                
+        v = pow( 2*mmu/ (self.radius + 500000.0) , 0.5 ) - self.launch_dv()
+        return v
+
+    def launch_dv(self):
+        mmu = 6.674E-11 * self.mass
+        return pow( mmu/ (self.radius + 500000) , 0.5 )
+                
+        
+    '''def initialize_sites(self):
+        self.sites=[]
+        self.num_sites = 6 if self.type == 'Planet' else 2 if self.type == 'Dwarf planet' else 1 if self.type == 'Planetoid' else 0
+        self.num_orbits = 1
+        for s in range(self.num_orbits):
+            s1 = planetsite.PlanetSite(self,'Orbit'+str(s))
+            self.sites.append(s1)
+
+        for s in range(self.num_sites):
+            s1 = planetsite.PlanetSite(self,'Site'+str(s))
+            self.sites.append(s1)'''
+        
+    def primary_image(self):
+        return planetimages.load_primary(self, self.image)
+
+        if self.color is not None: 
+            self.image.color=self.color
+   
+    def mugshot_image(self):                
+        return planetimages.load_panel(self, self.image)
+        
+    
+    def generate_orbital_image(self):         
+        self.orbit_image = planetimages.load_orbital(self, self.image,radius=self.img_radius)
+
+
+        
+    '''def update(self,dt):
+
+        secs = dt*globalvars.config['TIME FACTOR']
+        old_pos = self.orbit_pos        
+        self.orbit_pos += (secs/self.orbital_period)*2*3.14159
+        if self.orbit_pos > 2*math.pi: self.orbit_pos -= 2*math.pi
+        #print self.orbit_pos - old_pos
+        self.orbit_image.orbit_pos = self.orbit_pos
+        
+        self.occupied=0
+        for o in self.orbiting_bodies:
+            self.occupied = max(self.occupied,o.occupied)
+        for s in self.sites:
+            s.update_occupied()
+            self.occupied = max(self.occupied,s.occupied)'''
+
+    def add_exploration(self,amt=0.0001,limit=0.1):
+        if self.explored < limit: self.explored += amt        
+        
