@@ -21,7 +21,7 @@ def initialize_star(location,density,seed,widget):
     randomness = 0.25
     dl = np.array([random.gauss(0,randomness),random.gauss(0,randomness)])
     loc = dl*density + np.array(location)
-    print loc
+    #print loc
     star = Star(primary_star_mass,loc,seed=seed)
     widget.add_widget(star.primary_image())
     
@@ -101,9 +101,13 @@ class Star(object):
             self.color_name = 'Blue'     
             self.color = np.array([155, 176, 255,255])/saturation 
         
+        #tone down luminosity, which leads to crazy (but accurate!) distances with bright stars        
+        self.luminosity = pow( self.luminosity , 0.75)
+        
         self.habitable_start = 0.80 * pow( self.luminosity ,0.5)
         self.habitable_end = 1.4 * pow( self.luminosity ,0.5)
         
+        self.burn_line = 0.5 * pow( self.luminosity ,0.5)
         self.snow_line = 3 * pow( self.luminosity ,0.5)
         self.ice_line = 10 * pow( self.luminosity ,0.5)
         self.system_line = 40 * pow( self.luminosity ,0.5)
@@ -133,7 +137,15 @@ class Star(object):
     def add_exploration(self,amt=0.0001,limit=0.1):
         if self.explored < limit: self.explored += amt   
         
-        
+    def proximity(self,loc=None):
+        if loc is None: return 'Deep space'
+        dist = util.vec_dist(self.loc, np.array(loc))/globalvars.M_TO_AU
+        if dist < self.burn_line: return 'Near star'
+        if self.is_habitable(dist): return 'Goldilocks'
+        if dist < self.snow_line: return 'Inner system'
+        if dist < self.ice_line: return 'Outer system'
+        if dist < self.system_line: return 'Kuiper belt'
+        return 'Deep space'
         
         
 class Planet(object):

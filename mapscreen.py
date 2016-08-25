@@ -45,10 +45,21 @@ kv = '''
     FloatLayout:
         id: mapoverlay  
         index: 5 
-        Button: 
+        StackLayout: 
+            id: status
+            size_hint_x: 0.2
+            size_hint_y: None
+            height: self.width
+            orientation: 'lr-bt'
+            
             pos_hint: {'top': 1.00, 'right': 1.00}
-            size_hint: 0.15,0.15
-            text: 'Build'
+            Image:
+                mipmap: True
+                size_hint: 0.1, 0.1
+                pos_hint: {'x': 0.0, 'left': 1.00}
+                id: systemposition
+                source: 'img/icon/sun.png'
+                color: 1.0, 0.95, 0.05, 1.0
             
     StackLayout:  
         id: debugoverlay  
@@ -78,7 +89,6 @@ class MapScreen(Screen):
         
         self.ids['stars'].density = 500./self.map.density
         self.ids['stars'].on_size()
-        
         
     def on_pre_enter(self):
         gps.start()
@@ -125,6 +135,30 @@ class MapScreen(Screen):
         
         #print Clock.time()
         #print self.ids['mapscale'].x, self.ids['mapscale'].y
+        
+        sys = self.map.which_system(self.location)
+        
+        #if sys is None:
+            #we're in deep space
+        self.ids['systemposition'].source= ''
+        self.ids['systemposition'].color = [0.,0.05,0.1,1.0]
+        if sys is not None:
+            pos = sys.proximity(self.location)
+            if pos == 'Near star':
+                self.ids['systemposition'].source = 'img/icon/fire.png'
+                self.ids['systemposition'].color  = [1.0, 0.5, 0.05, 1.0]
+            elif pos == 'Goldilocks': #TODO find a good planetary symbol
+                self.ids['systemposition'].source = 'img/icon/sun.png'
+                self.ids['systemposition'].color  = [0.5, 0.95, 0.05, 1.0]
+            elif pos == 'Inner system':
+                self.ids['systemposition'].source = 'img/icon/sun.png'
+                self.ids['systemposition'].color  = [1.0, 0.95, 0.05, 1.0]
+            elif pos == 'Outer system':
+                self.ids['systemposition'].source = 'img/icon/snowflake.png'
+                self.ids['systemposition'].color  = [0.75, 0.75, 0.95, 1.0]
+            elif pos == 'Kuiper belt':
+                self.ids['systemposition'].source = 'img/icon/icecube.png'
+                self.ids['systemposition'].color  = [0.5, 0.5, 0.95, 1.0]
         
     def spawn_ping(self,**kwargs):
         self.ids['mapscale'].ping(**kwargs)  
