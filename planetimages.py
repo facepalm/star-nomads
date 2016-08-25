@@ -154,10 +154,10 @@ class OrbitImage(PlanetImage):
         
         orbit_dist = globalvars.M_TO_AU * self.orbit#math.log(self.orbit+1,orbit_scale)
         
-        self.pos = [float(primloc[0] + math.cos(self.orbit_pos)*orbit_dist), \
+        self.center = [float(primloc[0] + math.cos(self.orbit_pos)*orbit_dist), \
                        float(primloc[1] + math.sin(self.orbit_pos)*orbit_dist)]
         #print primloc, self.orbit, self.orbit_pos,orbit_dist, self.pos        
-        rot_offset= -90      
+        rot_offset= -95      
         conversion = 180/3.14159            
         if self.rotation:
             self.rotation.angle = self.orbit_pos*conversion + rot_offset
@@ -169,7 +169,7 @@ class OrbitImage(PlanetImage):
             with self.canvas.before:
                 PushMatrix()
                        
-                ph = self.pos
+                ph = self.center
                  
                 self.rotation = Rotate(angle=self.orbit_pos*conversion + rot_offset, origin = self.pos) 
                 

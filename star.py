@@ -22,13 +22,15 @@ def initialize_star(location,density,seed,widget):
     dl = np.array([random.gauss(0,randomness),random.gauss(0,randomness)])
     loc = dl*density + np.array(location)
     #print loc
-    star = Star(primary_star_mass,loc,seed=seed)
-    widget.add_widget(star.primary_image())
+    star = Star(primary_star_mass,location=loc,seed=seed)
+    img = star.primary_image()
+    widget.add_widget(img)    
+    widget.add_widget(Image(size_hint=(None, None),size=(1,1),pos=loc.tolist(),color=[1,0,0,1]))
     
     num_plan = random.randrange(4)
     masses = 1E24*10**(np.random.random( size=max(num_plan,1))*8 - 3)
     for p in range(num_plan):
-        newp = Planet(mass=masses[p],sun=star,orbit = random.random()*20)
+        newp = Planet(mass=masses[p],sun=star,orbit = random.random()*star.system_line+star.burn_line)
         star.orbiting_bodies.append(newp)
         widget.add_widget(newp.orbit_image)
     return star
@@ -119,8 +121,10 @@ class Star(object):
         
 
     def primary_image(self):
-        frac = 0.5        
-        return Image(source='img/sun/generic_sun.png',color=self.color,mipmap=True,pos=self.loc.tolist(),allow_stretch=True,size_hint=(None, None),size=(round(75*frac*self.radius), round(75*frac*self.radius)))
+        frac = 0.3        
+        img = Image(source='img/sun/generic_sun.png',color=self.color,mipmap=True,center=self.loc.tolist(),allow_stretch=False,size_hint=(None, None),size=(round(75*frac*self.radius), round(75*frac*self.radius)))
+        img.center=self.loc.tolist()
+        return img
         
     def random_habitable_orbit(self):
         return (random.random()*0.6 + 0.8) * pow( self.luminosity ,0.5)
