@@ -1,8 +1,31 @@
 import random
 
+from kivy.lang import Builder
+from kivy.uix.image import Image
+
 import util
 
 
+kv = '''
+<ModuleImage@Image>:
+    size: '40dp','40dp'
+    size_hint: None, None   
+    
+    Image:
+        id: modsize
+        source: None
+          
+                           
+'''
+
+class ModuleImage(Image):
+    def __init__(self,**kwargs):
+        self.module = kwargs['module']
+        self.source = self.module.img_dict['icon']
+        super(ModuleImage,self).__init__(**kwargs)
+        
+        #self.ids['modsize'].source = ''.join(['img/icon/modules/',str(self.module.size),'.png'])
+        #self.ids['modsize'].center = self.module.img_dict['sizeloc']
 
 class Module(object):
     def __init__(self,**kwargs):
@@ -28,19 +51,34 @@ class Module(object):
         self.condition = 1.0 
         self.maint_reqr = False
         
+        self.img_dict = {'icon':'img/icon/modules/filled-generic.png', 'sizeloc': [0,0], 'statusloc':[0,0]}
+        
         if not hasattr(self,'idle_activity'): self.idle_activity = {'Name':'Idle', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}
         self.activity = self.idle_activity.copy()
         self.status = 'Module Rebooting...'
         
+        self.color= [0.5, 0.5, 0.5, 1.0]
+        
+    def module_image(self):
+        return ModuleImage(module=self)
+        
     def update(self, secs):
         timeslice = min(1.,secs/util.seconds(1, 'day'))
         
+        if self.active and self.activity['Name'] != 'Idle': 
+            self.color = [0.3, 0.5, 1.0, 1.0]
+        elif self.crewed and not self.maint_reqr: 
+            self.color = [0.2, 0.2, 0.6, 1.0]
+        elif self.maint_reqr: 
+            self.color = [1.0, 0.5, 0.2, 1.0]
+        else:
+            self.color= [0.5, 0.5, 0.5, 1.0]
+        
+        self.active = False            
+        self.ship.power_use[self.id] = 0
+                    
         if not self.toggled:
-            self.active = False
             self.status = 'Mothballed'
-            self.ship.power_use[self.id] = 0
-            self.ship.crew_use[self.id] = 0
-            self.active = False
             return 
         
         #print self.crew_needed, self.ship.crew_use[self.id], self.ship.crew_available(3, 0)
@@ -58,28 +96,24 @@ class Module(object):
                 self.maint_reqr = False                          
             
         if self.maint_reqr:
-            self.active = False
             self.status = 'Offline: Maint'
-            self.ship.power_use[self.id] = 0
             return            
             
         if not self.crewed:
             self.status = 'Idling: Need Crew' 
-            self.active = False
-            self.ship.power_use[self.id] = 0
             return                                                      
             
         if self.activity['Duration'] > 0:
             self.active = True
             self.activity['Duration'] -= secs 
             self.status = 'Job: ' + self.activity['Name'] +' '+ str(self.activity['Duration'])
+            self.ship.power_use[self.id] = self.power_needed   
         else:
-            self.active = False
+            pass
             #end job
         if self.activity['Name'] == 'Idle' or self.activity['Duration'] < 0:
-            self.active = False      
             self.status = 'Idling'      
-            self.ship.power_use[self.id] = 0                                     
+            self.ship.power_use[self.id] = 0   
             
         if self.active:                                
             #reduced crew have a chance for something to break
@@ -88,12 +122,9 @@ class Module(object):
                                                                                                                                                             
         else: #pick a new activity
             #check if we can power up
-            if self.ship.power_available(self.power_needed,offset=self.ship.power_use[self.id]):  
-                self.ship.power_use[self.id] = self.power_needed   
-            else:
+            if not self.ship.power_available(self.power_needed,offset=self.ship.power_use[self.id]):                  
                 self.status = 'Idling: Low Power' 
                 self.activity = {'Name':'Idle', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}
-                self.ship.power_use[self.id] = 0
                 return
                     
             #check recipes
@@ -108,6 +139,13 @@ class Module(object):
             self.activity = self.idle_activity.copy()                
             self.status = 'Job: ' + self.activity['Name']
 
+    def inputs(self):
+        return 0
+        
+    def outputs(self):
+        return 1   
+        
+    
 
 class Cabin(Module):    
     def __init__(self,**kwargs):

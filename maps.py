@@ -7,7 +7,7 @@ import event
 import asteroid
 import star
 import gps
-
+import globalvars
 
 EVENT_TC = 720.
 
@@ -59,7 +59,7 @@ class Map(object): #more or less just a container for all of the things that hap
             
         events = self.event_mgr.fetch_all(loc,self.ship.sensor_strength())
         for e in events:            
-            if not e.discovered: e.discover()
+            if not e.discovered: e.discover(curmap=self)
             
     def update_starmap(self,loc=None,dist=3):
         if loc is None: loc = self.display.location
@@ -81,13 +81,19 @@ class Map(object): #more or less just a container for all of the things that hap
     def which_system(self,loc=None):
         if loc is None: loc = self.display.location
         loc = self.systemcoord(loc)
-        newloc = (int(round(loc[0])),int(round(loc[1])))        
-        #TODO search for closest system instead
-        if self.stars[newloc] is None: return None
-        dist = util.vec_dist(np.array(newloc),self.stars[newloc].loc)
-        dist /= globalvars.M_TO_AU
-        if dist < self.stars[newloc].system_line: return self.stars[newloc]
-        return None
+        newloc = (int(round(loc[0])),int(round(loc[1])))  
+        closest = None
+        best_dist = 0
+        for x in np.linspace(loc[0]-self.density,loc[0]+self.density,num=3):
+            for y in np.linspace(loc[1]-self.density,loc[1]+self.density,num=3):
+                newloc = (int(round(x)),int(round(y)))
+                if newloc not in self.stars:
+                    self.update_starmap()
+                if closest is None or (self.stars[newloc] and util.vec_dist(self.stars[newloc].loc, np.array(self.display.location)) < best_dist):
+                    closest = self.stars[newloc]
+                    best_dist = util.vec_dist(self.stars[newloc].loc, np.array(self.display.location)) if closest else 0
+        print closest.info(), best_dist / globalvars.M_TO_AU, closest.snow_line
+        return closest
         
                 
         

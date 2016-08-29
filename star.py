@@ -21,14 +21,16 @@ def initialize_star(location,density,seed,widget):
     randomness = 0.25
     dl = np.array([random.gauss(0,randomness),random.gauss(0,randomness)])
     loc = dl*density + np.array(location)
-    print loc
-    star = Star(primary_star_mass,loc,seed=seed)
-    widget.add_widget(star.primary_image())
+    #print loc
+    star = Star(primary_star_mass,location=loc,seed=seed)
+    img = star.primary_image()
+    widget.add_widget(img)    
+    widget.add_widget(Image(size_hint=(None, None),size=(1,1),pos=loc.tolist(),color=[1,0,0,1]))
     
     num_plan = random.randrange(4)
     masses = 1E24*10**(np.random.random( size=max(num_plan,1))*8 - 3)
     for p in range(num_plan):
-        newp = Planet(mass=masses[p],sun=star,orbit = random.random()*20)
+        newp = Planet(mass=masses[p],sun=star,orbit = random.random()*star.ice_line+star.burn_line)
         star.orbiting_bodies.append(newp)
         widget.add_widget(newp.orbit_image)
     return star
@@ -101,9 +103,13 @@ class Star(object):
             self.color_name = 'Blue'     
             self.color = np.array([155, 176, 255,255])/saturation 
         
+        #tone down luminosity, which leads to crazy (but accurate!) distances with bright stars        
+        self.luminosity = pow( self.luminosity , 0.75)
+        
         self.habitable_start = 0.80 * pow( self.luminosity ,0.5)
         self.habitable_end = 1.4 * pow( self.luminosity ,0.5)
         
+        self.burn_line = 0.5 * pow( self.luminosity ,0.5)
         self.snow_line = 3 * pow( self.luminosity ,0.5)
         self.ice_line = 10 * pow( self.luminosity ,0.5)
         self.system_line = 40 * pow( self.luminosity ,0.5)
@@ -115,8 +121,10 @@ class Star(object):
         
 
     def primary_image(self):
-        frac = 0.5        
-        return Image(source='img/sun/generic_sun.png',color=self.color,mipmap=True,pos=self.loc.tolist(),allow_stretch=True,size_hint=(None, None),size=(round(75*frac*self.radius), round(75*frac*self.radius)))
+        frac = 0.3        
+        img = Image(source='img/sun/generic_sun.png',color=self.color,mipmap=True,center=self.loc.tolist(),allow_stretch=False,size_hint=(None, None),size=(round(75*frac*self.radius), round(75*frac*self.radius)))
+        img.center=self.loc.tolist()
+        return img
         
     def random_habitable_orbit(self):
         return (random.random()*0.6 + 0.8) * pow( self.luminosity ,0.5)
@@ -133,7 +141,15 @@ class Star(object):
     def add_exploration(self,amt=0.0001,limit=0.1):
         if self.explored < limit: self.explored += amt   
         
-        
+    def proximity(self,loc=None):
+        if loc is None: return 'Deep space'
+        dist = util.vec_dist(self.loc, np.array(loc))/globalvars.M_TO_AU
+        if dist < self.burn_line: return 'Near star'
+        if self.is_habitable(dist): return 'Goldilocks'
+        if dist < self.snow_line: return 'Inner system'
+        if dist < self.ice_line: return 'Outer system'
+        if dist < self.system_line: return 'Kuiper belt'
+        return 'Deep space'
         
         
 class Planet(object):

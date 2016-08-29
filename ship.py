@@ -125,7 +125,7 @@ class Premise(Ark): #default ship
                         {'size':2, 'loc':   [0   ,  10], 'module': modules.Quarters(ship=self) },
                         {'size':2, 'loc':   [0   , 240], 'module': modules.BridgeSz2(ship=self) },
                         {'size':1, 'loc':   [110 , 170], 'module': None }, #antimatter storage
-                        {'size':1, 'loc':   [-110, 170], 'module': None }, #life support
+                        {'size':1, 'loc':   [-110, 170], 'module': None }, #life support (greenhouse)
                         {'size':1, 'loc':   [-110,  75], 'module': None }, #hyperdrive core?
                         {'size':1, 'loc':   [110 ,  75], 'module': None }, #research lab
                         
