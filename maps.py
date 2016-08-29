@@ -59,7 +59,7 @@ class Map(object): #more or less just a container for all of the things that hap
             
         events = self.event_mgr.fetch_all(loc,self.ship.sensor_strength())
         for e in events:            
-            if not e.discovered: e.discover()
+            if not e.discovered: e.discover(curmap=self)
             
     def update_starmap(self,loc=None,dist=3):
         if loc is None: loc = self.display.location

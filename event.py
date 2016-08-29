@@ -68,11 +68,11 @@ class EventManager(object):
         
         self.events = []
         
-    def new(self,loc):
+    def new(self,loc, event_type = None):
         if loc is None: return
         
         #pick event type
-        e_type = random.choice(['generic','asteroid'])
+        e_type = random.choice(['generic','asteroid']) if not event_type else event_type
         
         #pick event location
         offset = np.array([(random.random()-0.5)*self.jitter,(random.random()-0.5)*self.jitter])
