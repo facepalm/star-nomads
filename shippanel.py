@@ -41,9 +41,14 @@ kv = '''
             size_hint: None, None 
             #Image:
  
-<RoomButton@Button>:
+<RoomImage@Image>:
     size: '40dp','40dp'
     size_hint: None, None     
+    
+    Image:
+        id: sizeimg
+        size: '20dp','20dp'
+        size_hint: None, None
                            
 '''
 
@@ -52,17 +57,35 @@ Builder.load_string(kv)
 def densFix(coords):
     return (np.array(coords) * Metrics.density).tolist()
 
-class RoomButton(Button):
+class RoomImage(Image):
     def __init__(self, **kwargs):
         self.room = kwargs['room']
-        Button.__init__(self,**kwargs)
+        self.rsize = kwargs['rsize']
+        if self.room: 
+            self.source = self.room.img_dict['icon']
+        else:
+            self.source = 'img/icon/modules/empty-generic.png'
+        Image.__init__(self,**kwargs)
         
-        self.background_color = [0.3,0.3,0.3,1.0]
+        self.ids['sizeimg'].source = ''.join(['img/icon/modules/',str(self.rsize),'.png'])
+        self.sizeoffset = self.room.img_dict['sizeloc'] if self.room else [0, 0]
+        #loc = self.room.img_dict['sizeloc'] if self.room else [0.5, 0.5]
+        #self.ids['sizeimg'].pos_hint = loc 
+        
+        '''self.background_color = [0.3,0.3,0.3,1.0]
         if self.room:
             self.background_color = [0.8,0.8,0.8,1.0] #TODO room symbols
             if self.room.active:
-                self.background_color = [0.2,1.0,0.2,1.0] #TODO edit of room symbol
+                self.background_color = [0.2,1.0,0.2,1.0] #TODO edit of room symbol'''
                 
+        self.refresh()                
+                
+    def go_to_loc(self,loc):
+        self.center = loc
+        self.ids['sizeimg'].center = (np.array(loc)+np.array(self.sizeoffset)).tolist()
+        
+    def refresh(self):
+        self.color = self.room.color if self.room else [1,1,1,1]                   
 
 class ShipScreen(Screen):
     def __init__(self,**kwargs):
@@ -83,15 +106,18 @@ class ShipScreen(Screen):
         
         #add rooms
         for r in self.ship.rooms:
-            butt = RoomButton(room = r['module'])
-            butt.text = str(r['size'])
+            #mimg = r['module'].module_image()
+            rimg = RoomImage(room = r['module'], rsize = r['size'])
+            #butt.text = str(r['size'])
             #room_name = 'room'+str(r['size'])+'_'
             #room_name += 'empty.png' if not r['module'] else 'full.png'
             b_center = np.array(self.ids['shiplayout'].center)+np.array(r['loc'])*Metrics.density        
             #print r_center, np.array(self.ids['shiplayout'].center),np.array(r['loc'])       
             #room_img = Image(source='img/room/'+room_name, center = r_center.tolist(), size=[40,40], size_hint= [None, None])
-            butt.center = b_center.tolist()
-            self.ids['shiplayout'].add_widget(butt)
+            #rimg.center = b_center.tolist()
+            rimg.go_to_loc(b_center.tolist())
+            #rimg.ids['sizeimg'].pos_hint = 0.5,0.5
+            self.ids['shiplayout'].add_widget(rimg)
             
         self.ids['shipscroll'].scroll_x = 0.5
         self.ids['shipscroll'].scroll_y = 0.5

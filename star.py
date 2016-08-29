@@ -30,7 +30,7 @@ def initialize_star(location,density,seed,widget):
     num_plan = random.randrange(4)
     masses = 1E24*10**(np.random.random( size=max(num_plan,1))*8 - 3)
     for p in range(num_plan):
-        newp = Planet(mass=masses[p],sun=star,orbit = random.random()*star.system_line+star.burn_line)
+        newp = Planet(mass=masses[p],sun=star,orbit = random.random()*star.ice_line+star.burn_line)
         star.orbiting_bodies.append(newp)
         widget.add_widget(newp.orbit_image)
     return star

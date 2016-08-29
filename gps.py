@@ -5,7 +5,7 @@ from plyer import gps
 
 use_gps = True
 gps_on = False
-lat = 00
+lat = 100
 lon = 00
 bearing = 0
 speed = 0
