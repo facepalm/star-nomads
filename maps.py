@@ -107,6 +107,7 @@ class Map(object): #more or less just a container for all of the things that hap
 
     def spawn(self,item,loc):
         if item=='asteroid':
+            print 'Spawning asteroid! '
             ast = asteroid.Asteroid(location=loc,curmap=self)
             
     def systemcoord(self,loc):

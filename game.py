@@ -19,6 +19,8 @@ class Universe(object):
         self.map.new_player_ship(self.ship)
         globalvars.root.screen_manager.add_widget(self.map.display)
         
+        self.map.spawn('asteroid',[10,110])
+        
         self.map.update(0)
         #globalvars.root.onNextScreen(self.map.display.name, transition='None')
         
