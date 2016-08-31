@@ -25,7 +25,7 @@ def initialize_star(location,density,seed,widget):
     star = Star(primary_star_mass,location=loc,seed=seed)
     img = star.primary_image()
     widget.add_widget(img)    
-    widget.add_widget(Image(size_hint=(None, None),size=(1,1),pos=loc.tolist(),color=[1,0,0,1]))
+    #widget.add_widget(Image(size_hint=(None, None),size=(1,1),pos=loc.tolist(),color=[1,0,0,1]))
     
     num_plan = random.randrange(4)
     masses = 1E24*10**(np.random.random( size=max(num_plan,1))*8 - 3)

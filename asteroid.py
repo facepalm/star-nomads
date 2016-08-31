@@ -1,4 +1,5 @@
 import random
+from kivy.uix.image import Image
 
 import util
 import resources
@@ -20,6 +21,7 @@ class Asteroid(object):
         random.shuffle(self.basic_types)
         
         mass = mass if mass else 1E6
+        self.image = None
         
         self.composition = resources.ResourceModel()
         for i in self.basic_types:
@@ -33,3 +35,36 @@ class Asteroid(object):
             self.composition.sub('Hydrates',0.9*self.composition.amount('Hydrates'))
         
         
+    def coloration(self):
+        if self.basic_types[0] == 'Hydrates': return [0.75, 0.75, 0.95, 1.0]        
+        if self.basic_types[0] == 'Metallics': return [0.84, 0.36, 0.16, 1.0]    #'d85c2aff'
+        return [0.8, 0.8, 0.8, 1.0]
+        
+    def get_image(self):
+        frac = 0.3      
+        if self.image is not None: return self.image  
+        img = AsteroidImage(source='img/generic_asteroid.png',color=self.coloration(),mipmap=True,center=self.loc.tolist(),allow_stretch=False,size_hint=(None, None),size=(10,10),asteroid=self)
+        img.center=self.loc.tolist()
+        self.image = img
+        return img        
+        
+    def touched(self):
+        '''The player touched this asteroid, spawn some kind of dialog'''
+        print 'Asteroid harvested?'        
+        
+class AsteroidImage(Image):
+    def __init__(self,**kwargs):
+        self.asteroid = kwargs['asteroid']        
+        Image.__init__(self,**kwargs)
+
+    def on_touch_down(self, touch):
+        touch.push()
+        touch.apply_transform_2d(self.to_local)
+        touched = self.collide_point(*touch.pos)
+        touch.pop()
+        if touched:
+            self.asteroid.touched()
+            # we consumed the touch. return False here to propagate
+            # the touch further to the children.
+            return True
+        return super(AsteroidImage, self).on_touch_down(touch)        
