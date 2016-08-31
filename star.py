@@ -143,13 +143,22 @@ class Star(object):
         
     def proximity(self,loc=None):
         if loc is None: return 'Deep space'
-        dist = util.vec_dist(self.loc, np.array(loc))/globalvars.M_TO_AU
+        dist = self.loc_to_orbit(loc)
         if dist < self.burn_line: return 'Near star'
         if self.is_habitable(dist): return 'Goldilocks'
         if dist < self.snow_line: return 'Inner system'
         if dist < self.ice_line: return 'Outer system'
         if dist < self.system_line: return 'Kuiper belt'
         return 'Deep space'
+        
+    def random_location(self,rough_orbit=3):
+        orbit = rough_orbit*(0.9+0.2*random.random())        
+        pos = 2 * math.pi * random.random()
+        return [float(self.loc[0] + math.cos(pos)*orbit), \
+                float(self.loc[1] + math.sin(pos)*orbit)]
+                
+    def loc_to_orbit(self,loc):        
+        return util.vec_dist(self.loc, np.array(loc))/globalvars.M_TO_AU
         
         
 class Planet(object):

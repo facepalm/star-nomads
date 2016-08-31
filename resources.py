@@ -18,19 +18,19 @@ class ResourceModel(object):
         
     def add(self, res_name, res_amt):
         if res_name not in self.res: self.res[res_name] = Resource(res_name)
-        self.res[res_nam].add(res_amt)
+        self.res[res_name].add(res_amt)
     
     def sub(self, res_name, res_amt):
         if res_name not in self.res: self.res[res_name] = Resource(res_name)
-        return self.res[res_nam].sub(res_amt)  
+        return self.res[res_name].sub(res_amt)  
         
     def has(self, res_name, res_amt):
         if res_name not in self.res: self.res[res_name] = Resource(res_name)
-        return self.res[res_nam].has(res_amt) 
+        return self.res[res_name].has(res_amt) 
         
     def amount(self, res_name):
         if res_name not in self.res: self.res[res_name] = Resource(res_name)
-        return self.res[res_nam].amount
+        return self.res[res_name].amount
 
 
 class Resource(object):
