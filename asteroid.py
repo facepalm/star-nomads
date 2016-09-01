@@ -3,10 +3,13 @@ from kivy.uix.image import Image
 
 import util
 import resources
+import globalvars
 
 class Asteroid(object):
     def __init__(self,location=None,star=None,mass = None, differentiation = 0.):
 
+        self.object_class = 'asteroid'
+        
         self.star=star
         #if self.star is None: 
         differentiation = max(0.,min(1.,differentiation))
@@ -50,7 +53,8 @@ class Asteroid(object):
         
     def touched(self):
         '''The player touched this asteroid, spawn some kind of dialog'''
-        print 'Asteroid harvested?'        
+        print 'Asteroid harvested?'   
+        globalvars.universe.ship.harvest(self)
         
 class AsteroidImage(Image):
     def __init__(self,**kwargs):

@@ -11,6 +11,7 @@ import globalvars
 import resources
 
 import modules
+import asteroid
 
 def power_scaling(power=1):
     return 10**power
@@ -84,7 +85,11 @@ class Ship(object):
         
     def storage_available(self,res_type='Solid'):
         if res_type not in self.storage: return 0
-        return sum(self.storage['res_type'].values())        
+        return sum(self.storage['res_type'].values())      
+        
+    def harvest(self,item):
+        if not hasattr(item,'object_class'): return False
+        print item.object_class
 
 class Ark(Ship): #Player ship, or potentially player ship
     def __init__(self):        
