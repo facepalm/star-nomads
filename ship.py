@@ -87,9 +87,29 @@ class Ship(object):
         if res_type not in self.storage: return 0
         return sum(self.storage['res_type'].values())      
         
+    def find_room(self,_id):
+        for r in self.rooms:
+            room = r['module']
+            if room is not None and (room.id == _id or util.short_id(room.id) == _id): return room
+        return None            
+        
     def harvest(self,item):
-        if not hasattr(item,'object_class'): return False
-        print item.object_class
+        if not hasattr(item,'identity'): return False
+        dist = util.vec_dist(self.location,item.loc)
+        if dist > 20: 
+            print 'too far away!',dist
+            return False
+        if item.identity == 'asteroid': 
+            #search for free asteroid harvesting module
+            for r in self.asteroid_processing:
+                if self.asteroid_processing[r] > 0:
+                    #load 'er up
+                    room = self.find_room(r)
+                    test = room.process_asteroid(item)
+                    print test
+                    if test: break
+                
+        print item.identity
 
 class Ark(Ship): #Player ship, or potentially player ship
     def __init__(self):        
@@ -140,7 +160,7 @@ class Premise(Ark): #default ship
                         {'size':1, 'loc':   [-50 , 320], 'module': modules.SensorSuite(ship=self) },
                         {'size':1, 'loc':   [50  , 320], 'module': None }, #weapon?
                         {'size':1, 'loc':   [150 , 260], 'module': modules.Storage(ship=self) }, 
-                        {'size':1, 'loc':   [200 , 175], 'module': None }, #asteroid processing
+                        {'size':1, 'loc':   [200 , 175], 'module': modules.AsteroidProcessing(ship=self) },
                                                
                         #wings 
                         {'size':3, 'loc':   [-200,   0], 'module': None }, #dry dock

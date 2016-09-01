@@ -31,6 +31,29 @@ class ResourceModel(object):
     def amount(self, res_name):
         if res_name not in self.res: self.res[res_name] = Resource(res_name)
         return self.res[res_name].amount
+        
+    def tot_amt(self):
+        out=0
+        for res_name in self.res:
+            out += self.res[res_name].amount
+        return out
+        
+    def split(self,amt):
+        tot = self.tot_amt()
+        newres = ResourceModel()
+        if tot > 0: 
+            frac = amt/tot 
+        else:
+            frac = 0
+        if frac > 1: frac = 1
+        for res_name in self.res:
+            newres.add(res_name,self.res[res_name].amount*frac)
+            newres.res[res_name].supply = self.res[res_name].supply
+            newres.res[res_name].demand = self.res[res_name].demand
+            newres.res[res_name].price = self.res[res_name].price
+            self.sub(res_name,self.res[res_name].amount*frac)            
+            
+        return newres                                
 
 
 class Resource(object):

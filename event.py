@@ -45,7 +45,7 @@ class Event(object):
         if self.category == 'asteroid':
             #spawn asteroid
             if curmap:
-                curmap.spawn('asteroid',self.loc)
+                curmap.spawn('asteroid',self.location)
             self.state='RESOLVED'
             self.suicide()
             

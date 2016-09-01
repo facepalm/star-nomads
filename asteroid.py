@@ -8,7 +8,7 @@ import globalvars
 class Asteroid(object):
     def __init__(self,location=None,star=None,mass = None, differentiation = 0.):
 
-        self.object_class = 'asteroid'
+        self.identity = 'asteroid'
         
         self.star=star
         #if self.star is None: 
@@ -36,16 +36,33 @@ class Asteroid(object):
         
         if self.position in ['Near star','Goldilocks','Inner system']:
             self.composition.sub('Hydrates',0.9*self.composition.amount('Hydrates'))
+            
+    def mass(self):
+        return self.composition.tot_amt()            
         
+    def split(self,amt):
+        if amt <= 0: return None
+        newres = self.composition.split(amt)
+        if self.composition.tot_amt() <= 0:
+            #used up all of us.  Die
+            return self
+        newast = self.clone()
+        newast.composition = newres
+        newast.get_image(reset=True)
+        self.image.parent.add_widget(newast.image)
+        return newast        
+        
+    def leave_map(self):              
+        if self.image.parent is not None: self.image.parent.remove_widget(self.image)
         
     def coloration(self):
         if self.basic_types[0] == 'Hydrates': return [0.75, 0.75, 0.95, 1.0]        
         if self.basic_types[0] == 'Metallics': return [0.84, 0.36, 0.16, 1.0]    #'d85c2aff'
         return [0.8, 0.8, 0.8, 1.0]
         
-    def get_image(self):
+    def get_image(self,reset=False):
         frac = 0.3      
-        if self.image is not None: return self.image  
+        if not reset and self.image is not None: return self.image  
         img = AsteroidImage(source='img/generic_asteroid.png',color=self.coloration(),mipmap=True,center=self.loc.tolist(),allow_stretch=False,size_hint=(None, None),size=(10,10),asteroid=self)
         img.center=self.loc.tolist()
         self.image = img

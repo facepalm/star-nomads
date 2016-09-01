@@ -113,7 +113,8 @@ class Module(object):
             #end job
         if self.activity['Name'] == 'Idle' or self.activity['Duration'] < 0:
             self.status = 'Idling'      
-            self.ship.power_use[self.id] = 0   
+            self.ship.power_use[self.id] = 0
+            self.active = False   
             
         if self.active:                                
             #reduced crew have a chance for something to break
@@ -304,14 +305,22 @@ class AsteroidProcessing(Module):
         self.power_needed = 1
         self.crew_needed = 5
         self.asteroid = None
+        self.capacity = 1E6 # a million tons should be enough for anybody
         
     def update(self,secs):        
         Module.update(self,secs)        
-        self.ship.asteroid_processing[self.id] = 0 if self.active else 1
+        self.ship.asteroid_processing[self.id] = 1 if self.asteroid is None else 0
 
     def process_asteroid(self,ast):
         if self.asteroid or self.active or not ast: return False
-        self.activity = {'Name':'Processing Material', 'Inputs':{}, 'Outputs':ast.components, 'Duration' : ast.size()*util.seconds(1,'hour')}
+        
+        #split off chunk of asteroid to process
+        ast = ast.split(self.capacity)
+        ast.leave_map()
+        
+        self.asteroid=ast
+                
+        self.activity = {'Name':'Processing Material', 'Inputs':{}, 'Outputs':ast.composition, 'Duration' : ast.mass()*util.seconds(1,'hour')}
         return True
             
         
