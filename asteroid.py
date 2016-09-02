@@ -1,17 +1,20 @@
 import random
+import copy
 from kivy.uix.image import Image
+
 
 import util
 import resources
 import globalvars
 
 class Asteroid(object):
-    def __init__(self,location=None,star=None,mass = None, differentiation = 0.):
-
+    def __init__(self,location=None,star=None,mass = None, differentiation = None):
+        util.register(self)
         self.identity = 'asteroid'
         
         self.star=star
         #if self.star is None: 
+        if differentiation is None: differentiation = random.random()*0.1
         differentiation = max(0.,min(1.,differentiation))
             
         self.loc = location if location is not None else self.star.random_location() if self.star is not None else [0,0]
@@ -23,7 +26,7 @@ class Asteroid(object):
         self.basic_types = ['Metallics','Silicates','Hydrates']
         random.shuffle(self.basic_types)
         
-        mass = mass if mass else 1E6
+        mass = mass if mass else 1E7
         self.image = None
         
         self.composition = resources.ResourceModel()
@@ -32,10 +35,12 @@ class Asteroid(object):
             mass *= 1-differentiation
         
         for i in self.basic_types:
-            self.composition.add(i, mass*differentiation/3.)
+            self.composition.add(i, mass/len(self.basic_types))
         
         if self.position in ['Near star','Goldilocks','Inner system']:
             self.composition.sub('Hydrates',0.9*self.composition.amount('Hydrates'))
+            
+        print 'Asteroid mass:', self.mass()
             
     def mass(self):
         return self.composition.tot_amt()            
@@ -43,17 +48,21 @@ class Asteroid(object):
     def split(self,amt):
         if amt <= 0: return None
         newres = self.composition.split(amt)
-        if self.composition.tot_amt() <= 0:
-            #used up all of us.  Die
-            return self
-        newast = self.clone()
+        
+        newast = copy.copy(self)
+        util.register(newast)
         newast.composition = newres
         newast.get_image(reset=True)
-        self.image.parent.add_widget(newast.image)
+        
+        if self.image and self.image.parent:
+            self.image.parent.add_widget(newast.image)
+        if self.composition.tot_amt() <= 0:
+            #used up all of us.  Die
+            self.leave_map()
         return newast        
         
     def leave_map(self):              
-        if self.image.parent is not None: self.image.parent.remove_widget(self.image)
+        self.image.suicide()
         
     def coloration(self):
         if self.basic_types[0] == 'Hydrates': return [0.75, 0.75, 0.95, 1.0]        
@@ -73,6 +82,10 @@ class Asteroid(object):
         print 'Asteroid harvested?'   
         globalvars.universe.ship.harvest(self)
         
+    def suicide(self):
+        util.unregister(self) #will no longer update        
+        self.image.suicide()        
+        
 class AsteroidImage(Image):
     def __init__(self,**kwargs):
         self.asteroid = kwargs['asteroid']        
@@ -88,4 +101,8 @@ class AsteroidImage(Image):
             # we consumed the touch. return False here to propagate
             # the touch further to the children.
             return True
-        return super(AsteroidImage, self).on_touch_down(touch)        
+        return super(AsteroidImage, self).on_touch_down(touch)     
+        
+    def suicide(self):
+        if self.parent:
+            self.parent.remove_widget(self)            

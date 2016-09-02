@@ -37,9 +37,17 @@ class ResourceModel(object):
         for res_name in self.res:
             out += self.res[res_name].amount
         return out
+     
+    def merge(self,res):
+        for r in res.res:
+            self.amount(r)
+            self.res[r].merge(res.res[r])
+        return res            
+            
         
     def split(self,amt):
         tot = self.tot_amt()
+        print tot, amt
         newres = ResourceModel()
         if tot > 0: 
             frac = amt/tot 
@@ -65,6 +73,12 @@ class Resource(object):
         self.demand = 1.
         self.price = 1.
         self.tc = 3600. 
+       
+    def merge(self,res):
+        if res.name != self.name: return False
+        self.amount += res.amount
+        res.amount = 0
+        return True
         
     def add(self,amt):
         self.amount += amt

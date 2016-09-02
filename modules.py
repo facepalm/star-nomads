@@ -102,19 +102,20 @@ class Module(object):
         if not self.crewed:
             self.status = 'Idling: Need Crew' 
             return                                                      
-            
-        if self.activity['Duration'] > 0:
+           
+        if self.activity['Name'] != 'Idle' and self.activity['Duration'] > 0:                
             self.active = True
             self.activity['Duration'] -= secs 
             self.status = 'Job: ' + self.activity['Name'] +' '+ str(self.activity['Duration'])
             self.ship.power_use[self.id] = self.power_needed   
+            if self.activity['Duration'] <= 0: #end job
+                self.finish_job()                            
         else:
-            pass
-            #end job
-        if self.activity['Name'] == 'Idle' or self.activity['Duration'] < 0:
+            #idle
             self.status = 'Idling'      
             self.ship.power_use[self.id] = 0
-            self.active = False   
+            self.active = False              
+          
             
         if self.active:                                
             #reduced crew have a chance for something to break
@@ -139,6 +140,9 @@ class Module(object):
 
             self.activity = self.idle_activity.copy()                
             self.status = 'Job: ' + self.activity['Name']
+
+    def finish_job(self):
+        pass
 
     def inputs(self):
         return 0
@@ -303,11 +307,15 @@ class AsteroidProcessing(Module):
         Module.__init__(self,**kwargs)
         
         self.power_needed = 1
-        self.crew_needed = 5
+        self.crew_needed = 0#5
         self.asteroid = None
-        self.capacity = 1E6 # a million tons should be enough for anybody
+        self.capacity = 1E6 # a million kg should be enough for anybody
+        self.throughput = 25000
+        
+        self.default_activity = {'Name':'Processing Material', 'Inputs': {}, 'Outputs': {}, 'Duration' : util.seconds(0.05,'day')}
         
     def update(self,secs):        
+        print self.activity
         Module.update(self,secs)        
         self.ship.asteroid_processing[self.id] = 1 if self.asteroid is None else 0
 
@@ -320,8 +328,26 @@ class AsteroidProcessing(Module):
         
         self.asteroid=ast
                 
-        self.activity = {'Name':'Processing Material', 'Inputs':{}, 'Outputs':ast.composition, 'Duration' : ast.mass()*util.seconds(1,'hour')}
+        self.activity = self.default_activity.copy()
         return True
+        
+    def finish_job(self):
+        if self.activity and self.activity['Name'] == 'Processing Material':
+            #have finished a day's worth of asteroid processing
+            chunk = self.asteroid.split(self.throughput)
+            #add chunk to ship's storage
+            self.ship.res.merge(chunk.composition)
+            chunk.suicide()
+            
+            #check if asteroid is depleted
+            if self.asteroid.mass() == 0:
+                #kill asteroid
+                self.asteroid.suicide()
+                self.asteroid=None
+            else:
+                self.activity = self.default_activity.copy()   
+                print 'Asteroid processing status:',self.asteroid.mass(),'kg left!'         
+                
             
         
 def maintenance_descriptor(maint=0.5):
