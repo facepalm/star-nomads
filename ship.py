@@ -27,7 +27,7 @@ class Ship(object):
         self.location = [0, 0]
         self.bearing = 0
         
-        self.res = resources.ResourceModel()
+        self.storage = resources.ResourceModel()
         
         self.active_sensors={}
         self.passive_sensors={}
@@ -36,7 +36,7 @@ class Ship(object):
         self.power = {}
         self.power_use={}
         self.crew_use={}
-        self.storage = {}
+        self.storage_limit = {}
         self.asteroid_processing = {}
         
         self.crew = {   'Civilian'  : 0, 
@@ -45,19 +45,19 @@ class Ship(object):
         if not hasattr(self, 'image'): self.image = shipimage.ShipImage(ship=self)
 
     def has_res(self,res_name,amt):
-        return self.res.has(res_name,amt)
+        return self.storage.has(res_name,amt)
         
     def can_hold_res(self,res_name,amt):
         if not res_name in resources.resources: return False
-        stor = self.storage[resources.resources[res_name]['restype']]
-        cur_amt = self.res.amount(res_name)
+        stor = self.storage_limit[resources.resources[res_name]['restype']]
+        cur_amt = self.storage.amount(res_name)
         return stor >= amt + cur_amt
         
     def add_res(self,res_name,amt):
-        self.res.add(res_name,amt)
+        self.storage.add(res_name,amt)
     
     def sub_res(self,res_name,amt):
-        return self.res.sub(res_name,amt)       
+        return self.storage.sub(res_name,amt)       
                 
     def update(self,secs):
         pass
@@ -85,7 +85,7 @@ class Ship(object):
         
     def storage_available(self,res_type='Solid'):
         if res_type not in self.storage: return 0
-        return sum(self.storage['res_type'].values())      
+        return sum(self.storage_limit['res_type'].values())      
         
     def find_room(self,_id):
         for r in self.rooms:

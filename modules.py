@@ -53,11 +53,13 @@ class Module(object):
         
         self.img_dict = {'icon':'img/icon/modules/filled-generic.png', 'sizeloc': [0,0], 'statusloc':[0,0]}
         
-        if not hasattr(self,'idle_activity'): self.idle_activity = {'Name':'Idle', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}
+        if not hasattr(self,'idle_activity'): self.idle_activity = {'Name':'Idle', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'hour')}
         self.activity = self.idle_activity.copy()
         self.status = 'Module Rebooting...'
         
         self.color= [0.5, 0.5, 0.5, 1.0]
+        
+        self.full_activity = {'Name':'Waiting for storage', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'hour')}
         
     def module_image(self):
         return ModuleImage(module=self)
@@ -103,7 +105,7 @@ class Module(object):
             self.status = 'Idling: Need Crew' 
             return                                                      
            
-        if self.activity['Name'] != 'Idle' and self.activity['Duration'] > 0:                
+        if self.activity['Name'] not in ['Idle','Waiting for storage'] and self.activity['Duration'] > 0:                
             self.active = True
             self.activity['Duration'] -= secs 
             self.status = 'Job: ' + self.activity['Name'] +' '+ str(self.activity['Duration'])
@@ -126,31 +128,52 @@ class Module(object):
             #check if we can power up
             if not self.ship.power_available(self.power_needed,offset=self.ship.power_use[self.id]):                  
                 self.status = 'Idling: Low Power' 
-                self.activity = {'Name':'Idle', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}
+                self.activity = self.idle_activity.copy()
                 return
                     
             #check recipes
             random.shuffle(self.recipe)
             for r in self.recipe:
-                pass
-                
-                #check if we have input
-                #check if we can store output
-                #do it
-
-            self.activity = self.idle_activity.copy()                
+                print r
+                begin = self.check_job(r)
+                if begin: 
+                    self.start_job(r)
+                else:
+                    self.activity = self.idle_activity.copy() 
+                    
+            if len(self.recipe ) == 0:
+                self.activity = self.idle_activity.copy() 
+              
             self.status = 'Job: ' + self.activity['Name']
 
-    def finish_job(self):
-        pass
+    def check_job(self,recipe):
+        #check operational
+        if self.maint_reqr: return False
+        #check inputs
+        for i in recipe['Inputs']:
+            if not self.ship.has_res(i,recipe['Inputs'][i]): return False
+        return True                       
 
-    def inputs(self):
-        return 0
+    def start_job(self,recipe):
+        #pull inputs
+        for i in recipe['Inputs']:
+            self.ship.sub_res(i,recipe['Inputs'][i])
+        self.activity = recipe.copy()
+        self.active = True                      
+
+    def finish_job(self):
+        recipe = self.activity
+        #check if we can store outputs
+        for i in recipe['Outputs']:
+            if not self.ship.can_hold_res(i,recipe['Outputs'][i]):
+                self.activity = self.full_activity.copy()
+                self.activity['Outputs'] = recipe['Outputs'].copy()
         
-    def outputs(self):
-        return 1   
-        
-    
+        #push outputs
+        for i in recipe['Outputs']:
+            self.ship.add_res(i,recipe['Outputs'][i])
+        self.activity = self.idle_activity.copy()
+        self.active = False
 
 class Cabin(Module):    
     def __init__(self,**kwargs):
@@ -192,8 +215,8 @@ class Storage(Module):
         
     def update(self,secs):        
         Module.update(self,secs)
-        if self.storage_type not in self.ship.storage: self.ship.storage[self.storage_type] = dict()
-        self.ship.storage[self.storage_type][self.id] = self.storage_amt if self.crewed else 0
+        if self.storage_type not in self.ship.storage_limit: self.ship.storage_limit[self.storage_type] = dict()
+        self.ship.storage_limit[self.storage_type][self.id] = self.storage_amt if self.crewed else 0
         
 class StorageSz2(Storage):
     def __init__(self,**kwargs):
@@ -253,7 +276,7 @@ class Reactor(Module):
     def update(self,secs):
         Module.update(self,secs)
         self.ship.power[self.id] = self.power_supplied if self.active else 0
-        #print self.status
+        print self.status
             
         
 class PhlebDrive(Reactor):
@@ -307,18 +330,25 @@ class AsteroidProcessing(Module):
         Module.__init__(self,**kwargs)
         
         self.power_needed = 1
-        self.crew_needed = 0#5
+        self.crew_needed = 5
         self.asteroid = None
         self.capacity = 1E6 # a million kg should be enough for anybody
         self.throughput = 25000
         
-        self.default_activity = {'Name':'Processing Material', 'Inputs': {}, 'Outputs': {}, 'Duration' : util.seconds(0.05,'day')}
+        self.recipe = [{'Name':'Processing Asteroid', 'Inputs': {}, 'Outputs': {}, 'Duration' : util.seconds(1,'hour')}]
         
     def update(self,secs):        
-        print self.activity
+        print self.activity, self.status
         Module.update(self,secs)        
         self.ship.asteroid_processing[self.id] = 1 if self.asteroid is None else 0
 
+    def check_job(self,recipe):
+        print 'asteroid check',self.asteroid
+        if recipe['Name'] == 'Processing Asteroid':
+            if not self.asteroid: return False
+        
+        return Module.check_job(self,recipe)
+    
     def process_asteroid(self,ast):
         if self.asteroid or self.active or not ast: return False
         
@@ -328,7 +358,7 @@ class AsteroidProcessing(Module):
         
         self.asteroid=ast
                 
-        self.activity = self.default_activity.copy()
+        #self.activity = self.default_activity.copy()
         return True
         
     def finish_job(self):
@@ -337,6 +367,7 @@ class AsteroidProcessing(Module):
             chunk = self.asteroid.split(self.throughput)
             #add chunk to ship's storage
             self.ship.res.merge(chunk.composition)
+            
             chunk.suicide()
             
             #check if asteroid is depleted
@@ -345,9 +376,9 @@ class AsteroidProcessing(Module):
                 self.asteroid.suicide()
                 self.asteroid=None
             else:
-                self.activity = self.default_activity.copy()   
+                #self.activity = self.default_activity.copy()   
                 print 'Asteroid processing status:',self.asteroid.mass(),'kg left!'         
-                
+        Module.finish_job(self)                
             
         
 def maintenance_descriptor(maint=0.5):

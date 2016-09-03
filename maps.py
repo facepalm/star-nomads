@@ -92,7 +92,7 @@ class Map(object): #more or less just a container for all of the things that hap
                 if closest is None or (self.stars[newloc] and util.vec_dist(self.stars[newloc].loc, np.array(self.display.location)) < best_dist):
                     closest = self.stars[newloc]
                     best_dist = util.vec_dist(self.stars[newloc].loc, np.array(self.display.location)) if closest else 0
-        print closest.info(), best_dist / globalvars.M_TO_AU, closest.snow_line
+        #print closest.info(), best_dist / globalvars.M_TO_AU, closest.snow_line
         return closest
         
                 

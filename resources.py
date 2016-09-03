@@ -7,6 +7,7 @@ resources = {
                 'Metallics': {'name':'Metallics', 'restype':'Basic', 'baseval':10},
                 'Hydrates': {'name':'Hydrates', 'restype':'Basic', 'baseval':10},
                 'Silicates': {'name':'Silicates', 'restype':'Basic', 'baseval':10},
+                'Organics': {'name':'Organics', 'restype':'Basic', 'baseval':10},
                 
                 'DeplPhleb': {'name':'Depleted Phlebotinum', 'restype':'Basic', 'baseval':10e6},
                 'ChrgPhleb': {'name':'Charged Phlebotinum', 'restype':'Basic', 'baseval':20e6},

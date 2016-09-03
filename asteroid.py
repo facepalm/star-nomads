@@ -16,6 +16,7 @@ class Asteroid(object):
         #if self.star is None: 
         if differentiation is None: differentiation = random.random()*0.1
         differentiation = max(0.,min(1.,differentiation))
+        self.differentiation = differentiation
             
         self.loc = location if location is not None else self.star.random_location() if self.star is not None else [0,0]
         
@@ -23,7 +24,7 @@ class Asteroid(object):
         self.position = self.star.proximity(self.loc) if self.star is not None else 'Deep space'
                 
         #generate properties
-        self.basic_types = ['Metallics','Silicates','Hydrates']
+        self.basic_types = ['Metallics','Silicates','Hydrates','Organics']
         random.shuffle(self.basic_types)
         
         mass = mass if mass else 1E7
@@ -67,6 +68,7 @@ class Asteroid(object):
     def coloration(self):
         if self.basic_types[0] == 'Hydrates': return [0.75, 0.75, 0.95, 1.0]        
         if self.basic_types[0] == 'Metallics': return [0.84, 0.36, 0.16, 1.0]    #'d85c2aff'
+        if self.basic_types[0] == 'Organics' or self.differentiation < 0.25: return [0.4, 0.4, 0.4, 1.0]
         return [0.8, 0.8, 0.8, 1.0]
         
     def get_image(self,reset=False):
