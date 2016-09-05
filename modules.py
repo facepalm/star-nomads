@@ -33,6 +33,8 @@ class Module(object):
         
         self.ship = kwargs['ship']
         self.ship.crew_use[self.id] = 0
+        
+        self.room = kwargs['room'] if 'room' in kwargs else None
         #super(Module, self).__init__(**kwargs)
         
         self.size = 1
@@ -174,6 +176,13 @@ class Module(object):
             self.ship.add_res(i,recipe['Outputs'][i])
         self.activity = self.idle_activity.copy()
         self.active = False
+        
+    def get_room(self):
+        if self.room is not None: return self.room
+        find_me = [x for x in self.ship.rooms if x['Module'] is self]
+        if len(find_me) > 1: assert False, 'Error: two rooms have same module'
+        if len(find_me) == 0: return None
+        return find_me[0]        
 
 class Cabin(Module):    
     def __init__(self,**kwargs):
@@ -336,6 +345,7 @@ class AsteroidProcessing(Module):
         self.throughput = 25000
         
         self.recipe = [{'Name':'Processing Asteroid', 'Inputs': {}, 'Outputs': {}, 'Duration' : util.seconds(1,'hour')}]
+        self.img_dict = {'icon':'img/icon/modules/asteroid_processing.png', 'sizeloc': [0,0], 'statusloc':[0,0]}
         
     def update(self,secs):        
         print self.activity, self.status
