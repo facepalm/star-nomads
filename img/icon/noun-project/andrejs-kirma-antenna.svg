@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 60 85"
+   version="1.1"
+   x="0px"
+   y="0px"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   width="100%"
+   height="100%"
+   sodipodi:docname="andrjs-kirma-antenna.svg"
+   inkscape:export-filename="/home/brad/Useless_Stuff/Coding/star-nomads/img/icon/noun-project/andrjs-kirma-antenna.png"
+   inkscape:export-xdpi="132"
+   inkscape:export-ydpi="132">
+  <metadata
+     id="metadata34">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs32" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview30"
+     showgrid="false"
+     inkscape:zoom="2.7764706"
+     inkscape:cx="30"
+     inkscape:cy="42.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <title
+     id="title4">antenna</title>
+  <desc
+     id="desc6">Created with Sketch.</desc>
+  <g
+     stroke="none"
+     stroke-width="1"
+     fill="none"
+     fill-rule="evenodd"
+     id="g8">
+    <g
+       transform="translate(-184.000000, -176.000000)"
+       fill="#000000"
+       id="g10">
+      <g
+         transform="translate(184.000000, 176.000000)"
+         id="g12">
+        <path
+           d="M44,60 L44,64 L4,64 L4,60 L44,60 Z M0,58 L0,66 C0,67.1045695 0.8954305,68 2,68 L46,68 C47.1045695,68 48,67.1045695 48,66 L48,58 C48,56.8954305 47.1045695,56 46,56 L2,56 C0.8954305,56 0,56.8954305 0,58 Z"
+           id="path14" />
+        <path
+           d="M17.9705627,42.1837662 C28.9052429,53.1184464 46.6338623,53.1184464 57.5685425,42.1837662 C58.3495911,41.4027176 58.3495911,40.1363876 57.5685425,39.3553391 L20.7989899,2.58578644 C20.0179413,1.80473785 18.7516113,1.80473785 17.9705627,2.58578644 C7.03588258,13.5204666 7.03588258,31.249086 17.9705627,42.1837662 Z M53.2829377,40.6986369 C43.8534163,48.7042043 29.7000891,48.2564383 20.7989899,39.3553391 C11.89846,30.4548092 11.450182,16.3027233 19.4541558,6.87320079 L53.2829377,40.6986369 Z"
+           id="path16" />
+        <path
+           d="M50.4142135,12.4142135 C51.1952621,11.633165 51.1952621,10.366835 50.4142135,9.58578642 C49.633165,8.80473784 48.366835,8.80473784 47.5857864,9.58578642 L36.5857867,20.5857861 C35.8047381,21.3668347 35.8047381,22.6331647 36.5857867,23.4142133 C37.3668353,24.1952619 38.6331652,24.1952619 39.4142138,23.4142133 L50.4142135,12.4142135 Z"
+           id="path18" />
+        <path
+           d="M60,7 C60,3.13400675 56.8659932,0 53,0 C49.1340068,0 46,3.13400675 46,7 C46,10.8659932 49.1340068,14 53,14 C56.8659932,14 60,10.8659932 60,7 Z M50,7 C50,5.34314575 51.3431458,4 53,4 C54.6568542,4 56,5.34314575 56,7 C56,8.65685425 54.6568542,10 53,10 C51.3431458,10 50,8.65685425 50,7 Z"
+           id="path20" />
+        <path
+           d="M35.1310245,58.7119907 C35.5242461,59.7441973 36.679784,60.2621971 37.7119907,59.8689755 C38.7441973,59.4757539 39.2621971,58.320216 38.8689755,57.2880093 L35.4763509,48.3823699 C35.0831294,47.3501633 33.9275915,46.8321635 32.8953848,47.2253851 C31.8631782,47.6186067 31.3451784,48.7741446 31.7384,49.8063512 L35.1310245,58.7119907 Z"
+           id="path22" />
+        <path
+           d="M19.7321214,40.6962327 C20.1253429,39.6640261 19.6073432,38.5084882 18.5751365,38.1152666 C17.5429299,37.722045 16.387392,38.2400447 15.9941704,39.2722514 L9.13102453,57.2880093 C8.73780295,58.320216 9.2558027,59.4757539 10.2880093,59.8689755 C11.320216,60.2621971 12.4757539,59.7441973 12.8689755,58.7119907 L19.7321214,40.6962327 Z"
+           id="path24" />
+      </g>
+    </g>
+  </g>
+  <text
+     x="0"
+     y="83"
+     font-size="5px"
+     font-weight="bold"
+     id="text26"
+     font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif"
+     fill="#000000">Created by Andrejs Kirma</text>
+  <text
+     x="0"
+     y="88"
+     fill="#000000"
+     font-size="5px"
+     font-weight="bold"
+     font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif"
+     id="text28">from the Noun Project</text>
+</svg>

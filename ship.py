@@ -168,10 +168,10 @@ class Premise(Ark): #default ship
                         {'size':2, 'power':1, 'loc':   [-125,-100], 'module': modules.StorageSz2(ship=self) },
                         {'size':2, 'power':1, 'loc':   [125 ,-100], 'module': None }, #trade dock
                         {'size':2, 'power':2, 'loc':   [-200,-250], 'module': None }, #impulse drive
-                        {'size':2, 'power':2, 'loc':   [ 200,-250], 'module': None }] #foundry
+                        {'size':2, 'power':2, 'loc':   [ 200,-250], 'module': modules.SmelterSz2(ship=self) }] #foundry
 
-        self.crew = {   'Civilian'  : random.randint(200,600), 
-                        'Trained Crew' : random.randint(200,600) }                        
+        self.crew = {   'Civilian'  : random.randint(500,600), 
+                        'Trained Crew' : random.randint(500,600) }                        
                                 
     def update(self,dt):
         Ark.update(self,dt)                                

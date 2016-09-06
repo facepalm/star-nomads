@@ -29,13 +29,13 @@ class Event(object):
         if self.spawn_in > 0:
             self.spawn_in -= secs
             if self.spawn_in < 0:
-                print 'Event spawning at', self.location
+                #print 'Event spawning at', self.location
                 #spawn logic
                 self.state = 'SPAWNED'
         else:    
             self.expire_in -= secs
             if self.expire_in < 0:
-                print 'Event expiring at', self.location
+                #print 'Event expiring at', self.location
                 self.state = 'EXPIRED'
                 util.unregister(self) #will no longer update
                 
@@ -106,7 +106,7 @@ class EventManager(object):
         out = []
         location = np.array(location)
         for e in self.events:
-            print  util.vec_dist(location,e.location), e.state
+            #print  util.vec_dist(location,e.location), e.state
             if util.vec_dist(location,e.location) < distance:
                 if not active_only or e.state not in ['EXPIRED','RESOLVED','UNSPAWNED']:
                     out.append(e)

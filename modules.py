@@ -72,7 +72,7 @@ class Module(object):
         if self.active and self.activity['Name'] != 'Idle': 
             self.color = [0.3, 0.5, 1.0, 1.0]
         elif self.crewed and not self.maint_reqr: 
-            self.color = [0.2, 0.2, 0.6, 1.0]
+            self.color = [0.4, 0.4, 0.2, 1.0]
         elif self.maint_reqr: 
             self.color = [1.0, 0.5, 0.2, 1.0]
         else:
@@ -136,7 +136,7 @@ class Module(object):
             #check recipes
             random.shuffle(self.recipe)
             for r in self.recipe:
-                print r
+                #print r
                 begin = self.check_job(r)
                 if begin: 
                     self.start_job(r)
@@ -189,6 +189,8 @@ class Cabin(Module):
         Module.__init__(self,**kwargs)
         self.housing = 10
         self.crew_needed = 1        
+        self.img_dict['icon']='img/icon/noun-project/icon54-housing-1.png'
+        self.img_dict['displaysize'] = False
         
     def update(self,secs):        
         Module.update(self,secs)
@@ -198,6 +200,7 @@ class Cabin(Module):
 class Quarters(Cabin):    
     def __init__(self,**kwargs):
         Cabin.__init__(self,**kwargs)
+        self.img_dict['icon']='img/icon/noun-project/icon54-housing-2.png'
         self.housing = 1000
         self.crew_needed = 50
         self.size = 2 
@@ -206,6 +209,7 @@ class Quarters(Cabin):
 class ResidentialBlock(Cabin):    
     def __init__(self,**kwargs):
         Cabin.__init__(self,**kwargs)
+        self.img_dict['icon']='img/icon/noun-project/icon54-housing-3.png'
         self.housing = 10000
         self.crew_needed = 100
         self.size = 3 
@@ -221,6 +225,8 @@ class Storage(Module):
         self.storage_type = 'Basic'
         self.storage_amt = 1000
         self.crew_needed = 1
+        self.img_dict['icon']='img/icon/noun-project/rockicon-box.png'
+        self.img_dict['displaysize'] = False
         
     def update(self,secs):        
         Module.update(self,secs)
@@ -252,6 +258,9 @@ class Bridge(Module): #small dedicated bridge
         self.crew_needed = 2  
         self.passive = 10
         
+        self.img_dict['icon']='img/icon/noun-project/arthur-shlain-bridge.png'
+        self.img_dict['displaysize'] = False
+        
     def update(self,secs):
         Module.update(self,secs)
         
@@ -281,6 +290,7 @@ class Reactor(Module):
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs) 
         self.power_supplied = 0
+        self.img_dict['displaysize'] = False
         
     def update(self,secs):
         Module.update(self,secs)
@@ -293,15 +303,16 @@ class PhlebDrive(Reactor):
         Reactor.__init__(self,**kwargs) 
         self.power_supplied = 1
         self.crew_needed = 1
-        self.idle_activity = {'Name':'Operating', 'Inputs':{'Charged Phlebotinum': 1}, 'Outputs':{'Depleted Phlebotinum':1}, 'Duration':util.seconds(1,'day')}
+        self.recipe = [{'Name':'Operating', 'Inputs':{'Charged Phlebotinum': 1}, 'Outputs':{'Depleted Phlebotinum':1}, 'Duration':util.seconds(1,'day')}]
                
 class PhlebCycler(Reactor):
     def __init__(self,**kwargs):
-        self.idle_activity = {'Name':'Operating', 'Inputs':{'Charged Phlebotinum': 2}, 'Outputs':{'Depleted Phlebotinum':2}, 'Duration':util.seconds(1,'day')}
         Reactor.__init__(self,**kwargs) 
         self.power_supplied = 2
         self.crew_needed = 5
         self.size = 2
+        self.recipe =[ {'Name':'Operating', 'Inputs':{'Charged Phlebotinum': 2}, 'Outputs':{'Depleted Phlebotinum':2}, 'Duration':util.seconds(1,'day')}]
+        
                 
 
 class PhlebGenerator(Reactor):
@@ -310,7 +321,9 @@ class PhlebGenerator(Reactor):
         self.power_supplied = 3
         self.crew_needed = 20
         self.size = 3
-        self.idle_activity = {'Name':'Operating', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}
+        self.recipe = [{'Name':'Operating', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}]
+        self.img_dict['icon']='img/icon/noun-project/ryan-lerch-three-prong-outlet.png'
+        
         
         
         
@@ -324,6 +337,9 @@ class SensorSuite(Module):
         self.crew_needed = 3
         self.power_needed = 1
         
+        self.img_dict['icon']='img/icon/noun-project/andrejs-kirma-antenna.png'
+        self.img_dict['displaysize'] = False
+        
     def update(self,secs):
         Module.update(self,secs)        
         if self.active:
@@ -332,6 +348,20 @@ class SensorSuite(Module):
         else:                     
             self.ship.active_sensors[self.id] = 0
             self.ship.passive_sensors[self.id] = 10
+      
+            
+class SmelterSz2(Module):
+    def __init__(self,**kwargs):
+        Module.__init__(self,**kwargs)
+        
+        self.power_needed = 2
+        self.crew_needed = 50
+        
+        self.recipe = [{'Name':'Smelt Metal', 'Inputs': {'Metallics':5000}, 'Outputs': {'Metals':2500,'Slag':2500}, 'Duration' : util.seconds(1,'hour')},
+                       {'Name':'Reclaim Slag', 'Inputs': {'Slag':5000}, 'Outputs': {'Metals':1000,'Silicates':3000,'Reactives':1000}, 'Duration' : util.seconds(1,'hour')}]
+                       
+        self.img_dict['icon']='img/icon/noun-project/icon54-factory-chimney.png'
+        self.img_dict['displaysize'] = False            
             
             
 class AsteroidProcessing(Module):
@@ -349,12 +379,12 @@ class AsteroidProcessing(Module):
         self.img_dict['displaysize'] = False
         
     def update(self,secs):        
-        print self.activity, self.status
+        #print self.activity, self.status
         Module.update(self,secs)        
         self.ship.asteroid_processing[self.id] = 1 if self.asteroid is None else 0
 
     def check_job(self,recipe):
-        print 'asteroid check',self.asteroid
+        #print 'asteroid check',self.asteroid
         if recipe['Name'] == 'Processing Asteroid':
             if not self.asteroid: return False
         
@@ -373,11 +403,12 @@ class AsteroidProcessing(Module):
         return True
         
     def finish_job(self):
-        if self.activity and self.activity['Name'] == 'Processing Material':
+        if self.activity and self.activity['Name'] == 'Processing Asteroid':
             #have finished a day's worth of asteroid processing
+            print 'Chunking asteroid'
             chunk = self.asteroid.split(self.throughput)
             #add chunk to ship's storage
-            self.ship.res.merge(chunk.composition)
+            self.ship.storage.merge(chunk.composition)
             
             chunk.suicide()
             
@@ -387,8 +418,10 @@ class AsteroidProcessing(Module):
                 self.asteroid.suicide()
                 self.asteroid=None
             else:
+                pass
                 #self.activity = self.default_activity.copy()   
-                print 'Asteroid processing status:',self.asteroid.mass(),'kg left!'         
+                #print 'Asteroid processing status:',self.asteroid.mass(),'kg left!' 
+        print self.ship.storage.tot_amt()                
         Module.finish_job(self)                
             
         

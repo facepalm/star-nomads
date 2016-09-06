@@ -24,6 +24,14 @@ Armature
     
 
 Resources
+    Elements/Important moluecules
+        Hydrogen
+        Silicon
+        Carbon
+        Oxygen (O2)
+        Carbon Dioxide
+        Water    
+
     Input
         Raw Asteroids
         Waste (from crew modules)
@@ -40,14 +48,18 @@ Resources
     Tier One
         Metals
         Silica / Glass
-        Water
         Fertilizer        
         Chemical compounds
         Enriched Radioactives
         
     Tier Two
         Composite Plating
-        Silicon
+        
+Buildings:
+
+Asteroid processing - asteroid -> metallics, silicates, hydrates, organics
+Smelter (arc furnace) - metallics -> metals, slag / slag -> metals, silicates, reactives / Silicates -> silicon
+        
         
         
 Spoileriffic musings        

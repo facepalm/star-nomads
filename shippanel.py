@@ -47,9 +47,10 @@ kv = '''
     
     Image:
         id: roomicon
-        size: '35dp','35dp'
+        size: '30dp','30dp'
         size_hint: None, None 
         mipmap: True
+        color: 0.8,0.8,0.8,1.0
     
     Image:
         id: sizeimg

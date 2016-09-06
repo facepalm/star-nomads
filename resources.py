@@ -92,7 +92,7 @@ class Resource(object):
         return out
         
     def has(self,amt):
-        return self.amout >= amt
+        return self.amount >= amt
         
     def update(self,dt):
         diffsum = (self.demand - self.supply)/(self.demand + self.supply)
