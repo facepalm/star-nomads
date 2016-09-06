@@ -46,6 +46,12 @@ kv = '''
     size_hint: None, None     
     
     Image:
+        id: roomicon
+        size: '35dp','35dp'
+        size_hint: None, None 
+        mipmap: True
+    
+    Image:
         id: sizeimg
         size: '20dp','20dp'
         size_hint: None, None
@@ -62,12 +68,15 @@ class RoomImage(Image):
         self.room = kwargs['room']
         self.rsize = kwargs['rsize']
         if self.room: 
-            self.source = self.room.img_dict['icon']
+            self.source = 'img/icon/modules/filled-generic.png'
         else:
             self.source = 'img/icon/modules/empty-generic.png'
         Image.__init__(self,**kwargs)
         
+        self.ids['roomicon'].source = self.room.img_dict['icon'] if self.room else 'img/icon/modules/blank.png'
+        
         self.ids['sizeimg'].source = ''.join(['img/icon/modules/',str(self.rsize),'.png'])
+        if self.room and not self.room.img_dict['displaysize']: self.ids['sizeimg'].color = [1,1,1,0]
         self.sizeoffset = self.room.img_dict['sizeloc'] if self.room else [0, 0]
         #loc = self.room.img_dict['sizeloc'] if self.room else [0.5, 0.5]
         #self.ids['sizeimg'].pos_hint = loc 
@@ -83,6 +92,7 @@ class RoomImage(Image):
     def go_to_loc(self,loc):
         self.center = loc
         self.ids['sizeimg'].center = (np.array(loc)+np.array(self.sizeoffset)).tolist()
+        self.ids['roomicon'].center = loc
         
     def refresh(self):
         self.color = self.room.color if self.room else [1,1,1,1]                   

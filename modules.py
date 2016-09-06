@@ -53,7 +53,7 @@ class Module(object):
         self.condition = 1.0 
         self.maint_reqr = False
         
-        self.img_dict = {'icon':'img/icon/modules/filled-generic.png', 'sizeloc': [0,0], 'statusloc':[0,0]}
+        self.img_dict = {'icon':'img/icon/modules/blank.png', 'sizeloc': [0,0], 'statusloc':[0,0], 'displaysize':True}
         
         if not hasattr(self,'idle_activity'): self.idle_activity = {'Name':'Idle', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'hour')}
         self.activity = self.idle_activity.copy()
@@ -345,7 +345,8 @@ class AsteroidProcessing(Module):
         self.throughput = 25000
         
         self.recipe = [{'Name':'Processing Asteroid', 'Inputs': {}, 'Outputs': {}, 'Duration' : util.seconds(1,'hour')}]
-        self.img_dict = {'icon':'img/icon/modules/asteroid_processing.png', 'sizeloc': [0,0], 'statusloc':[0,0]}
+        self.img_dict['icon']='img/icon/noun-project/rob-armes-mining-tools.png'
+        self.img_dict['displaysize'] = False
         
     def update(self,secs):        
         print self.activity, self.status
