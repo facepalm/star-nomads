@@ -42,6 +42,7 @@ class ShipImage(Image):
             self.color = [0,0.9,0.1,1]
 
     def on_touch_down(self, touch):
+        return False
         touch.push()
         #print touch.pos
         #print 'parent',self.to_window(touch.pos[0],touch.pos[1],relative=True)

@@ -60,6 +60,53 @@ kv = '''
                 id: systemposition
                 source: 'img/icon/sun.png'
                 color: 1.0, 0.95, 0.05, 1.0
+                
+        BoxLayout:
+            id: menus
+            size_hint_x: 1.0
+            size_hint_y: 0.1
+            #height: self.width/4 
+            #orientation: 'lr-bt'
+            pos_hint: {'y': 0.00, 'right': 1.00}
+            
+            Button:
+                size_hint: None, 1.0
+                width: self.height
+                pos_hint: {'x': 0.0, 'left': 1.00}
+                id: shippanelbtn          
+                on_press: self.parent.parent.parent.on_shippanel_button()
+                BoxLayout:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                
+                    Image:
+                        source: 'img/icon/noun-project/mister-pixel-rocket.png'
+                        color: 0.1, 1.0, 0.1, 1.0
+                        size_hint: 0.9,0.9
+                        pos_hint: {'center_x': 0.5, 'center_y': .5}
+                        mipmap: True
+                    
+            Button:
+                size_hint: None, 1.0
+                width: self.height
+                pos_hint: {'x': 0.0, 'left': 1.00}
+                id: warehousebtn                
+                BoxLayout:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    
+                    Image:
+                        source: 'img/icon/noun-project/victor-fedyuk-clipboard.png'
+                        color: 0.1, 1.0, 0.1, 1.0
+                        size_hint: 0.9,0.9
+                        pos_hint: {'center_x': 0.5, 'center_y': .5}
+                        mipmap: True  
+                        
+            Button:
+                size_hint: 0.5, 1.0
+                text:"Test text doo doo de doo tjlkasldkjadl\\n fhjklhdzfk jhzdslkf"                                                       
+                    
+                        
             
     StackLayout:  
         id: debugoverlay  
@@ -82,13 +129,20 @@ class MapScreen(Screen):
     location = ListProperty([0, 0])
 
     def __init__(self,**kwargs):
-        super(MapScreen,self).__init__(**kwargs)
         self.map = kwargs['map'] if 'map' in kwargs else None
+        super(MapScreen,self).__init__(**kwargs)
+        
         self.displayed = False
         self.curr_loc = [0,0]
         
         self.ids['stars'].density = 500./self.map.density
         self.ids['stars'].on_size()
+        
+    def on_shippanel_button(self):
+        print "button"
+        if self.map and self.map.ship:
+        
+            self.map.ship.touched()        
         
     def on_pre_enter(self):
         gps.start()
