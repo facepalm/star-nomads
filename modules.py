@@ -53,7 +53,7 @@ class Module(object):
         self.condition = 1.0 
         self.maint_reqr = False
         
-        self.img_dict = {'icon':'img/icon/modules/blank.png', 'sizeloc': [0,0], 'statusloc':[0,0], 'displaysize':True}
+        self.img_dict = {'icon':'img/icon/modules/blank.png', 'sizeloc': [0,0], 'statusloc':[0,0], 'displaysize':True, 'icon color':[0.8,0.8,0.8,1.0]}
         
         if not hasattr(self,'idle_activity'): self.idle_activity = {'Name':'Idle', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'hour')}
         self.activity = self.idle_activity.copy()
@@ -364,6 +364,48 @@ class SmelterSz2(Module):
         self.img_dict['icon']='img/icon/noun-project/icon54-factory-chimney.png'
         self.img_dict['displaysize'] = False            
             
+            
+class GreenhouseSz1(Module):
+    def __init__(self,**kwargs):
+        Module.__init__(self,**kwargs)
+        
+        self.power_needed = 1
+        self.crew_needed = 10
+        
+        self.recipe = [{'Name':'Process Hydrates', 'Inputs': {'Hydrates':100}, 'Outputs': {'Water':98,'Organics':1,'Silicates':1}, 'Duration' : util.seconds(1,'hour')},
+                       {'Name':'Grow baby grow', 'Inputs': {'Organics':100,'Water':500,'Carbon Dioxide':100}, 'Outputs': {'Oxygen':100, 'Biomass':510, 'Organics':90}, 'Duration' : util.seconds(1,'hour')},
+                       {'Name':'Compost Organics', 'Inputs': {'Organics':100,'Water':10}, 'Outputs': {'Fertilizer':10,'Carbon Dioxide':10}, 'Duration' : util.seconds(1,'hour')}]    
+                       
+        self.biomass = 0
+        self.capacity = 1000
+        
+        self.img_dict['icon']='img/icon/noun-project/arthur-shlain-birch-leaf.png'
+        self.img_dict['displaysize'] = False 
+        self.img_dict['icon color'] = [0.6,1.0,0.6,1.0]
+        
+        def update(self,secs):
+            if not self.active:
+                timeslice = min(1,secs/util.seconds(1,'day'))
+                biomass *= (1- 0.1*timeslice)
+        
+        def finish_job(self):
+            self.biomass += 0.01 * self.capacity #new plants
+            
+            #from A biological method of including mineralized human liquid and solid wastes into the mass exchange of bio-technical life support systems
+            #299g/plant total mass (wheat)
+            #133g/plant edible mass
+            #0.128 m^2 per plant
+            #70-day growth period
+            
+            #co2 - 5 tons of carbon per acre per year -> 18 tons of c02
+            #60 tons of forest biomass per acre
+            # ~1/3 biomass per year            
+            # 0.000037671 biomass per hour
+            
+            #co2 = self.ship.sub_res('Carbon Dioxide', self.biomass*0.000037671 )
+            
+            Module.finish_job(self)
+                              
             
 class AsteroidProcessing(Module):
     def __init__(self,**kwargs):

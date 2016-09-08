@@ -50,7 +50,6 @@ kv = '''
         size: '30dp','30dp'
         size_hint: None, None 
         mipmap: True
-        color: 0.8,0.8,0.8,1.0
     
     Image:
         id: sizeimg
@@ -75,6 +74,7 @@ class RoomImage(Image):
         Image.__init__(self,**kwargs)
         
         self.ids['roomicon'].source = self.room.img_dict['icon'] if self.room else 'img/icon/modules/blank.png'
+        self.ids['roomicon'].color = self.room.img_dict['icon color'] if self.room else [0.8,0.8,0.8,1]
         
         self.ids['sizeimg'].source = ''.join(['img/icon/modules/',str(self.rsize),'.png'])
         if self.room and not self.room.img_dict['displaysize']: self.ids['sizeimg'].color = [1,1,1,0]
