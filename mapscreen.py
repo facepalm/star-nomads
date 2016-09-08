@@ -90,7 +90,8 @@ kv = '''
                 size_hint: None, 1.0
                 width: self.height
                 pos_hint: {'x': 0.0, 'left': 1.00}
-                id: warehousebtn                
+                id: warehousebtn   
+                on_press: self.parent.parent.parent.on_respanel_button()             
                 BoxLayout:
                     pos: self.parent.pos
                     size: self.parent.size
@@ -139,10 +140,13 @@ class MapScreen(Screen):
         self.ids['stars'].on_size()
         
     def on_shippanel_button(self):
-        print "button"
         if self.map and self.map.ship:
         
             self.map.ship.touched()        
+        
+    def on_respanel_button(self):
+        if self.map and self.map.ship:
+            globalvars.root.switchScreen(self.map.ship.storage.get_screen())   
         
     def on_pre_enter(self):
         gps.start()
