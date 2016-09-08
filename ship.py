@@ -110,6 +110,25 @@ class Ship(object):
                     if test: break
                 
         print item.identity
+        
+    def update(self,dt):
+        timeslice = dt/util.seconds(1,'day')
+        total_crew = sum(self.crew.values())
+        if total_crew > 0:                        
+            food_use = self.sub_res('Food',0.62 * total_crew * timeslice)
+            water_use = self.sub_res('Water',3.52 * total_crew * timeslice)
+            o2_use = self.sub_res('Oxygen', 0.794 * total_crew * timeslice)
+            
+            co2_out = o2_use/32. * 44.  #(o2 -> co2)
+            self.add_res('Carbon Dioxide',co2_out)
+            self.add_res('Hydrates',water_use)
+            self.add_res('Waste',food_use/3)
+            
+            
+            #self.needs['Food']=Need('Food', self, 0.62, 0.62/86400.0, 0.62/1800.0, self.new_dinner_task, self.hunger_hit,severity='HUMAN_BIOLOGICAL')
+            #self.needs['Water']=Need('Water', self, 3.52, 3.52/86400.0, 3.52/600.0, self.new_drink_task, self.dehydration_hit,severity='HUMAN_BIOLOGICAL')
+            #self.needs['WasteCapacitySolid']=Need('WasteCapacitySolid', self, 0.22, 0.22/192800.0, 0.22/300.0, self.number_2_task, self.code_brown)
+            #self.needs['WasteCapacityLiquid']=Need('WasteCapacityLiquid', self, 3.87, 0.9675/21600.0, 3.87/30.0, self.number_1_task, self.code_yellow)  
 
 class Ark(Ship): #Player ship, or potentially player ship
     def __init__(self):        
@@ -126,6 +145,7 @@ class Ark(Ship): #Player ship, or potentially player ship
         return gps.get_location()        
         
     def update(self,dt):
+        Ship.update(self,dt)
         self.location = gps.get_location()
         self.bearing = gps.get_bearing()
         self.image.coords = self.location        
@@ -172,6 +192,10 @@ class Premise(Ark): #default ship
 
         self.crew = {   'Civilian'  : random.randint(500,600), 
                         'Trained Crew' : random.randint(500,600) }                        
+                                
+        self.add_res('Food',5000)
+        self.add_res('Water',1000)
+        self.add_res('Oxygen',1000)                                
                                 
     def update(self,dt):
         Ark.update(self,dt)                                
