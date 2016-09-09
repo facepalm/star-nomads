@@ -193,9 +193,10 @@ class Premise(Ark): #default ship
         self.crew = {   'Civilian'  : random.randint(500,600), 
                         'Trained Crew' : random.randint(500,600) }                        
                                 
-        self.add_res('Food',5000)
-        self.add_res('Water',1000)
-        self.add_res('Oxygen',1000)                                
+        self.add_res('Food',50000)
+        self.add_res('Water',10000)
+        self.add_res('Oxygen',10000)                                
+        self.add_res('Carbon Dioxide',10000)  
                                 
     def update(self,dt):
         Ark.update(self,dt)                                
