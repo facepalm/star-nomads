@@ -115,14 +115,16 @@ class Ship(object):
         timeslice = dt/util.seconds(1,'day')
         total_crew = sum(self.crew.values())
         if total_crew > 0:                        
-            food_use = self.sub_res('Food',0.62 * total_crew * timeslice)
+            food_use = self.sub_res('Biomass', 2* 0.62 * total_crew * timeslice)
+            food_use /= 2.
             water_use = self.sub_res('Water',3.52 * total_crew * timeslice)
             o2_use = self.sub_res('Oxygen', 0.794 * total_crew * timeslice)
             
             co2_out = o2_use/32. * 44.  #(o2 -> co2)
             self.add_res('Carbon Dioxide',co2_out)
             self.add_res('Hydrates',water_use)
-            self.add_res('Waste',food_use/3)
+            self.add_res('Organics',food_use/3)
+            self.add_res('Organics',food_use) #waste biomass from food preparation
             
             
             #self.needs['Food']=Need('Food', self, 0.62, 0.62/86400.0, 0.62/1800.0, self.new_dinner_task, self.hunger_hit,severity='HUMAN_BIOLOGICAL')
@@ -193,7 +195,7 @@ class Premise(Ark): #default ship
         self.crew = {   'Civilian'  : random.randint(500,600), 
                         'Trained Crew' : random.randint(500,600) }                        
                                 
-        self.add_res('Food',50000)
+        self.add_res('Biomass',50000)
         self.add_res('Water',10000)
         self.add_res('Oxygen',10000)                                
         self.add_res('Carbon Dioxide',10000)  

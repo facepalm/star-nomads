@@ -374,8 +374,8 @@ class GreenhouseSz1(Module):
         self.power_needed = 1
         self.crew_needed = 10
         
-        self.recipe = [{'Name':'Grow baby grow', 'Inputs': {'Organics':1000,'Water':5000,'Carbon Dioxide':1000}, 'Outputs': {'Oxygen':1000, 'Biomass':5100, 'Organics':900}, 'Duration' : util.seconds(1,'hour')},
-                       {'Name':'Compost Organics', 'Inputs': {'Organics':100,'Water':10}, 'Outputs': {'Fertilizer':10,'Carbon Dioxide':10}, 'Duration' : util.seconds(1,'hour')}]    
+        self.recipe = [{'Name':'Grow baby grow', 'Inputs': {'Organics':1000,'Water':5000,'Carbon Dioxide':1000}, 'Outputs': {'Oxygen':1000, 'Biomass':5100, 'Organics':900}, 'Duration' : util.seconds(1,'hour')}]
+                       #{'Name':'Compost Organics', 'Inputs': {'Organics':100,'Water':10}, 'Outputs': {'Fertilizer':10,'Carbon Dioxide':10}, 'Duration' : util.seconds(1,'hour')}]    
                        
         self.biomass = 0
         self.capacity = 1000
