@@ -374,7 +374,9 @@ class GreenhouseSz1(Module):
         self.power_needed = 1
         self.crew_needed = 10
         
-        self.recipe = [{'Name':'Grow baby grow', 'Inputs': {'Organics':1000,'Water':5000,'Carbon Dioxide':1000}, 'Outputs': {'Oxygen':1000, 'Biomass':5100, 'Organics':900}, 'Duration' : util.seconds(1,'hour')}]
+        self.multiplier = 1000
+        
+        self.recipe = [{'Name':'Grow baby grow', 'Inputs': {'Organics':1.*self.multiplier,'Water':0.9*self.multiplier,'Carbon Dioxide':1.1*self.multiplier}, 'Outputs': {'Oxygen':0.8*self.multiplier, 'Biomass':1.3*self.multiplier, 'Organics':0.9*self.multiplier}, 'Duration' : util.seconds(1,'hour')}]
                        #{'Name':'Compost Organics', 'Inputs': {'Organics':100,'Water':10}, 'Outputs': {'Fertilizer':10,'Carbon Dioxide':10}, 'Duration' : util.seconds(1,'hour')}]    
                        
         self.biomass = 0
@@ -382,12 +384,14 @@ class GreenhouseSz1(Module):
         
         self.img_dict['icon']='img/icon/noun-project/arthur-shlain-birch-leaf.png'
         self.img_dict['displaysize'] = False 
-        self.img_dict['icon color'] = [0.6,1.0,0.6,1.0]
+        self.img_dict['icon color'] = [0.6,1.0,0.6,1.0]         
         
-    def update(self,secs):
-        if not self.active:
-            timeslice = min(1,secs/util.seconds(1,'day'))
-            self.biomass *= (1- 0.1*timeslice)
+    #def update(self,secs):
+        #print self.activity
+        #if not self.active:
+        #    timeslice = min(1,secs/util.seconds(1,'day'))
+        #    self.biomass *= (1- 0.1*timeslice)
+    #    pass
         
     def finish_job(self):
         self.biomass += 0.01 * self.capacity #new plants
