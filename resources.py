@@ -27,6 +27,11 @@ resources = {
                 'Carbon': {'name':'Carbon', 'restype':'Basic', 'baseval':20},
                 'Silicon': {'name':'Silicon', 'restype':'Basic', 'baseval':20},
                 
+                'Biomass': {'name':'Biomass', 'restype':'Basic', 'baseval':40},
+                
+                'Oxygen': {'name':'Oxygen', 'restype':'Basic', 'baseval':10},
+                'Carbon Dioxide': {'name':'Carbon Dioxide', 'restype':'Basic', 'baseval':10},
+                
                 'DeplPhleb': {'name':'Depleted Phlebotinum', 'restype':'Basic', 'baseval':10e6}, #exotics tier
                 'ChrgPhleb': {'name':'Charged Phlebotinum', 'restype':'Basic', 'baseval':20e6},
             }
@@ -85,24 +90,27 @@ class ResourceModel(object):
         return self.listpanel
         
     def changed(self):
-        self.listpanel.changed = True        
+        self.listpanel.changed = True    
+        
+    def check(self,res_name):
+        if res_name not in self.res: self.res[res_name] = Resource(res_name)            
         
     def add(self, res_name, res_amt):
-        if res_name not in self.res: self.res[res_name] = Resource(res_name)
+        self.check(res_name)
         self.res[res_name].add(res_amt)
         self.changed()        
     
     def sub(self, res_name, res_amt):
-        if res_name not in self.res: self.res[res_name] = Resource(res_name)
+        self.check(res_name)
         return self.res[res_name].sub(res_amt) 
         self.changed()  
         
     def has(self, res_name, res_amt):
-        if res_name not in self.res: self.res[res_name] = Resource(res_name)
+        self.check(res_name)
         return self.res[res_name].has(res_amt) 
         
     def amount(self, res_name):
-        if res_name not in self.res: self.res[res_name] = Resource(res_name)
+        self.check(res_name)
         return self.res[res_name].amount
         
     def tot_amt(self):
@@ -110,6 +118,12 @@ class ResourceModel(object):
         for res_name in self.res:
             out += self.res[res_name].amount
         return out
+     
+    def price(self,res_name):
+        self.check(res_name)
+        val = resources[res_name]['baseval'] if res_name in resources else 10
+        return self.res[res_name].price * val
+         
      
     def merge(self,res):
         for r in res.res:
@@ -135,7 +149,21 @@ class ResourceModel(object):
             newres.res[res_name].price = self.res[res_name].price
             self.sub(res_name,self.res[res_name].amount*frac)            
         self.changed()     
-        return newres                                
+        return newres        
+        
+    #"Shopping list" funcs, taking in whole lists of resources
+    def price_list(self,res_list):
+        tot_val = 0
+        for r in res_list:
+            price = self.price(r)
+            tot_val += price*res_list[r]
+        return tot_val    
+        
+    def has_list(self,res_list): #returns a dict of booleans for each resources's fillability
+        val = {}
+        for r in res_list:
+            val[r] = self.has(r,res_list[r])
+        return val
 
 
 class Resource(object):
@@ -146,7 +174,7 @@ class Resource(object):
         self.supply = 1.
         self.demand = 1.
         self.price = 1.
-        self.tc = 3600. 
+        self.tc = util.seconds(0.5,'day')
        
     def merge(self,res):
         if res.name != self.name: return False
@@ -165,6 +193,7 @@ class Resource(object):
         return out
         
     def has(self,amt):
+        self.demand += amt/10.
         return self.amount >= amt
         
     def update(self,dt):

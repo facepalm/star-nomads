@@ -152,8 +152,14 @@ class Module(object):
         #check operational
         if self.maint_reqr: return False
         #check inputs
-        for i in recipe['Inputs']:
-            if not self.ship.has_res(i,recipe['Inputs'][i]): return False
+        if False in self.ship.storage.has_list(recipe['Inputs']).values(): return False
+            
+        #check profitability
+        cost = self.ship.storage.price_list(recipe['Inputs'])
+        prof = self.ship.storage.price_list(recipe['Outputs'])    
+        
+        if prof < cost and 'Priority' not in recipe: return False
+        
         return True                       
 
     def start_job(self,recipe):
