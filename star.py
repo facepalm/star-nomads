@@ -17,7 +17,7 @@ def initialize_star(location,density,seed,widget,_map):
     random.seed(seed)
     np.random.seed(seed if seed < 4000000000 else seed//1000000)
     if random.random() < 0.1: return None #chance there's no star here
-    primary_star_mass = np.random.triangular(0.25,0.8,1.5)#wald(mean=1.5, scale=1.0, size=1)
+    primary_star_mass = np.random.triangular(0.25,0.8,1.6)#wald(mean=1.5, scale=1.0, size=1)
     randomness = 0.25
     dl = np.array([random.gauss(0,randomness),random.gauss(0,randomness)])
     loc = dl*density + np.array(location)

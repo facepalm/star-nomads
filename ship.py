@@ -1,6 +1,7 @@
 from kivy.clock import Clock
 import time
 import random
+import numpy as np
 #from functools import reduce
 
 import gps
@@ -58,9 +59,6 @@ class Ship(object):
     
     def sub_res(self,res_name,amt):
         return self.storage.sub(res_name,amt)       
-                
-    def update(self,secs):
-        pass
         
     def get_location(self):
         return self.location
@@ -137,19 +135,32 @@ class Ark(Ship): #Player ship, or potentially player ship
         self.style = 'Generic' #Warship Worldship Junkship     
         self.shipclass = 'Ark'
         self.faction = 'Player'  
+        Ship.__init__(self)
         self.image = shipimage.ShipImage(ship=self)
         self.screen = None
-        Ship.__init__(self)
+        
         
     def get_location(self):
-        self.location = gps.get_location()
+        #self.location = gps.get_location()
         
-        return gps.get_location()        
+        return self.location
         
     def update(self,dt):
         Ship.update(self,dt)
-        self.location = gps.get_location()
-        self.bearing = gps.get_bearing()
+        #we're moving to destination point
+        loc = np.array(self.location)
+        dest = np.array(gps.get_location())
+        dist = util.vec_dist(loc,dest)
+        #get speed
+        speed = 0.1 * dt # m/s
+        frac = min(1., speed / dist )
+        
+        
+        
+        self.location = (frac*dest + (1-frac)*loc).tolist()#gps.get_location()
+        dl = dest-loc      
+        self.bearing = 90-int(np.arctan2(dl[1],dl[0])*180/3.14159) #gps.get_bearing()
+        #print frac, loc, dest, self.bearing
         self.image.coords = self.location        
         self.image.bearing = self.bearing
         

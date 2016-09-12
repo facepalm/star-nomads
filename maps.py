@@ -63,7 +63,7 @@ class Map(object): #more or less just a container for all of the things that hap
             
     def update_starmap(self,loc=None,dist=3):
         if loc is None: loc = self.display.location
-        print loc, self.systemcoord(loc)
+        #print loc, self.systemcoord(loc)
         loc = self.systemcoord(loc)
         
         for x in np.linspace(loc[0]-dist*self.density,loc[0]+dist*self.density,num=dist*2+1):

@@ -230,7 +230,7 @@ class MapScreen(Screen):
             self.spawn_ping(location=e.location,extent=float(50.*(dist/100.)), delay = float(util.vec_dist(loc,e.location)/PING_SPEED),duration=1.0,color=color_scheme[e.category] if e.category in color_scheme else [1.,1.,1.,1.],speed_factor=1.5)
         
     def ship_loc(self):
-        return np.array([self.location[0],self.location[1]])        
+        return np.array(self.map.ship.location)        
         
     #    print args
     #    print 'loc changed!'        
