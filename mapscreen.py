@@ -247,6 +247,9 @@ class MapScatterPlane(ScatterPlane):
     def on_transform_with_touch(self,touch):
         self.touched = True    
         
+    def on_touched(self,touch):
+        self.touched = True   
+        
     def update_mapxy(self,*args): 
         self.touched=False  
         pass#self.pos = self.mapxy
