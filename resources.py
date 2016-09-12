@@ -21,16 +21,27 @@ resources = {
                 'Hydrates': {'name':'Hydrates', 'restype':'Basic', 'baseval':10},
                 'Silicates': {'name':'Silicates', 'restype':'Basic', 'baseval':10},
                 'Organics': {'name':'Organics', 'restype':'Basic', 'baseval':10},                
+                'Reactives': {'name':'Reactives', 'restype':'Basic', 'baseval':10}, 
                 
                 'Metals': {'name':'Metals', 'restype':'Basic', 'baseval':20},
                 'Water': {'name':'Water', 'restype':'Basic', 'baseval':20},
-                'Carbon': {'name':'Carbon', 'restype':'Basic', 'baseval':20},
                 'Silicon': {'name':'Silicon', 'restype':'Basic', 'baseval':20},
+                'Carbon': {'name':'Carbon', 'restype':'Basic', 'baseval':20},                
+                'Compounds': {'name':'Compounds', 'restype':'Basic', 'baseval':20},
                 
+                'Parts': {'name':'Parts', 'restype':'Basic', 'baseval':40},
                 'Biomass': {'name':'Biomass', 'restype':'Basic', 'baseval':40},
+                'Silicon Wafers': {'name':'Silicon Wafers', 'restype':'Basic', 'baseval':40},
+                'Carbon Fiber': {'name':'Carbon Fiber', 'restype':'Basic', 'baseval':40},
+                'Polymers': {'name':'Polymers', 'restype':'Basic', 'baseval':40},
                 
-                'Oxygen': {'name':'Oxygen', 'restype':'Basic', 'baseval':10},
-                'Carbon Dioxide': {'name':'Carbon Dioxide', 'restype':'Basic', 'baseval':10},
+                'Components':{'name':'Components', 'restype':'Basic', 'baseval':80},                
+                'Electronics':{'name':'Electronics', 'restype':'Basic', 'baseval':80},
+                
+                'Microchips':{'name':'Microchips', 'restype':'Basic', 'baseval':160},
+                
+                'Oxygen': {'name':'Oxygen', 'restype':'Basic', 'baseval':20},
+                'Carbon Dioxide': {'name':'Carbon Dioxide', 'restype':'Basic', 'baseval':20},
                 
                 'DeplPhleb': {'name':'Depleted Phlebotinum', 'restype':'Basic', 'baseval':10e6}, #exotics tier
                 'ChrgPhleb': {'name':'Charged Phlebotinum', 'restype':'Basic', 'baseval':20e6},
