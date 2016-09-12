@@ -60,10 +60,12 @@ class ShipImage(Image):
         return super(ShipImage, self).on_touch_down(touch)
 
     def on_coords(self,*args):
-        #self.center = self.coords       
-        print self.center, self.coords
-        anim = Animation(center = self.coords,duration=0.9)
+        #self.center = self.coords    
+        self.place_image()   
+        anim = Animation(center = [self.coords[0],self.coords[1]], duration=0.4)
         anim.start(self)
+        anim = Animation(origin = [self.coords[0],self.coords[1],0.0], duration=0.4)
+        anim.start(self.rotation)
         pass
         
     def on_bearing(self,*args):        

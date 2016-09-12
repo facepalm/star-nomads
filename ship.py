@@ -1,4 +1,5 @@
 from kivy.clock import Clock
+from kivy.uix.image import Image
 import time
 import random
 import numpy as np
@@ -143,7 +144,7 @@ class Ark(Ship): #Player ship, or potentially player ship
     def get_location(self):
         #self.location = gps.get_location()
         
-        return self.location
+        return [self.location[0],self.location[1]]
         
     def update(self,dt):
         Ship.update(self,dt)
@@ -151,18 +152,25 @@ class Ark(Ship): #Player ship, or potentially player ship
         loc = np.array(self.location)
         dest = np.array(gps.get_location())
         dist = util.vec_dist(loc,dest)
-        #get speed
-        speed = 0.1 * dt # m/s
-        frac = min(1., speed / dist )
-        
-        
-        
-        self.location = (frac*dest + (1-frac)*loc).tolist()#gps.get_location()
-        dl = dest-loc      
-        self.bearing = 90-int(np.arctan2(dl[1],dl[0])*180/3.14159) #gps.get_bearing()
-        #print frac, loc, dest, self.bearing
-        self.image.coords = self.location        
+        if dist > 100000: #100km, just warp
+            self.location=dest.tolist()
+            self.bearing=0
+        else:    
+            #get speed
+            speed = 0.01 * dt # m/s
+            frac = min(1., speed / dist )
+            
+            
+            
+            self.location = (frac*dest + (1-frac)*loc).tolist()#gps.get_location()
+            dl = dest-loc      
+            self.bearing = 90-int(np.arctan2(dl[1],dl[0])*180/3.14159) #gps.get_bearing()
+            #print frac, loc, dest, self.bearing
         self.image.bearing = self.bearing
+        self.image.coords = self.location        
+        
+        
+        #globalvars.universe.map.display.ids['mapscale'].add_widget(Image(size_hint=(None, None),size=(1,1),pos=self.location,color=[1,0,0,1]))
         
     def touched(self):
         #go to ship screen
