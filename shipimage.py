@@ -28,7 +28,7 @@ class ShipImage(Image):
         kwargs['mipmap'] = True
         super(ShipImage, self).__init__(**kwargs)
         
-        self.size = ['20dp','20dp']#[self.texture.size[0]/2, self.texture.size[1]/2]
+        self.size = [20,30]#[self.texture.size[0]/2, self.texture.size[1]/2]
         
         self.rotation = None
         
