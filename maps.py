@@ -72,7 +72,7 @@ class Map(object): #more or less just a container for all of the things that hap
                 #print newloc
                 if newloc not in self.stars:
                     print 'Adding new star at',newloc
-                    self.stars[newloc] = star.initialize_star(newloc,self.density,int(abs(self.mapseed+y*x+x+y)),self.display.ids['mapscale'])
+                    self.stars[newloc] = star.initialize_star(newloc,self.density,int(abs(self.mapseed+y*x+x+y)),self.display.ids['mapscale'],self)
                     if self.stars[newloc]: 
                         print self.stars[newloc].info()
                         #self.display.ids['mapscale'].add_widget(self.stars[newloc].primary_image())
@@ -88,7 +88,7 @@ class Map(object): #more or less just a container for all of the things that hap
             for y in np.linspace(loc[1]-self.density,loc[1]+self.density,num=3):
                 newloc = (int(round(x)),int(round(y)))
                 if newloc not in self.stars:
-                    self.update_starmap()
+                    self.update_starmap(loc=newloc,dist=1)
                 if closest is None or (self.stars[newloc] and util.vec_dist(self.stars[newloc].loc, np.array(self.display.location)) < best_dist):
                     closest = self.stars[newloc]
                     best_dist = util.vec_dist(self.stars[newloc].loc, np.array(self.display.location)) if closest else 0
