@@ -62,9 +62,9 @@ class ShipImage(Image):
     def on_coords(self,*args):
         #self.center = self.coords    
         self.place_image()   
-        anim = Animation(center = [self.coords[0],self.coords[1]], duration=0.4)
+        anim = Animation(center = [self.coords[0],self.coords[1]], duration=1.0)
         anim.start(self)
-        anim = Animation(origin = [self.coords[0],self.coords[1],0.0], duration=0.4)
+        anim = Animation(origin = [self.coords[0],self.coords[1],0.0], duration=1.0)
         anim.start(self.rotation)
         pass
         

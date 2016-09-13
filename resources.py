@@ -67,6 +67,8 @@ Builder.load_string(kv)
 
 class ResourceScreen(Screen):
     changed     = BooleanProperty(False)
+    visible     = BooleanProperty(False)
+    
     def __init__(self,**kwargs):
         self.res = kwargs['res']
         Screen.__init__(self,**kwargs)
@@ -74,8 +76,14 @@ class ResourceScreen(Screen):
         self.changed = True
         #self.on_changed()
         
+    def on_pre_enter(self):
+        self.visible=True           
+                
+    def on_leave(self):  
+        self.visible = False                    
+        
     def on_changed(self, *args):
-        if self.changed:
+        if self.changed and self.visible:
             grid = self.ids['resgrid']
             grid.clear_widgets()
             grid.add_widget(Label(text='Resource'))

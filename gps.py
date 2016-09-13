@@ -43,8 +43,9 @@ def stop():
 def get_location():
     import random
     global lat, lon, last_update
-    tc = 1 if not last_update else (time.clock()-last_update)*10
-    last_update = time.clock()
+    tc = 1 if not last_update else (time.time()-last_update)*10
+    #print time.time()
+    last_update = time.time()
     if not use_gps: lon += 5*tc*(random.random() ) #* gps_scale/100000
     if not use_gps: lat += 2.5*tc*(random.random() )
     #lon += (random.random() )/10
