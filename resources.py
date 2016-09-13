@@ -77,28 +77,31 @@ class ResourceScreen(Screen):
         #self.on_changed()
         
     def on_pre_enter(self):
-        self.visible=True           
+        self.visible = True
+        self.changed = True           
                 
     def on_leave(self):  
         self.visible = False                    
         
     def on_changed(self, *args):
-        if self.changed and self.visible:
-            grid = self.ids['resgrid']
-            grid.clear_widgets()
-            grid.add_widget(Label(text='Resource'))
-            grid.add_widget(Label(text='Stored'))
-            grid.add_widget(Label(text='Current Price'))
-            grid.add_widget(Label(text='Total Value'))
-            for r in self.res.res:
-                #TODO sort resources by value or amount 
-                thisres = self.res.res[r]
-                grid.add_widget(Label(text=str(thisres.name)))
-                grid.add_widget(Label(text=str(round(thisres.amount))))
-                price = thisres.price*(resources[thisres.name]['baseval'] if thisres.name in resources else 10)
-                grid.add_widget(Label(text=str(round(price))))
-                grid.add_widget(Label(text=str(round(thisres.amount*price))))
-            self.changed = False        
+        if self.changed:
+            self.changed = False 
+            if self.visible:
+                grid = self.ids['resgrid']
+                grid.clear_widgets()
+                grid.add_widget(Label(text='Resource'))
+                grid.add_widget(Label(text='Stored'))
+                grid.add_widget(Label(text='Current Price'))
+                grid.add_widget(Label(text='Total Value'))
+                for r in self.res.res:
+                    #TODO sort resources by value or amount 
+                    thisres = self.res.res[r]
+                    grid.add_widget(Label(text=str(thisres.name)))
+                    grid.add_widget(Label(text=str(round(thisres.amount))))
+                    price = thisres.price*(resources[thisres.name]['baseval'] if thisres.name in resources else 10)
+                    grid.add_widget(Label(text=str(round(price))))
+                    grid.add_widget(Label(text=str(round(thisres.amount*price))))
+                   
 
 class ResourceModel(object):
     def __init__(self):
