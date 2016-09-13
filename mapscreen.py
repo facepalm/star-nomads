@@ -12,12 +12,15 @@ from kivy.clock import Clock
 from kivy.properties import ListProperty
 from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix, Translate
 from kivy.animation import Animation
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 
 import globalvars
 import gps
 import starfield
 import numpy as np
 import util
+from functools import partial
 
 PING_SPEED = 50.
 
@@ -38,6 +41,11 @@ kv = '''
         auto_bring_to_front: False
         do_rotation: False
         mapxy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
+        
+        Image:
+            size: 1,1
+            color: 1,0,0,1
+            center: self.parent.parent.location
         
       
                                                                                  
@@ -105,6 +113,9 @@ kv = '''
                         
             Button:
                 size_hint: 0.5, 1.0
+                text_size: self.size[0]*0.9, self.size[1]*0.9
+                halign: 'left'
+                valign: 'middle'
                 text:"Test text doo doo de doo tjlkasldkjadl\\n fhjklhdzfk jhzdslkf"                                                       
                     
                         
@@ -245,10 +256,42 @@ class MapScatterPlane(ScatterPlane):
         self.touched = False
         
     def on_transform_with_touch(self,touch):
-        self.touched = True    
+        self.touched = True           
         
     def on_touched(self,touch):
         self.touched = True   
+        
+    #from https://github.com/kivy/kivy/wiki/Menu-on-long-touch    
+    def menu(self, touch, *args):
+        menu = BoxLayout(
+                size_hint=(None, None),
+                orientation='vertical',
+                center=touch.pos)
+        menu.add_widget(Button(text='a'))
+        menu.add_widget(Button(text='b'))
+        close = Button(text='close')
+        close.bind(on_release=partial(self.close_menu, menu))
+        menu.add_widget(close)
+        self.parent.add_widget(menu)    
+        
+    def close_menu(self, widget, *args):
+        self.parent.remove_widget(widget)        
+        
+    def create_clock(self, touch, *args):
+        callback = partial(self.menu, touch)
+        Clock.schedule_once(callback, 1)
+        touch.ud['event'] = callback
+
+    def delete_clock(self, touch, *args):
+        if 'event' in touch.ud: Clock.unschedule(touch.ud['event'])    
+        
+    def on_touch_down(self,*args):
+        self.create_clock(*args)
+    
+    def on_touch_up(self,*args):
+        self.delete_clock(*args)   
+        
+        
         
     def update_mapxy(self,*args): 
         self.touched=False  

@@ -62,6 +62,9 @@ class GameApp(App):
 
     def on_pause(self,*args):
         return True
+        
+    def on_resume(self):
+        pass
 
     def onBackBtn(self, window, key, *args):
         """ To be called whenever user presses Back/Esc key """
