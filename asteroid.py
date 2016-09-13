@@ -1,6 +1,8 @@
 import random
 import copy
 from kivy.uix.image import Image
+from kivy.uix.bubble import Bubble
+from kivy.lang import Builder
 
 
 import util
@@ -14,7 +16,7 @@ class Asteroid(object):
         
         self.star=star
         #if self.star is None: 
-        if differentiation is None: differentiation = random.random()*0.1
+        if differentiation is None: differentiation = random.random()*1.0#0.1
         differentiation = max(0.,min(1.,differentiation))
         self.differentiation = differentiation
             
@@ -79,14 +81,71 @@ class Asteroid(object):
         self.image = img
         return img        
         
-    def touched(self):
+    def touched(self,touch):
         '''The player touched this asteroid, spawn some kind of dialog'''
-        print 'Asteroid harvested?'   
+        print 'Asteroid harvested?', touch
+        
+        bubble = AsteroidBubble(asteroid=self)
+        bubble.pos = touch
+          
+        self.image.parent.mapscreen.ids['mapoverlay'].add_widget(bubble)
         globalvars.universe.ship.harvest(self)
         
     def suicide(self):
         util.unregister(self) #will no longer update        
         self.image.suicide()        
+        
+    def txt_info(self):
+        out = ''
+        out += 'Asteroid '+util.short_id(self.id)+'\n'
+        out += 'Stony' if self.basic_types[0] == 'Silicates' else 'Metal' if self.basic_types[0] == 'Metallics' else 'Chondrite' if self.basic_types[0] == 'Organics' else 'Icy'
+        out += ' ({0:1.2f}%)\n'.format(100.*self.composition.amount(self.basic_types[0])/self.mass()) 
+        out += 'Estimated yield: ' + "{0:0.1e}".format(self.mass()) + ' kg'
+        return out
+        
+                
+
+kv='''
+<AsteroidBubble>:
+    orientation: 'vertical'
+    size_hint: (None, None)
+    Label:
+        id: asteroid_info
+        text: "Shouldn't see this"       
+    BubbleButton:
+        text: 'Harvest'    
+        on_press: self.parent.parent.on_harvest()
+        size_hint: 1, 0.5
+    
+'''
+
+Builder.load_string(kv)
+
+class AsteroidBubble(Bubble):
+    def __init__(self,**kwargs):
+        Bubble.__init__(self,**kwargs)
+        self.ast = kwargs['asteroid']
+        self.ids['asteroid_info'].text = self.ast.txt_info()
+        self.ids['asteroid_info'].texture_update()        
+        #resize?
+        
+        self.size = self.ids['asteroid_info'].texture_size
+        print self.size
+        self.width += 10
+        self.height += 40
+        
+    def on_touch_down(self, touch):
+        touch.push()
+        touch.apply_transform_2d(self.to_local)
+        touched = self.collide_point(*touch.pos)       
+        touch.pop()
+        if not touched:
+            self.parent.remove_widget(self)
+        return super(AsteroidBubble, self).on_touch_down(touch)   
+        
+    def on_harvest(self,*args):
+        print 'harvesting?'
+        
         
 class AsteroidImage(Image):
     def __init__(self,**kwargs):
@@ -97,9 +156,11 @@ class AsteroidImage(Image):
         touch.push()
         touch.apply_transform_2d(self.to_local)
         touched = self.collide_point(*touch.pos)
+        touch.apply_transform_2d(self.to_window)
+        tpos = touch.pos        
         touch.pop()
         if touched:
-            self.asteroid.touched()
+            self.asteroid.touched(tpos)
             # we consumed the touch. return False here to propagate
             # the touch further to the children.
             return True

@@ -14,6 +14,7 @@ from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix, Translate
 from kivy.animation import Animation
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
 
 import globalvars
 import gps
@@ -34,6 +35,7 @@ kv = '''
         id: stars
     MapScatterPlane:
         id: mapscale
+        mapscreen: self.parent
         index: 0
         scale: 2.
         pos: self.parent.width/2,self.parent.height/2
@@ -132,7 +134,8 @@ kv = '''
             pos_hint: {'top': 0.95, 'left': 0.1}
             size_hint: 0.2,0.05
             text: 'GPS off'
-            id: gpslabel              
+            id: gpslabel   
+                     
 '''
 
 Builder.load_string(kv)
@@ -243,6 +246,15 @@ class MapScreen(Screen):
     def ship_loc(self):
         return np.array(self.map.ship.location)        
         
+    def _keyboard_on_key_down(self, window, keycode, text, modifiers):
+        key, key_str = keycode
+        print key
+        if key in (9, 13) and self.next is not None:
+            self.next.focus = True
+            self.next.select_all()
+        else:
+            super(TabTextInput, self)._keyboard_on_key_down(window, keycode, text, modifiers)    
+        
     #    print args
     #    print 'loc changed!'        
                 
@@ -260,7 +272,9 @@ class MapScatterPlane(ScatterPlane):
         
     def on_touched(self,touch):
         self.touched = True   
-        
+        return False
+    
+    '''    
     #from https://github.com/kivy/kivy/wiki/Menu-on-long-touch    
     def menu(self, touch, *args):
         menu = BoxLayout(
@@ -287,9 +301,11 @@ class MapScatterPlane(ScatterPlane):
         
     def on_touch_down(self,*args):
         self.create_clock(*args)
+        return False
     
     def on_touch_up(self,*args):
-        self.delete_clock(*args)   
+        self.delete_clock(*args)
+        return False   '''
         
         
         
