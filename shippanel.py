@@ -14,6 +14,7 @@ from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix, Translate
 from kivy.animation import Animation
 from kivy.uix.button import Button
 from kivy.metrics import Metrics
+from kivy.uix.bubble import Bubble
 
 
 import numpy as np
@@ -63,6 +64,70 @@ Builder.load_string(kv)
 def densFix(coords):
     return (np.array(coords) * Metrics.density).tolist()
 
+kv='''
+<ModuleBubble>:
+    orientation: 'vertical'
+    size_hint: (None, None)
+    Label:
+        id: module_info
+        text: "Shouldn't see this"       
+    BubbleButton:
+        text: 'Power Off'  
+        id: togglebtn  
+        on_press: self.parent.parent.on_toggle()
+        size_hint: 1, 0.5
+    
+'''
+
+Builder.load_string(kv)
+
+class ModuleBubble(Bubble):    
+
+    def __init__(self,**kwargs):
+        Bubble.__init__(self,**kwargs)
+        self.module = kwargs['module']
+        #self.ids['asteroid_info'].text = self.ast.txt_info()
+        #
+        self.refresh()
+        Clock.schedule_interval(self.refresh, 1)
+        
+    def on_touch_down(self, touch):
+        touch.push()
+        touch.apply_transform_2d(self.to_local)
+        touched = self.collide_point(*touch.pos)       
+        touch.pop()
+        if not touched:
+            self.suicide()
+        return super(ModuleBubble, self).on_touch_down(touch)   
+        
+    def on_toggle(self):
+        self.module.on_toggle()
+        self.module.update(0)
+        
+        self.refresh()
+                
+
+    def delete_clock(self, touch, *args):
+        if 'event' in touch.ud: Clock.unschedule(touch.ud['event'])
+                
+    def refresh(self,time=0):
+        self.ids['module_info'].text = self.module.txt_info() 
+        self.ids['togglebtn'].text = 'Power Off' if self.module.toggled else 'Power On'     
+        
+        self.ids['module_info'].texture_update()        
+        
+        self.size = self.ids['module_info'].texture_size
+        #print self.size
+        self.width += 10
+        self.height += 40
+        
+    def suicide(self):
+        if self.parent is not None: self.parent.remove_widget(self)        
+        
+    '''def on_harvest(self,*args):
+        harv = globalvars.universe.ship.harvest(self.ast)
+        if harv: self.parent.remove_widget(self)'''
+
 class RoomImage(Image):
     def __init__(self, **kwargs):
         self.room = kwargs['room']
@@ -96,7 +161,32 @@ class RoomImage(Image):
         self.ids['roomicon'].center = loc
         
     def refresh(self):
-        self.color = self.room.color if self.room else [1,1,1,1]                   
+        self.color = self.room.color if self.room else [1,1,1,1]      
+        
+    def touched(self,tpos):
+        bubble = ModuleBubble(module=self.room)
+        bubble.pos = tpos
+        
+        self.parent.add_widget(bubble)                       
+
+    def on_touch_down(self, touch):
+        touch.push()
+        touch.apply_transform_2d(self.to_local)
+        touched = self.collide_point(*touch.pos)
+        touch.apply_transform_2d(self.to_window)
+        tpos = touch.pos        
+        touch.pop()
+        if touched:
+            if self.room:
+                self.touched(tpos)
+            else:
+                pass
+                #TODO touched empty room!  Build menu maybe?
+                
+            # we consumed the touch. return False here to propagate
+            # the touch further to the children.
+            return True
+        return super(RoomImage, self).on_touch_down(touch) 
 
 class ShipScreen(Screen):
     def __init__(self,**kwargs):

@@ -3,6 +3,7 @@ import random
 from kivy.lang import Builder
 from kivy.uix.image import Image
 
+
 import util
 
 
@@ -17,6 +18,8 @@ kv = '''
           
                            
 '''
+Builder.load_string(kv)
+
 
 class ModuleImage(Image):
     def __init__(self,**kwargs):
@@ -26,10 +29,13 @@ class ModuleImage(Image):
         
         #self.ids['modsize'].source = ''.join(['img/icon/modules/',str(self.module.size),'.png'])
         #self.ids['modsize'].center = self.module.img_dict['sizeloc']
+        
 
 class Module(object):
     def __init__(self,**kwargs):
         util.register(self)
+        
+        self.name = 'Module'
         
         self.ship = kwargs['ship']
         self.ship.crew_use[self.id] = 0
@@ -63,8 +69,13 @@ class Module(object):
         
         self.full_activity = {'Name':'Waiting for storage', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'hour')}
         
+        self.image=None
+        self.module_image()
+        
     def module_image(self):
-        return ModuleImage(module=self)
+        if not self.image: 
+            self.image = ModuleImage(module=self)
+        return self.image
         
     def update(self, secs):
         timeslice = min(1.,secs/util.seconds(1, 'day'))
@@ -110,7 +121,7 @@ class Module(object):
         if self.activity['Name'] not in ['Idle','Waiting for storage'] and self.activity['Duration'] > 0:                
             self.active = True
             self.activity['Duration'] -= secs 
-            self.status = 'Job: ' + self.activity['Name'] +' '+ str(self.activity['Duration'])
+            self.status = 'Operational'#'Job: ' + self.activity['Name'] +' '+ str(self.activity['Duration'])
             self.ship.power_use[self.id] = self.power_needed   
             if self.activity['Duration'] <= 0: #end job
                 self.finish_job()                            
@@ -146,7 +157,7 @@ class Module(object):
             if len(self.recipe ) == 0:
                 self.activity = self.idle_activity.copy() 
               
-            self.status = 'Job: ' + self.activity['Name']
+            self.status = 'Idling'#'Job: ' + self.activity['Name']
 
     def check_job(self,recipe):
         #check operational
@@ -188,7 +199,18 @@ class Module(object):
         find_me = [x for x in self.ship.rooms if x['Module'] is self]
         if len(find_me) > 1: assert False, 'Error: two rooms have same module'
         if len(find_me) == 0: return None
-        return find_me[0]        
+        return find_me[0]     
+                       
+    def on_toggle(self):
+        self.toggled = False if self.toggled else True
+        
+    def txt_info(self):
+        out = self.name + ' ' + util.short_id(self.id) + '\n'
+        out += 'Status: '+self.status+'\n'
+        out += 'Job: '+self.activity['Name'] + '\n'
+        out += 'Ready in:'+ '{0:1.2f}s \n'.format(self.activity['Duration'])
+        return out
+
 
 class Cabin(Module):    
     def __init__(self,**kwargs):
@@ -303,7 +325,7 @@ class Reactor(Module):
     def update(self,secs):
         Module.update(self,secs)
         self.ship.power[self.id] = self.power_supplied if self.active else 0
-        print self.status
+        #print self.status
             
         
 class PhlebDrive(Reactor):

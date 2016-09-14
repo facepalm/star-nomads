@@ -106,9 +106,10 @@ class Ship(object):
                     room = self.find_room(r)
                     test = room.process_asteroid(item)
                     print test
-                    if test: break
+                    if test: return True
                 
         print item.identity
+        return False
         
     def update(self,dt):
         timeslice = dt/util.seconds(1,'day')

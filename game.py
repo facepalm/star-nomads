@@ -20,7 +20,7 @@ class Universe(object):
         globalvars.root.screen_manager.add_widget(self.map.display)
         
         #self.map.spawn('asteroid',[30,30])
-        self.map.spawn('asteroid',[60,60])
+        self.map.spawn('asteroid',[90,30])
         
         self.map.update(0)
         #globalvars.root.onNextScreen(self.map.display.name, transition='None')

@@ -83,13 +83,12 @@ class Asteroid(object):
         
     def touched(self,touch):
         '''The player touched this asteroid, spawn some kind of dialog'''
-        print 'Asteroid harvested?', touch
+        #print 'Asteroid harvested?', touch
         
         bubble = AsteroidBubble(asteroid=self)
         bubble.pos = touch
           
-        self.image.parent.mapscreen.ids['mapoverlay'].add_widget(bubble)
-        globalvars.universe.ship.harvest(self)
+        self.image.parent.mapscreen.ids['mapoverlay'].add_widget(bubble)       
         
     def suicide(self):
         util.unregister(self) #will no longer update        
@@ -144,7 +143,8 @@ class AsteroidBubble(Bubble):
         return super(AsteroidBubble, self).on_touch_down(touch)   
         
     def on_harvest(self,*args):
-        print 'harvesting?'
+        harv = globalvars.universe.ship.harvest(self.ast)
+        if harv: self.parent.remove_widget(self)
         
         
 class AsteroidImage(Image):
