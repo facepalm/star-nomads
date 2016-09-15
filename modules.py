@@ -6,6 +6,7 @@ from kivy.uix.image import Image
 
 import util
 
+all_modules = dict()
 
 kv = '''
 <ModuleImage@Image>:
@@ -43,9 +44,9 @@ class Module(object):
         self.room = kwargs['room'] if 'room' in kwargs else None
         #super(Module, self).__init__(**kwargs)
         
-        self.size = 1
-        self.power_needed = 0
-        self.crew_needed = 0
+        self.size = all_modules[type(self).__name__]['Size'] if type(self).__name__ in all_modules else 1
+        self.power_needed = all_modules[type(self).__name__]['Power'] if type(self).__name__ in all_modules else 0
+        self.crew_needed = all_modules[type(self).__name__]['Crew'] if type(self).__name__ in all_modules else 0
         
         self.crew = 0
         
@@ -208,15 +209,17 @@ class Module(object):
         out = self.name + ' ' + util.short_id(self.id) + '\n'
         out += 'Status: '+self.status+'\n'
         out += 'Job: '+self.activity['Name'] + '\n'
-        out += 'Ready in:'+ '{0:1.2f}s \n'.format(self.activity['Duration'])
+        if self.activity['Name'] != 'Idle':
+            out += 'Ready in:'+ '{0:1.2f}s \n'.format(self.activity['Duration'])
         return out
 
 
-class Cabin(Module):    
+class Cabin(Module): 
+    all_modules['Cabin'] = {'Name':'Cabins', 'Size':1, 'Power':0, 'Crew':10}
+   
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
-        self.housing = 10
-        self.crew_needed = 1        
+        self.housing = 100    
         self.img_dict['icon']='img/icon/noun-project/icon54-housing-1.png'
         self.img_dict['displaysize'] = False
         
@@ -226,35 +229,33 @@ class Cabin(Module):
              
         
 class Quarters(Cabin):    
+    all_modules['Quarters'] = {'Name':'Quarters', 'Size':2, 'Power':1, 'Crew':50}
+    
     def __init__(self,**kwargs):
         Cabin.__init__(self,**kwargs)
         self.img_dict['icon']='img/icon/noun-project/icon54-housing-2.png'
         self.housing = 1000
-        self.crew_needed = 50
-        self.size = 2 
-        self.power_needed = 1
         
         self.recipe = [{'Name':'Process Hydrates', 'Inputs': {'Hydrates':200}, 'Outputs': {'Water':196,'Organics':2,'Silicates':2}, 'Duration' : util.seconds(1,'hour')}]
         
-class ResidentialBlock(Cabin):    
+class ResidentialBlock(Cabin):  
+
+    all_modules['ResidentialBlock'] = {'Name':'Residential Block', 'Size':3, 'Power':2, 'Crew':100}
+      
     def __init__(self,**kwargs):
         Cabin.__init__(self,**kwargs)
         self.img_dict['icon']='img/icon/noun-project/icon54-housing-3.png'
         self.housing = 10000
-        self.crew_needed = 100
-        self.size = 3 
-        self.power_needed = 2
-        
-          
-                                
+           
         
 class Storage(Module):
+    all_modules['Storage'] = {'Name':'Small Storage', 'Size':1, 'Power':0, 'Crew':1}
+
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
         
         self.storage_type = 'Basic'
         self.storage_amt = 1000
-        self.crew_needed = 1
         self.img_dict['icon']='img/icon/noun-project/rockicon-box.png'
         self.img_dict['displaysize'] = False
         
@@ -264,28 +265,28 @@ class Storage(Module):
         self.ship.storage_limit[self.storage_type][self.id] = self.storage_amt if self.crewed else 0
         
 class StorageSz2(Storage):
+    all_modules['StorageSz2'] = {'Name':'Storage Area', 'Size':2, 'Power':0, 'Crew':5}
     def __init__(self,**kwargs):
         Storage.__init__(self,**kwargs)
         
         self.storage_type = 'Basic'
         self.storage_amt = 10000       
-        self.crew_needed = 5 
         
 class StorageSz3(Storage):
+    all_modules['StorageSz3'] = {'Name':'Large Storage', 'Size':3, 'Power':0, 'Crew':25}
+    
     def __init__(self,**kwargs):
-        Storage.__init__(self,**kwargs)
-        
+        Storage.__init__(self,**kwargs)        
         self.storage_type = 'Basic'
-        self.storage_amt = 100000  
-        self.crew_needed = 25        
+        self.storage_amt = 100000        
         
         
 class Bridge(Module): #small dedicated bridge
+    all_modules['Bridge'] = {'Name':'Aux. Bridge', 'Size':1, 'Power':0, 'Crew':2}
+    
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
-        self.size = 1
-        self.crew_managed = 10
-        self.crew_needed = 2  
+        self.crew_managed = 10 
         self.passive = 10
         
         self.img_dict['icon']='img/icon/noun-project/arthur-shlain-bridge.png'
@@ -298,21 +299,15 @@ class Bridge(Module): #small dedicated bridge
         self.ship.passive_sensors[self.id] = self.passive                    
         
 class BridgeSz2(Bridge):
+    all_modules['BridgeSz2'] = {'Name':'Bridge', 'Size':2, 'Power':1, 'Crew':100}
     def __init__(self,**kwargs):
-        Bridge.__init__(self,**kwargs)
-        
-        self.size = 2                    
-        self.power_needed = 1
-        self.crew_needed = 100        
+        Bridge.__init__(self,**kwargs)      
         self.crew_managed = 1000
         
 class BridgeSz3(Bridge):
+    all_modules['BridgeSz3'] = {'Name':'Command Deck', 'Size':3, 'Power':2, 'Crew':200}
     def __init__(self,**kwargs):
-        Bridge.__init__(self,**kwargs)
-        
-        self.size = 3                    
-        self.power_needed = 2
-        self.crew_needed = 200        
+        Bridge.__init__(self,**kwargs)      
         self.crew_managed = 10000        
         
         
@@ -329,28 +324,26 @@ class Reactor(Module):
             
         
 class PhlebDrive(Reactor):
+    all_modules['PhlebDrive'] = {'Name':'Phlebotinum Drive', 'Size':1, 'Power':0, 'Crew':1}
     def __init__(self,**kwargs):
         Reactor.__init__(self,**kwargs) 
         self.power_supplied = 1
-        self.crew_needed = 1
         self.recipe = [{'Name':'Operating', 'Inputs':{'Charged Phlebotinum': 1}, 'Outputs':{'Depleted Phlebotinum':1}, 'Duration':util.seconds(1,'day')}]
                
 class PhlebCycler(Reactor):
+    all_modules['PhlebCycler'] = {'Name':'Phlebotinum Cycler', 'Size':2, 'Power':0, 'Crew':5}
     def __init__(self,**kwargs):
         Reactor.__init__(self,**kwargs) 
         self.power_supplied = 2
-        self.crew_needed = 5
-        self.size = 2
         self.recipe =[ {'Name':'Operating', 'Inputs':{'Charged Phlebotinum': 2}, 'Outputs':{'Depleted Phlebotinum':2}, 'Duration':util.seconds(1,'day')}]
         
                 
 
 class PhlebGenerator(Reactor):
+    all_modules['PhlebGenerator'] = {'Name':'Zero-point Generator', 'Size':3, 'Power':0, 'Crew':20}
     def __init__(self,**kwargs):
         Reactor.__init__(self,**kwargs) 
         self.power_supplied = 3
-        self.crew_needed = 20
-        self.size = 3
         self.recipe = [{'Name':'Operating', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}]
         self.img_dict['icon']='img/icon/noun-project/ryan-lerch-three-prong-outlet.png'
         
@@ -358,14 +351,12 @@ class PhlebGenerator(Reactor):
         
         
 class SensorSuite(Module):
+    all_modules['SensorSuite'] = {'Name':'Active Sensors', 'Size':1, 'Power':1, 'Crew':3}
     def __init__(self,**kwargs):
         self.idle_activity = {'Name':'Beeping Noise', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'hour')}
         Module.__init__(self,**kwargs)        
         self.active_sens = 100             
         self.passive_sens = 25
-        
-        self.crew_needed = 3
-        self.power_needed = 1
         
         self.img_dict['icon']='img/icon/noun-project/andrejs-kirma-antenna.png'
         self.img_dict['displaysize'] = False
@@ -381,11 +372,9 @@ class SensorSuite(Module):
       
             
 class SmelterSz2(Module):
+    all_modules['SmelterSz2'] = {'Name':'Smelter', 'Size':1, 'Power':2, 'Crew':50}
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
-        
-        self.power_needed = 2
-        self.crew_needed = 50
         
         self.recipe = [{'Name':'Smelt Metal', 'Inputs': {'Metallics':5000}, 'Outputs': {'Metals':2500,'Slag':2500}, 'Duration' : util.seconds(1,'hour')},
                        {'Name':'Reclaim Slag', 'Inputs': {'Slag':5000}, 'Outputs': {'Metallics':1000,'Silicates':3000,'Reactives':1000}, 'Duration' : util.seconds(1,'hour')},
@@ -396,12 +385,10 @@ class SmelterSz2(Module):
             
             
 class GreenhouseSz1(Module):
+    all_modules['GreenhouseSz1'] = {'Name':'Hydroponics', 'Size':1, 'Power':1, 'Crew':10}
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
-        
-        self.power_needed = 1
-        self.crew_needed = 10
-        
+
         self.multiplier = 1000
         
         self.recipe = [{'Name':'Grow baby grow', 'Inputs': {'Organics':1.*self.multiplier,'Water':0.9*self.multiplier,'Carbon Dioxide':1.1*self.multiplier}, 'Outputs': {'Oxygen':0.8*self.multiplier, 'Biomass':1.3*self.multiplier, 'Organics':0.9*self.multiplier}, 'Duration' : util.seconds(1,'hour')}]
@@ -441,11 +428,10 @@ class GreenhouseSz1(Module):
                               
             
 class AsteroidProcessing(Module):
+    all_modules['AsteroidProcessing'] = {'Name':'Exomaterial Intake', 'Size':1, 'Power':1, 'Crew':5}
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
-        
-        self.power_needed = 1
-        self.crew_needed = 5
+
         self.asteroid = None
         self.capacity = 1E6 # a million kg should be enough for anybody
         self.throughput = 25000
@@ -500,6 +486,8 @@ class AsteroidProcessing(Module):
         print self.ship.storage.tot_amt()                
         Module.finish_job(self)                
             
+        
+print all_modules           
         
 def maintenance_descriptor(maint=0.5):
     if maint > 0.9:
