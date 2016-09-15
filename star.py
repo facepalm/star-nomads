@@ -106,13 +106,13 @@ class Star(object):
         #tone down luminosity, which leads to crazy (but accurate!) distances with bright stars        
         self.luminosity = pow( self.luminosity , 0.75)
         
-        self.habitable_start = 0.80 * pow( self.luminosity ,0.5)
-        self.habitable_end = 1.4 * pow( self.luminosity ,0.5)
+        self.habitable_start = 0.80 * pow( self.luminosity ,0.5) #0.8
+        self.habitable_end = 5 * pow( self.luminosity ,0.5)   #1.4
         
         self.burn_line = 0.5 * pow( self.luminosity ,0.5)
-        self.snow_line = 3 * pow( self.luminosity ,0.5)
-        self.ice_line = 10 * pow( self.luminosity ,0.5)
-        self.system_line = 40 * pow( self.luminosity ,0.5)
+        self.snow_line = 10 * pow( self.luminosity ,0.5) #3
+        self.ice_line = 20 * pow( self.luminosity ,0.5) #10
+        self.system_line = 30 * pow( self.luminosity ,0.5) #40, arbitrary
         
         self.explored = 0.0
         self.orbiting_bodies = []
