@@ -23,7 +23,7 @@ resources = {
                 'Organics': {'name':'Organics', 'restype':'Basic', 'baseval':10},                
                 'Reactives': {'name':'Reactives', 'restype':'Basic', 'baseval':10}, 
                 
-                'Metals': {'name':'Metals', 'restype':'Basic', 'baseval':20}, #foundry
+                'Metals': {'name':'Metals', 'restype':'Basic', 'baseval':35}, #foundry
                 'Water': {'name':'Water', 'restype':'Basic', 'baseval':20}, #habitats
                 'Silicon': {'name':'Silicon', 'restype':'Basic', 'baseval':20}, #foundry
                 'Carbon': {'name':'Carbon', 'restype':'Basic', 'baseval':20}, #chem lab      

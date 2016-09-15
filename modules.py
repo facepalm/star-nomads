@@ -388,7 +388,7 @@ class SmelterSz2(Module):
         self.crew_needed = 50
         
         self.recipe = [{'Name':'Smelt Metal', 'Inputs': {'Metallics':5000}, 'Outputs': {'Metals':2500,'Slag':2500}, 'Duration' : util.seconds(1,'hour')},
-                       {'Name':'Reclaim Slag', 'Inputs': {'Slag':5000}, 'Outputs': {'Metals':1000,'Silicates':3000,'Reactives':1000}, 'Duration' : util.seconds(1,'hour')},
+                       {'Name':'Reclaim Slag', 'Inputs': {'Slag':5000}, 'Outputs': {'Metallics':1000,'Silicates':3000,'Reactives':1000}, 'Duration' : util.seconds(1,'hour')},
                        {'Name':'Purify Silicon', 'Inputs': {'Silicates':5000, 'Carbon':1600, 'Oxygen':2133}, 'Outputs': {'Silicon':1866,'Reactives':1000,'Carbon Dioxide':5866}, 'Duration' : util.seconds(1,'hour')}]
                        
         self.img_dict['icon']='img/icon/noun-project/icon54-factory-chimney.png'

@@ -14,10 +14,11 @@ from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix, Translate
 from kivy.animation import Animation
 from kivy.uix.button import Button
 from kivy.metrics import Metrics
-from kivy.uix.bubble import Bubble
+from kivy.uix.bubble import Bubble, BubbleButton
 
 
 import numpy as np
+from functools import partial
 
 
 import shipimage
@@ -74,12 +75,78 @@ kv='''
     BubbleButton:
         text: 'Power Off'  
         id: togglebtn  
-        on_press: self.parent.parent.on_toggle()
+        on_press: root.on_toggle()
+        size_hint: 1, 0.5
+    
+<EmptyRoomBubble>:    
+    orientation: 'vertical'
+    size_hint: (None, None)
+    Label:
+        id: room_info
+        text: "Shouldn't see this"  
+    BubbleButton:
+        text:'<select module>'
+        id: dropdownbtn
+        size_hint: 1, 0.5
+        DropDown:
+            id: dropdown 
+         
+    BubbleButton:
+        text: 'Build!'  
+        id: buildbtn  
+        on_press: self.parent.parent.build()
         size_hint: 1, 0.5
     
 '''
 
 Builder.load_string(kv)
+
+class EmptyRoomBubble(Bubble):
+    def __init__(self,**kwargs):
+        Bubble.__init__(self,**kwargs)
+        self.room = kwargs['room_entry']
+        
+        txt = 'Space: '+str(self.room['size'])+'\n'
+        txt += 'Power: '+str(self.room['power'])+'\n'
+        txt += 'Avail. Tokens:'
+        
+        print txt
+        self.ids['room_info'].text = txt
+        
+        self.populate_dropdown()
+        self.refresh()
+        
+    def populate_dropdown(self):
+        for i in [0,1,2,3]:#TODO populate with modules that fit
+            btn = Button(text=str(i), size_hint_y=None, height=44)
+            btn.bind(on_release = lambda btn: self.ids['dropdown'].select(btn.text))
+            self.ids['dropdown'].add_widget(btn)
+            
+        self.ids['dropdownbtn'].bind(on_release=self.ids['dropdown'].open)
+        self.ids['dropdown'].bind(on_select=lambda instance, x: setattr(self.ids['dropdownbtn'], 'text', x))            
+        
+        
+    def refresh(self,time=0):
+        #self.ids['room_info'].text = self.module.txt_info() 
+        #self.ids['togglebtn'].text = 'Power Off' if self.module.toggled else 'Power On'     
+        
+        self.ids['room_info'].texture_update()        
+        
+        self.size = self.ids['room_info'].texture_size
+        self.width += 30
+        self.height += 80        
+        
+    def on_touch_down(self, touch):
+        touch.push()
+        touch.apply_transform_2d(self.to_local)
+        touched = self.collide_point(*touch.pos)       
+        touch.pop()
+        if not touched:
+            self.suicide()
+        return super(EmptyRoomBubble, self).on_touch_down(touch)           
+
+    def suicide(self):
+        if self.parent is not None: self.parent.remove_widget(self)    
 
 class ModuleBubble(Bubble):    
 
@@ -119,7 +186,7 @@ class ModuleBubble(Bubble):
         self.size = self.ids['module_info'].texture_size
         #print self.size
         self.width += 10
-        self.height += 40
+        self.height += 50
         
     def suicide(self):
         if self.parent is not None: self.parent.remove_widget(self)        
@@ -130,8 +197,9 @@ class ModuleBubble(Bubble):
 
 class RoomImage(Image):
     def __init__(self, **kwargs):
-        self.room = kwargs['room']
-        self.rsize = kwargs['rsize']
+        self.rentry = kwargs['room_entry']
+        self.room = self.rentry['module']
+        self.rsize = self.rentry['size']
         if self.room: 
             self.source = 'img/icon/modules/filled-generic.png'
         else:
@@ -180,7 +248,10 @@ class RoomImage(Image):
             if self.room:
                 self.touched(tpos)
             else:
-                pass
+                bubble = EmptyRoomBubble(room_entry = self.rentry)
+                bubble.pos = tpos
+                
+                self.parent.add_widget(bubble)
                 #TODO touched empty room!  Build menu maybe?
                 
             # we consumed the touch. return False here to propagate
@@ -208,7 +279,7 @@ class ShipScreen(Screen):
         #add rooms
         for r in self.ship.rooms:
             #mimg = r['module'].module_image()
-            rimg = RoomImage(room = r['module'], rsize = r['size'])
+            rimg = RoomImage( room_entry=r )
             #butt.text = str(r['size'])
             #room_name = 'room'+str(r['size'])+'_'
             #room_name += 'empty.png' if not r['module'] else 'full.png'
