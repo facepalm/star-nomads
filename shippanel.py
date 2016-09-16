@@ -23,6 +23,7 @@ from functools import partial
 
 import shipimage
 import util
+import modules
 
 
 kv = '''
@@ -112,19 +113,30 @@ class EmptyRoomBubble(Bubble):
         
         print txt
         self.ids['room_info'].text = txt
+        self.selection = None
         
         self.populate_dropdown()
         self.refresh()
         
     def populate_dropdown(self):
-        for i in [0,1,2,3]:#TODO populate with modules that fit
-            btn = Button(text=str(i), size_hint_y=None, height=44)
-            btn.bind(on_release = lambda btn: self.ids['dropdown'].select(btn.text))
-            self.ids['dropdown'].add_widget(btn)
+        
             
         self.ids['dropdownbtn'].bind(on_release=self.ids['dropdown'].open)
-        self.ids['dropdown'].bind(on_select=lambda instance, x: setattr(self.ids['dropdownbtn'], 'text', x))            
+        self.ids['dropdown'].bind(on_select=lambda instance, x: setattr(self.ids['dropdownbtn'], 'text', x))  
         
+        for i in modules.all_modules:
+            v = modules.all_modules[i]
+            if v['Size'] == self.room['size'] and v['Power'] <= self.room['power']:            
+                btn = Button(text=v['Name'], size_hint_y=None, height=44)
+                btn.entry = i
+                btn.bind(on_release = lambda btn: self.select(btn.entry))#self.ids['dropdown'].select(btn.text))
+                self.ids['dropdown'].add_widget(btn)          
+        
+    def select(self,entry):
+        self.selection = entry
+        v = modules.all_modules[entry]
+        self.ids['dropdown'].select(v['Name'])        
+        print "making class",entry
         
     def refresh(self,time=0):
         #self.ids['room_info'].text = self.module.txt_info() 
