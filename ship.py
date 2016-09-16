@@ -40,6 +40,7 @@ class Ship(object):
         self.crew_use={}
         self.storage_limit = {}
         self.asteroid_processing = {}
+        self.hyperspace_charge = {}
         
         self.crew = {   'Civilian'  : 0, 
                         'Trained Crew' : 0 }
@@ -193,7 +194,7 @@ class Premise(Ark): #default ship
                         {'size':2, 'power':1, 'loc':   [0   , 240], 'module': modules.BridgeSz2(ship=self) },
                         {'size':1, 'power':1, 'loc':   [110 , 170], 'module': None }, #antimatter storage
                         {'size':1, 'power':1, 'loc':   [-110, 170], 'module': modules.GreenhouseSz1(ship=self) }, #life support (greenhouse)
-                        {'size':1, 'power':1, 'loc':   [-110,  75], 'module': None }, #hyperdrive core?
+                        {'size':1, 'power':1, 'loc':   [-110,  75], 'module': modules.HyperDrive(ship=self) }, #hyperdrive core?
                         {'size':1, 'power':1, 'loc':   [110 ,  75], 'module': None }, #research lab
                         
                         #outer circle
