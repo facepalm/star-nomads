@@ -13,9 +13,10 @@ class Universe(object):
         
         #generate player
         #generate ship
-        self.ship = ship.Premise()
+        
         #generate universe
         self.map = maps.Map()
+        self.ship = ship.Premise()
         self.map.new_player_ship(self.ship)
         globalvars.root.screen_manager.add_widget(self.map.display)
         

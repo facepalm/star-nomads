@@ -5,6 +5,7 @@ from kivy.uix.image import Image
 
 
 import util
+import globalvars
 
 all_modules = dict()
 
@@ -34,7 +35,7 @@ class ModuleImage(Image):
 
 class Module(object):
     def __init__(self,**kwargs):
-        util.register(self)
+        globalvars.map.register(self)
         
         self.name = 'Module'
         

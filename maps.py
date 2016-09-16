@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import uuid
 
 import util
 import mapscreen
@@ -14,8 +15,10 @@ EVENT_TC = 720.
 M_TO_LY = 1000.
 
 class Map(object): #more or less just a container for all of the things that happen in space
-    def __init__(self, ship=None):
-        self.id = util.register(self)
+    def __init__(self, ship=None, previous = None):
+        util.register(self)
+        self.registry={}
+        
         self.mapseed = random.random()*10000
         random.seed(self.mapseed)
         
@@ -29,11 +32,28 @@ class Map(object): #more or less just a container for all of the things that hap
         self.density = int(500 / random.random()**1.25) #avg disctance between stars, where 1 km == 1 ly TODO galaxy map?
         print 'Star distance',self.density
         
-        self.display = mapscreen.MapScreen(map=self)
-        #self.display.add_widget(self.ship.image)
+        if not globalvars.map:
+            globalvars.map = self
+            
         self.event_mgr = event.EventManager()
         
-        self.update_starmap()
+        self.display = mapscreen.MapScreen(map=self)
+        #self.display.add_widget(self.ship.image)
+                
+        self.update_starmap()                    
+
+    def register(self, obj, oid=''):
+        new_id = oid if oid else str(uuid.uuid4())
+        try:
+            self.registry[new_id] = obj
+            obj.id = new_id
+        except:
+            assert False, "global id collision!"
+        return new_id
+
+    def unregister(self, obj):
+        if obj.id in self.registry:
+            self.registry.pop(obj.id)
 
     def update(self,secs):
         loc = None
@@ -60,6 +80,10 @@ class Map(object): #more or less just a container for all of the things that hap
         events = self.event_mgr.fetch_all(loc,self.ship.sensor_strength())
         for e in events:            
             if not e.discovered: e.discover(curmap=self)
+            
+        for obj in self.registry.values():
+            if hasattr(obj,'update'):
+                obj.update(secs)            
             
     def update_starmap(self,loc=None,dist=3):
         if loc is None: loc = self.display.location

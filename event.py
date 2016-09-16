@@ -4,10 +4,11 @@ import random
 import numpy as np
 
 import eventpanel
+import globalvars
 
 class Event(object):
     def __init__(self,**kwargs):
-        util.register(self)
+        globalvars.map.register(self)
         
         self.state = 'UNSPAWNED'
         
@@ -37,7 +38,7 @@ class Event(object):
             if self.expire_in < 0:
                 #print 'Event expiring at', self.location
                 self.state = 'EXPIRED'
-                util.unregister(self) #will no longer update
+                self.suicide()
                 
     def discover(self,curmap=None):
         self.discovered = True        
@@ -57,14 +58,14 @@ class Event(object):
             self.suicide()
         
     def suicide(self):
-        util.unregister(self) #will no longer update        
+        globalvars.map.unregister(self) #will no longer update        
         self.mapimage.suicide()
             
 class EventManager(object):
     jitter = 100 
 
     def __init__(self):
-        util.register(self)
+        globalvars.map.register(self)
         
         self.events = []
         

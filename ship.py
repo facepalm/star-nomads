@@ -20,7 +20,7 @@ def power_scaling(power=1):
 
 class Ship(object):
     def __init__(self):
-        self.id = util.register(self)
+        globalvars.map.register(self)
         self.rooms = []        
         self.crew = 0
         if not hasattr(self, 'shipclass'): self.shipclass = 'Generic'

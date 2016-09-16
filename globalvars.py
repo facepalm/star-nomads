@@ -34,3 +34,4 @@ scenario = None
 universe = None
 root = None
 mousedown=False
+map = None
