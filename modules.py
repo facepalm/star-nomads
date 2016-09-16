@@ -507,7 +507,7 @@ class AsteroidProcessing(Module):
         Module.finish_job(self)                
             
         
-print all_modules           
+#print all_modules           
         
 def maintenance_descriptor(maint=0.5):
     if maint > 0.9:
