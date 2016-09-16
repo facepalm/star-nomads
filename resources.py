@@ -11,6 +11,7 @@ import numpy as np
 import random
 
 import util
+import globalvars
 
 
 resources = {
@@ -191,7 +192,7 @@ class ResourceModel(object):
 
 class Resource(object):
     def __init__(self,name):
-        self.id = util.register(self)
+        globalvars.map.register(self)
         self.name = name
         self.amount = 0
         self.supply = 1.

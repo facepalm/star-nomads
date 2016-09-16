@@ -41,7 +41,7 @@ class Star(object):
         self.loc = location
         self.seed = seed
         self.is_sun = True
-        self.id = util.register(self)
+        globalvars.map.register(self)
         self.primary = None
         self.solar_masses = solar_masses
         self.mass = self.solar_masses*2E30
@@ -163,7 +163,7 @@ class Star(object):
         
 class Planet(object):
     def __init__(self,mass=None,sun=None,orbit=None,name=None, logger=None):
-        util.register(self)
+        globalvars.map.register(self)
         self.is_sun = False
         self.mass = mass if mass else 1E21*random.paretovariate(2)
         self.name = name if name else 'Planet'#util.planet_name(self)

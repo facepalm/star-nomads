@@ -6,16 +6,23 @@ import globalvars
 import util
 import ship
 import maps
+from PIL import Image
 
 class Universe(object):    
     def __init__(self):
         self.update_time = time.time()
         
+        #galactic map        
+        self.galaxy_stars = np.array(Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/star_density.png'))
+        self.galaxy_dust = np.array(Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/dust_density.png'))
+        self.galaxy_display = Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/m100_hubble_4060-downsampled.png')
+        
         #generate player
         #generate ship
-        self.ship = ship.Premise()
+        
         #generate universe
-        self.map = maps.Map()
+        self.map = maps.Map(universe=self)
+        self.ship = ship.Premise()
         self.map.new_player_ship(self.ship)
         globalvars.root.screen_manager.add_widget(self.map.display)
         

@@ -11,7 +11,7 @@ import globalvars
 
 class Asteroid(object):
     def __init__(self,location=None,star=None,mass = None, differentiation = None):
-        util.register(self)
+        globalvars.map.register(self)
         self.identity = 'asteroid'
         
         self.star=star
@@ -53,7 +53,7 @@ class Asteroid(object):
         newres = self.composition.split(amt)
         
         newast = copy.copy(self)
-        util.register(newast)
+        globalvars.map.register(newast)
         newast.composition = newres
         newast.get_image(reset=True)
         
@@ -91,7 +91,7 @@ class Asteroid(object):
         self.image.parent.mapscreen.ids['mapoverlay'].add_widget(bubble)       
         
     def suicide(self):
-        util.unregister(self) #will no longer update        
+        globalvars.map.unregister(self) #will no longer update        
         self.image.suicide()        
         
     def txt_info(self):

@@ -5,6 +5,7 @@ from kivy.uix.image import Image
 
 
 import util
+import globalvars
 
 all_modules = dict()
 
@@ -34,7 +35,7 @@ class ModuleImage(Image):
 
 class Module(object):
     def __init__(self,**kwargs):
-        util.register(self)
+        globalvars.map.register(self)
         
         self.name = 'Module'
         
@@ -55,7 +56,7 @@ class Module(object):
         self.toggled = True 
         
         self.storage = {}
-        self.recipe = []
+        if not hasattr(self, 'recipe'): self.recipe = []
         
         self.condition = 1.0 
         self.maint_reqr = False
@@ -148,7 +149,7 @@ class Module(object):
             #check recipes
             random.shuffle(self.recipe)
             for r in self.recipe:
-                #print r
+                
                 begin = self.check_job(r)
                 if begin: 
                     self.start_job(r)
@@ -158,7 +159,7 @@ class Module(object):
             if len(self.recipe ) == 0:
                 self.activity = self.idle_activity.copy() 
               
-            self.status = 'Idling'#'Job: ' + self.activity['Name']
+            self.status = 'Ready'#self.activity['Name']
 
     def check_job(self,recipe):
         #check operational
@@ -370,6 +371,25 @@ class SensorSuite(Module):
             self.ship.active_sensors[self.id] = 0
             self.ship.passive_sensors[self.id] = 10
       
+class HyperDrive(Module):
+    all_modules['HyperDrive'] = {'Name':'Hyperspace Core', 'Size':1, 'Power':2, 'Crew':20}
+    def __init__(self,**kwargs):
+        self.recipe = [{'Name':'Charging', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}]
+        Module.__init__(self,**kwargs)        
+        self.charge = 0
+        self.charge_rate = 0.0001
+        
+        self.img_dict['icon']='img/icon/noun-project/brian-oppenlander-arrows.png'
+        self.img_dict['displaysize'] = False
+        
+    def update(self,secs):
+        Module.update(self,secs)
+        self.ship.hyperspace_charge[self.id] = self.charge        
+        if self.active:
+            self.charge += self.charge_rate * secs
+            self.charge = min(1.,self.charge)
+            self.activity['Duration'] = max(0,(1-self.charge)/self.charge_rate)
+                
             
 class SmelterSz2(Module):
     all_modules['SmelterSz2'] = {'Name':'Smelter', 'Size':1, 'Power':2, 'Crew':50}
@@ -487,7 +507,7 @@ class AsteroidProcessing(Module):
         Module.finish_job(self)                
             
         
-print all_modules           
+#print all_modules           
         
 def maintenance_descriptor(maint=0.5):
     if maint > 0.9:

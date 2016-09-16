@@ -1,5 +1,7 @@
 import random
 import numpy as np
+import uuid
+import math
 
 import util
 import mapscreen
@@ -14,10 +16,38 @@ EVENT_TC = 720.
 M_TO_LY = 1000.
 
 class Map(object): #more or less just a container for all of the things that happen in space
-    def __init__(self, ship=None):
-        self.id = util.register(self)
-        self.mapseed = random.random()*10000
+    def __init__(self, ship=None, previous = None, coords = None, universe=None):
+        util.register(self)
+        self.registry={}
+        
+        self.universe = universe
+        self.coords_known = False
+        self.galactic_coordinates = coords if coords else [500,500]
+        self.mapseed = self.galactic_coordinates[0] + 1024*self.galactic_coordinates[1]
         random.seed(self.mapseed)
+        
+        #generate coordinate offset
+        #off_r = random.random()*2 + 3
+        #off_t = random.random()*2*3.14159
+        #coords = previous.connections[self.mapseed]['Coords'] if previous else [500,500]
+        
+        #self.galactic_coordinates = [coords[0]+off_r*math.cos(off_t), coords[1]+off_r*math.sin(off_t)]
+        
+        #generate list of connected maps
+        self.connections = []
+        if previous:
+            self.connections.append( {'Map':previous,'Coords':previous.galactic_coordinates} )
+
+        for i in range(int(random.random()*5)):
+            #generate coordinate offset
+            off_r = random.random()*5 + 5
+            off_t = random.random()*2*3.14159
+            coords = [round(self.galactic_coordinates[0] + off_r*math.cos(off_t)), round(self.galactic_coordinates[1] + off_r*math.sin(off_t))]
+            
+            self.connections.append( {'Map':None, 'Coords':coords} ) #TODO loop maybe?
+            
+        print self.connections            
+            
         
         self.events = [] #list for unpopped events - do we even need this here?
         self.objects = [] #popped events.  Mostly just little stuff like resource finds
@@ -26,14 +56,35 @@ class Map(object): #more or less just a container for all of the things that hap
         
         self.ship = ship #convenience link to get location information
         
-        self.density = int(500 / random.random()**1.25) #avg disctance between stars, where 1 km == 1 ly TODO galaxy map?
+        uni = universe if universe else globalvars.universe
+        stars = uni.galaxy_stars[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
+        self.density = int(250 / (stars/255.)**1.25) #avg disctance between stars, where 1 km == 1 ly TODO galaxy map?        
+        self.dust = stars = uni.galaxy_dust[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
         print 'Star distance',self.density
+        #quit()
+        
+        if not globalvars.map:
+            globalvars.map = self
+            
+        self.event_mgr = event.EventManager()
         
         self.display = mapscreen.MapScreen(map=self)
         #self.display.add_widget(self.ship.image)
-        self.event_mgr = event.EventManager()
-        
-        self.update_starmap()
+                
+        self.update_starmap()                    
+
+    def register(self, obj, oid=''):
+        new_id = oid if oid else str(uuid.uuid4())
+        try:
+            self.registry[new_id] = obj
+            obj.id = new_id
+        except:
+            assert False, "global id collision!"
+        return new_id
+
+    def unregister(self, obj):
+        if obj.id in self.registry:
+            self.registry.pop(obj.id)
 
     def update(self,secs):
         loc = None
@@ -60,6 +111,10 @@ class Map(object): #more or less just a container for all of the things that hap
         events = self.event_mgr.fetch_all(loc,self.ship.sensor_strength())
         for e in events:            
             if not e.discovered: e.discover(curmap=self)
+            
+        for obj in self.registry.values():
+            if hasattr(obj,'update'):
+                obj.update(secs)            
             
     def update_starmap(self,loc=None,dist=3):
         if loc is None: loc = self.display.location
