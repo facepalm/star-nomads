@@ -95,7 +95,7 @@ kv='''
     BubbleButton:
         text: 'Build!'  
         id: buildbtn  
-        on_press: self.parent.parent.build()
+        on_press: self.parent.parent.buildclick()
         size_hint: 1, 0.5
     
 '''
@@ -106,6 +106,7 @@ class EmptyRoomBubble(Bubble):
     def __init__(self,**kwargs):
         Bubble.__init__(self,**kwargs)
         self.room = kwargs['room_entry']
+        self.ship = kwargs['ship']
         
         txt = 'Space: '+str(self.room['size'])+'\n'
         txt += 'Power: '+str(self.room['power'])+'\n'
@@ -137,6 +138,15 @@ class EmptyRoomBubble(Bubble):
         v = modules.all_modules[entry]
         self.ids['dropdown'].select(v['Name'])        
         print "making class",entry
+        
+    def buildclick(self):
+        if self.selection is not None:             
+            room_class = util.class_for_name('modules',self.selection)
+            self.room['module'] = room_class(ship = self.ship)
+            print self.parent.parent.parent
+            self.parent.parent.parent.refresh()
+        self.suicide()
+                
         
     def refresh(self,time=0):
         #self.ids['room_info'].text = self.module.txt_info() 
@@ -218,12 +228,7 @@ class RoomImage(Image):
             self.source = 'img/icon/modules/empty-generic.png'
         Image.__init__(self,**kwargs)
         
-        self.ids['roomicon'].source = self.room.img_dict['icon'] if self.room else 'img/icon/modules/blank.png'
-        self.ids['roomicon'].color = self.room.img_dict['icon color'] if self.room else [0.8,0.8,0.8,1]
         
-        self.ids['sizeimg'].source = ''.join(['img/icon/modules/',str(self.rsize),'.png'])
-        if self.room and not self.room.img_dict['displaysize']: self.ids['sizeimg'].color = [1,1,1,0]
-        self.sizeoffset = self.room.img_dict['sizeloc'] if self.room else [0, 0]
         #loc = self.room.img_dict['sizeloc'] if self.room else [0.5, 0.5]
         #self.ids['sizeimg'].pos_hint = loc 
         
@@ -241,7 +246,27 @@ class RoomImage(Image):
         self.ids['roomicon'].center = loc
         
     def refresh(self):
+        self.room = self.rentry['module']
+        self.rsize = self.rentry['size']
+
+        if self.room: 
+            self.source = 'img/icon/modules/filled-generic.png'
+        else:
+            self.source = 'img/icon/modules/empty-generic.png'
+    
+        self.ids['roomicon'].source = self.room.img_dict['icon'] if self.room else 'img/icon/modules/blank.png'
+        self.ids['roomicon'].color = self.room.img_dict['icon color'] if self.room else [0.8,0.8,0.8,1]
+        
+        self.ids['roomicon'].texture_update() 
+        
+        self.ids['sizeimg'].source = ''.join(['img/icon/modules/',str(self.rsize),'.png'])
+        if self.room and not self.room.img_dict['displaysize']: self.ids['sizeimg'].color = [1,1,1,0]
+        self.ids['sizeimg'].texture_update() 
+        
+        self.sizeoffset = self.room.img_dict['sizeloc'] if self.room else [0, 0]
+    
         self.color = self.room.color if self.room else [1,1,1,1]      
+        self.texture_update() 
         
     def touched(self,tpos):
         bubble = ModuleBubble(module=self.room)
@@ -260,7 +285,7 @@ class RoomImage(Image):
             if self.room:
                 self.touched(tpos)
             else:
-                bubble = EmptyRoomBubble(room_entry = self.rentry)
+                bubble = EmptyRoomBubble(room_entry = self.rentry, ship = self.parent.parent.parent.ship)
                 bubble.pos = tpos
                 
                 self.parent.add_widget(bubble)
@@ -310,5 +335,14 @@ class ShipScreen(Screen):
         #add status
         
     def on_leave(self):  
-        self.ids['shiplayout'].clear_widgets()               
+        self.ids['shiplayout'].clear_widgets()         
+        
+    def refresh(self):
+        self.quick_refresh()
+        Clock.schedule_interval(self.quick_refresh, 0.25)
+    
+    def quick_refresh(self, *args):
+        for c in self.ids['shiplayout'].children:
+            if hasattr(c,'refresh'): c.refresh()
+       
         

@@ -8,6 +8,7 @@ import os
 import sys
 import random
 import math
+import importlib
 
 
 #TIME_FACTOR = 168 # 1 irl hour = 1 week
@@ -19,6 +20,16 @@ import math
 #GRAPHICS = None
 GLOBAL_X=0
 GLOBAL_Y=0
+
+
+#from http://stackoverflow.com/questions/1176136/convert-string-to-python-class-object
+def class_for_name(module_name, class_name):
+    # load the module, will raise ImportError if module cannot be loaded
+    m = importlib.import_module(module_name)
+    # get the class, will raise AttributeError if class cannot be found
+    c = getattr(m, class_name)
+    return c
+
 
 def get_skew(skew = 'linear'):
     if skew == 'linear':
