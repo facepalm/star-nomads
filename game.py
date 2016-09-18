@@ -19,19 +19,24 @@ class Universe(object):
         self.galaxy_dust = np.array(Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/dust_density.png'))
         self.galaxy_display = Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/m100_hubble_4060-downsampled.png')
         
-        self.galaxy_map = galaxyscreen.GalaxyScreen( universe = self )
+        self.ship=None
+        
         
         #generate player
         #generate ship
         self.map_nodes = {}
         self.map_edges = []
         
+        self.galaxy_map = galaxyscreen.GalaxyScreen( universe = self )
+        
         #generate universe
         self.map = maps.Map(universe=self)
-        self.map_nodes[str(self.map.map_coordinates)] = self.map
+        self.map_nodes[str(self.map.map_coordinates)] = {'Map':self.map, 'Coords':self.map.map_coordinates}
         self.ship = ship.Premise()
         self.map.new_player_ship(self.ship)
         globalvars.root.screen_manager.add_widget(self.map.display)
+        
+        self.galaxy_map.refresh()
         
         #self.map.spawn('asteroid',[30,30])
         self.map.spawn('asteroid',[90,30])
