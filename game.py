@@ -19,6 +19,8 @@ class Universe(object):
         
         #generate player
         #generate ship
+        self.map_nodes = {}
+        self.map_edges = []
         
         #generate universe
         self.map = maps.Map(universe=self)

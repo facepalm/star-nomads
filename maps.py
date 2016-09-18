@@ -15,14 +15,29 @@ EVENT_TC = 720.
 
 M_TO_LY = 1000.
 
+def tweak_coords(coords,dist=5):
+    state = random.getstate()
+    seed = coords[0]+1024*coords[1]
+    random.seed(seed)
+    
+    randomness = 0.25
+    off_r = random.gauss(0,dist/randomness)
+    off_t = random.random()*2*3.14159
+    new_coords = [round(coords[0] + off_r*math.cos(off_t)), round(coords[1] + off_r*math.sin(off_t))]
+    
+    random.setstate(state)
+    return new_coords
+
 class Map(object): #more or less just a container for all of the things that happen in space
     def __init__(self, ship=None, previous = None, coords = None, universe=None):
         util.register(self)
         self.registry={}
         
-        self.universe = universe
+        self.universe = universe if universe else globalvars.universe
         self.coords_known = False
-        self.galactic_coordinates = coords if coords else [500,500]
+        
+        self.map_coordinates = coords if coords else [500,500]
+        self.galactic_coordinates = tweak_coords(self.map_coordinates)
         self.mapseed = self.galactic_coordinates[0] + 1024*self.galactic_coordinates[1]
         random.seed(self.mapseed)
         
@@ -34,19 +49,24 @@ class Map(object): #more or less just a container for all of the things that hap
         #self.galactic_coordinates = [coords[0]+off_r*math.cos(off_t), coords[1]+off_r*math.sin(off_t)]
         
         #generate list of connected maps
+        #self.connections = []
+        #if previous:
+        #    self.connections.append( {'Map':previous,'Coords':previous.galactic_coordinates} )
+        
         self.connections = []
-        if previous:
-            self.connections.append( {'Map':previous,'Coords':previous.galactic_coordinates} )
-
-        for i in range(int(random.random()*5)):
-            #generate coordinate offset
-            off_r = random.random()*5 + 5
-            off_t = random.random()*2*3.14159
-            coords = [round(self.galactic_coordinates[0] + off_r*math.cos(off_t)), round(self.galactic_coordinates[1] + off_r*math.sin(off_t))]
-            
-            self.connections.append( {'Map':None, 'Coords':coords} ) #TODO loop maybe?
-            
-        print self.connections            
+        pi = math.pi
+        for i in range(6):
+            off_r = 5
+            off_t = i*pi/3.
+            coords = [int(round(self.map_coordinates[0] + off_r*math.cos(off_t))), int(round(self.map_coordinates[1] + off_r*math.sin(off_t)))]
+            if [coords, self.map_coordinates] in self.universe.map_edges:
+                self.connections.append( [coords, self.map_coordinates] ) 
+            else:
+                if random.random() < 0.33:
+                    #generate coordinate offset        
+                    self.universe.map_edges.append( [self.map_coordinates, coords] )
+                    self.connections.append( [self.map_coordinates, coords] )
+        print self.universe.map_edges
             
         
         self.events = [] #list for unpopped events - do we even need this here?
@@ -54,12 +74,12 @@ class Map(object): #more or less just a container for all of the things that hap
         
         self.stars = {}
         
-        self.ship = ship #convenience link to get location information
+        self.ship = ship  #convenience link to get location information
         
-        uni = universe if universe else globalvars.universe
-        stars = uni.galaxy_stars[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
-        self.density = int(250 / (stars/255.)**1.25) #avg disctance between stars, where 1 km == 1 ly TODO galaxy map?        
-        self.dust = stars = uni.galaxy_dust[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
+
+        stars = self.universe.galaxy_stars[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
+        self.density = int(250 / (stars/255.)**1.25) #avg disctance between stars, where 1 km == 1 ly
+        self.dust = self.universe.galaxy_dust[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
         print 'Star distance',self.density
         #quit()
         
