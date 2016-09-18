@@ -8,6 +8,8 @@ import ship
 import maps
 from PIL import Image
 
+import galaxyscreen
+
 class Universe(object):    
     def __init__(self):
         self.update_time = time.time()
@@ -17,6 +19,8 @@ class Universe(object):
         self.galaxy_dust = np.array(Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/dust_density.png'))
         self.galaxy_display = Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/m100_hubble_4060-downsampled.png')
         
+        self.galaxy_map = galaxyscreen.GalaxyScreen( universe = self )
+        
         #generate player
         #generate ship
         self.map_nodes = {}
@@ -24,6 +28,7 @@ class Universe(object):
         
         #generate universe
         self.map = maps.Map(universe=self)
+        self.map_nodes[str(self.map.map_coordinates)] = self.map
         self.ship = ship.Premise()
         self.map.new_player_ship(self.ship)
         globalvars.root.screen_manager.add_widget(self.map.display)

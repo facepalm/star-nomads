@@ -114,6 +114,23 @@ kv = '''
                         mipmap: True  
                         
             Button:
+                size_hint: None, 1.0
+                width: self.height
+                pos_hint: {'x': 0.0, 'left': 1.00}
+                id: galmapbtn   
+                on_press: self.parent.parent.parent.on_galmappanel_button()             
+                BoxLayout:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    
+                    Image:
+                        source: 'img/icon/noun-project/combine-design-galaxy.png'
+                        color: 0.1, 1.0, 0.1, 1.0
+                        size_hint: 0.9,0.9
+                        pos_hint: {'center_x': 0.5, 'center_y': .5}
+                        mipmap: True                        
+                        
+            Button:
                 size_hint: 0.5, 1.0
                 text_size: self.size[0]*0.9, self.size[1]*0.9
                 halign: 'left'
@@ -161,6 +178,9 @@ class MapScreen(Screen):
     def on_respanel_button(self):
         if self.map and self.map.ship:
             globalvars.root.switchScreen(self.map.ship.storage.get_screen())   
+            
+    def on_galmappanel_button(self):
+        globalvars.root.switchScreen(self.map.universe.galaxy_map)      
         
     def on_pre_enter(self):
         gps.start()
