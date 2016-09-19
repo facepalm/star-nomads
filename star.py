@@ -27,12 +27,18 @@ def initialize_star(location,density,seed,widget,_map):
     widget.add_widget(img)    
     #widget.add_widget(Image(size_hint=(None, None),size=(1,1),pos=loc.tolist(),color=[1,0,0,1]))
     
-    num_plan = random.randrange(4)
+    num_plan = random.randrange(5)
     masses = 1E24*10**(np.random.random( size=max(num_plan,1))*8 - 3)
     for p in range(num_plan):
-        newp = Planet(mass=masses[p],sun=star,orbit = random.random()*star.ice_line+star.burn_line)
-        star.orbiting_bodies.append(newp)
-        widget.add_widget(newp.orbit_image)
+        if random.random() < 0.8:        
+            newp = Planet(mass=masses[p],sun=star,orbit = random.random()*star.ice_line+star.burn_line)
+            star.orbiting_bodies.append(newp)
+            widget.add_widget(newp.orbit_image)
+        else:
+            orbit = random.random()*star.ice_line+star.burn_line
+            star.asteroid_belts.append(orbit)
+            for i in range(4):
+                star.spawn_belt_roid(orbit,hidden=False)
     return star
     
 
@@ -116,6 +122,8 @@ class Star(object):
         
         self.explored = 0.0
         self.orbiting_bodies = []
+        self.asteroid_belts = []
+        
         
         #self.view = systempanel.SystemScreen(name=util.short_id(self.id)+"-system",primary=self)
         
@@ -159,6 +167,28 @@ class Star(object):
                 
     def loc_to_orbit(self,loc):        
         return util.vec_dist(self.loc, np.array(loc))/globalvars.M_TO_AU
+    
+    def update(self,secs):
+        for b in self.asteroid_belts:
+            if random.random() < (secs/util.seconds(6,'months')):
+                self.spawn_belt_roid(b)
+                
+    def spawn_belt_roid(self,belt,hidden=True):
+        #new 'roid
+        angle = random.random()*math.pi*2
+        #if random.random() < 0.5: angle *= -1
+        rad = belt * (0.9 + random.random()*0.2)
+    
+        orbit_dist = globalvars.M_TO_AU * rad
+    
+        loc =       [float(self.loc[0] + math.cos(angle)*orbit_dist), \
+                     float(self.loc[1] + math.sin(angle)*orbit_dist)]
+                     
+        if hidden:
+            globalvars.map.event_mgr.new(loc,'asteroid')
+        else:
+            globalvars.map.spawn('asteroid',loc,system=self)
+    
         
         
 class Planet(object):
@@ -292,6 +322,25 @@ class Planet(object):
         for s in self.sites:
             s.update_occupied()
             self.occupied = max(self.occupied,s.occupied)'''
+
+    def update(self,secs):
+        asteroid_odds = self.mass / 1E26
+        if random.random() < (secs/util.seconds(6,'months'))*(asteroid_odds**0.5):
+            #new 'roid
+            angle = math.pi/4 + random.random()*math.pi/4
+            if random.random() < 0.5: angle *= -1
+            rad = self.orbit * (0.9 + random.random()*0.2)
+        
+            primloc = self.primary.loc                
+            orbit_dist = globalvars.M_TO_AU * rad
+        
+            loc =       [float(primloc[0] + math.cos(self.orbit_pos+angle)*orbit_dist), \
+                         float(primloc[1] + math.sin(self.orbit_pos+angle)*orbit_dist)]
+                         
+            globalvars.map.event_mgr.new(loc,'asteroid')
+            #globalvars.map.spawn('asteroid',loc)
+            
+        
 
     def add_exploration(self,amt=0.0001,limit=0.1):
         if self.explored < limit: self.explored += amt        

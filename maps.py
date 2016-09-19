@@ -180,10 +180,11 @@ class Map(object): #more or less just a container for all of the things that hap
         #hand to mapscreen        
         self.display.ids['mapscale'].add_widget(self.ship.image)
 
-    def spawn(self,item,loc):
+    def spawn(self,item,loc,system=None):
         if item=='asteroid':
             print 'Spawning asteroid! '
-            ast = asteroid.Asteroid(location=np.array(loc),star = self.which_system(loc))
+            if system is None: system = self.which_system(loc)
+            ast = asteroid.Asteroid(location=np.array(loc),star = system)
             self.objects.append(ast)
             self.display.ids['mapscale'].add_widget(ast.get_image())
             
