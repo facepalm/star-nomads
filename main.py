@@ -14,6 +14,7 @@ from intropanel import IntroPanelView
 import util
 import globalvars
 import game
+import gps
 
 #graphics stuff
 
@@ -61,9 +62,12 @@ class GameApp(App):
         Window.bind(on_keyboard=self.onBackBtn)
 
     def on_pause(self,*args):
+        print "Pausing!"
+        gps.stop()
         return True
         
     def on_resume(self):
+        print "Resuming!"
         pass
 
     def onBackBtn(self, window, key, *args):
