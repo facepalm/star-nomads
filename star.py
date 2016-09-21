@@ -52,10 +52,6 @@ class Star(object):
         self.solar_masses = solar_masses
         self.mass = self.solar_masses*2E30
         self.name = name if name else 'Star'#util.star_name(self)
-        if logger:
-            self.logger = logging.getLogger(logger.name + '.' + self.name)
-        else: 
-            self.logger = logging.getLogger(util.generic_logger.name + '.' + self.name)
     
         #current assumption: main sequence star.  May want to simulate lifetimes and do giants in the future
         # reference: https://en.wikipedia.org/wiki/Stellar_classification
@@ -126,7 +122,20 @@ class Star(object):
         
         
         #self.view = systempanel.SystemScreen(name=util.short_id(self.id)+"-system",primary=self)
-        
+    
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        #del odict['image']              # remove gui entry
+        #if 'orbit_image' in odict: del odict['orbit_image']
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(state)   # update attributes
+        #self.image = self.get_image()    
+        #self.generate_orbital_image()
+        #for o in self.orbiting_bodies:
+            
+            
 
     def primary_image(self):
         frac = 0.3        
@@ -198,7 +207,8 @@ class Planet(object):
         self.mass = mass if mass else 1E21*random.paretovariate(2)
         self.name = name if name else 'Planet'#util.planet_name(self)
         self.primary=sun
-        self.orbit = orbit        
+        self.location = self.primary.loc
+        self.orbit = orbit                        
         
         #estimate radius, based off Earth
         self.radius = 6400000 *pow(self.mass/6E24,0.3)
@@ -212,10 +222,6 @@ class Planet(object):
         
         #self.launch_dv = pow( mmu/ (self.radius + 500000) , 0.5 )
         
-        if logger:
-            self.logger = logging.getLogger(logger.name + '.' + self.name)
-        else: 
-            self.logger = logging.getLogger(util.generic_logger.name + '.' + self.name)
     
         self.color = None #assign color to enable tinting
         self.img_name = 'generic_sun.png'        
@@ -269,6 +275,17 @@ class Planet(object):
         
         #self.view = systempanel.SystemView(primary=self)
         #self.view = systempanel.SystemScreen(name=util.short_id(self.id)+"-system",primary=self)
+        
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        #del odict['image']              # remove gui entry
+        if 'orbit_image' in odict: del odict['orbit_image']
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(state)   # update attributes
+        #self.image = self.get_image()    
+        self.generate_orbital_image()
         
     def escape_velocity(self):
         mmu = 6.674E-11 * self.mass                

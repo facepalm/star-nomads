@@ -103,6 +103,15 @@ class Asteroid(object):
         return out
         
                 
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        del odict['image']              # remove gui entry
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(state)   # update attributes
+        self.image = None
+        self.get_image()
 
 kv='''
 <AsteroidBubble>:

@@ -26,6 +26,15 @@ class Event(object):
         
         self.mapimage = eventpanel.EventMapImage(event=self)
         
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        del odict['mapimage']              # remove gui entry
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(dict)   # update attributes
+        self.mapimage = eventpanel.EventMapImage(event=self)   
+        
     def update(self,secs):
         if self.spawn_in > 0:
             self.spawn_in -= secs

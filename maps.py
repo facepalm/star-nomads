@@ -92,6 +92,16 @@ class Map(object): #more or less just a container for all of the things that hap
         #self.display.add_widget(self.ship.image)
                 
         self.update_starmap()                    
+        
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        del odict['display']              # remove gui entry
+        #if 'screen' in odict: del odict['screen']
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(state)   # update attributes
+        self.display = mapscreen.MapScreen(map=self)
 
     def register(self, obj, oid=''):
         new_id = oid if oid else str(uuid.uuid4())

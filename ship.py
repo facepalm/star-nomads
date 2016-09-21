@@ -47,6 +47,16 @@ class Ship(object):
         
         if not hasattr(self, 'image'): self.image = shipimage.ShipImage(ship=self)
 
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        del odict['image']              # remove gui entry
+        if 'screen' in odict: del odict['screen']
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(state)   # update attributes
+        self.image = shipimage.ShipImage(ship=self)
+
     def has_res(self,res_name,amt):
         return self.storage.has(res_name,amt)
         

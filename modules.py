@@ -78,6 +78,16 @@ class Module(object):
         if not self.image: 
             self.image = ModuleImage(module=self)
         return self.image
+
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        del odict['image']              # remove gui entry
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(state)   # update attributes
+        self.image = None
+        self.module_image()
         
     def update(self, secs):
         timeslice = min(1.,secs/util.seconds(1, 'day'))

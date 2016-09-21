@@ -147,8 +147,10 @@ class OrbitImage(PlanetImage):
         globalvars.root.onNextScreen(pname)'''
 
     def place_image(self):    
+        #print self.planet.primary
+        #print dir(self.planet.primary)
         
-        primloc = self.planet.primary.loc
+        primloc = self.planet.location
         
         orbit_scale = 1.5 #helpful to reposition orbits
         

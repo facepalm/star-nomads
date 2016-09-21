@@ -116,7 +116,7 @@ class ResourceModel(object):
         return odict
     
     def __setstate__(self,state):
-        self.__dict__.update(dict)   # update attributes
+        self.__dict__.update(state)   # update attributes
         self.listpanel = ResourceScreen(res=self)     
         
     def get_screen(self):

@@ -10,12 +10,15 @@ from PIL import Image
 
 import galaxyscreen
 import globalvars
+import gps
 
 class Universe(object):    
     def __init__(self):
         globalvars.universe = self
         self.update_time = time.time()
         self.registry = {}
+        self.location = [0,0]
+        self.autosave = 30.
         
         #galactic map        
         self.galaxy_stars = np.array(Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/star_density.png'))
@@ -64,6 +67,20 @@ class Universe(object):
         #cv2.imshow('rawfield', imdata)
         #cv2.waitKey(100)                   
 
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        del odict['galaxy_map']              # remove gui entry
+        #if 'screen' in odict: del odict['screen']
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(state)   # update attributes
+        self.galaxy_map = galaxyscreen.GalaxyScreen( universe = self )
+        
+        globalvars.map = self.map
+        globalvars.root.screen_manager.add_widget(self.map.display)        
+        self.galaxy_map.refresh()
+
     def update(self,dt):
         #self.mapscreen.ids['mapimg'].refresh_map()
         deet = (time.time() - self.update_time)
@@ -74,9 +91,13 @@ class Universe(object):
             if hasattr(obj,'update'):
                 obj.update(secs)
                 
-        if random.random()*(dt/60.) < 0.5:
+        self.location = gps.get_location()                
+                
+        self.autosave -= dt        
+        if self.autosave < 0:
             print 'Autosaving....'
-            #util.autosave()                 
+            util.autosave() 
+            self.autosave = 30                
 
     def map_update(self,dt):
         self.game_map.update_layers()

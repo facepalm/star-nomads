@@ -9,6 +9,8 @@ import random
 import math
 import importlib
 
+import gps
+
 #try:
 #    import cpickle as pickle
 #except:
@@ -133,43 +135,48 @@ generic_logger.addHandler(ch)
 
 generic_logger.debug("Logger initiated.")
 
-import pickle
-class MyPickler (pickle.Pickler):
+import cPickle as pickle
+'''class MyPickler (pickle.Pickler):
     def save(self, obj):
-        print 'pickling object', obj, 'of type', type(obj)
+        print 'pickling object', 'obj', 'of type', type(obj)
         pickle.Pickler.save(self, obj)
-
+'''
 #import dill
 
 def autosave():
     #try:
     datafile = open(os.path.join('save','autosave'),'w')
-    try:
+    #try:
     #dill.detect.trace(True)
     #dill.dump(globalvars.universe,datafile,dill.HIGHEST_PROTOCOL)        
-        MyPickler(datafile,pickle.HIGHEST_PROTOCOL).dump(globalvars.universe)
-        datafile.close()
+    pickle.Pickler(datafile,pickle.HIGHEST_PROTOCOL).dump(globalvars.universe)
+    datafile.close()
 
     #    dill.detect.trace(True)
     #    #dill.detect.badobjects(globalvars.universe, depth=2)
-        generic_logger.info("Universe saved.  Superman given the day off.")
-        return True
-    except:
-        e = sys.exc_info()[0]
-        generic_logger.warning("Autosave failed: %s" % e)
+    generic_logger.info("Universe saved.  Superman given the day off.")
+    return True
+    #except:
+    #    e = sys.exc_info()[0]
+    #    generic_logger.warning("Autosave failed: %s" % e)
     return False
         
     
 def autoload():
-    try:
+    #try:
+    if True:
         datafile = open(os.path.join('save','autosave'),'r')
         #global universe
-        globalvars.universe = dill.load(datafile)
+        globalvars.universe = pickle.load(datafile)
+        gps.lon = globalvars.universe.location[0]
+        gps.lat = globalvars.universe.location[1]
+        #print globalvars.universe.map.
         datafile.close()
         generic_logger.info("Universe loaded.  Initiating prime mover...")
         return True
-    except:
-        e = sys.exc_info()[0]
-        generic_logger.warning("Autoload failed: %s" % e)
+    #except:
+    #    pass
+    #    e = sys.exc_info()[0]
+    #    generic_logger.warning("Autoload failed: %s" % e)
     return False
-       
+        
