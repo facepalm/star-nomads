@@ -9,10 +9,13 @@ import maps
 from PIL import Image
 
 import galaxyscreen
+import globalvars
 
 class Universe(object):    
     def __init__(self):
+        globalvars.universe = self
         self.update_time = time.time()
+        self.registry = {}
         
         #galactic map        
         self.galaxy_stars = np.array(Image.open('img/galaxy/m100_apod_JudySchmidt_CC3/star_density.png'))
@@ -59,9 +62,7 @@ class Universe(object):
         #imdata = np.divide(imdata,m)
         
         #cv2.imshow('rawfield', imdata)
-        #cv2.waitKey(100)   
-        
-        
+        #cv2.waitKey(100)                   
 
     def update(self,dt):
         #self.mapscreen.ids['mapimg'].refresh_map()
@@ -69,9 +70,13 @@ class Universe(object):
         self.update_time += deet
         secs = deet*globalvars.config['TIME FACTOR']
         print 'Time delay:',secs
-        for obj in globalvars.ids.values():
+        for obj in self.registry.values():
             if hasattr(obj,'update'):
                 obj.update(secs)
+                
+        if random.random()*(dt/60.) < 0.5:
+            print 'Autosaving....'
+            #util.autosave()                 
 
     def map_update(self,dt):
         self.game_map.update_layers()

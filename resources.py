@@ -110,6 +110,15 @@ class ResourceModel(object):
         
         self.listpanel = ResourceScreen(res=self)
         
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        del odict['listpanel']              # remove gui entry
+        return odict
+    
+    def __setstate__(self,state):
+        self.__dict__.update(dict)   # update attributes
+        self.listpanel = ResourceScreen(res=self)     
+        
     def get_screen(self):
         return self.listpanel
         

@@ -90,6 +90,7 @@ class GameApp(App):
             #root.screen_manager.add_widget( IntroPanelView() )
             #root.onNextScreen('introscreen','None')            
             #autosave?
+            util.autosave()
             
         
         

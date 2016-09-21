@@ -164,6 +164,8 @@ class MapScreen(Screen):
         self.map = kwargs['map'] if 'map' in kwargs else None
         super(MapScreen,self).__init__(**kwargs)
         
+        self.Builder = None
+        
         self.displayed = False
         self.curr_loc = [0,0]
         

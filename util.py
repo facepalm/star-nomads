@@ -3,13 +3,16 @@ import numpy as np
 import string
 import globalvars
 import uuid
-import pickle
 import os
 import sys
 import random
 import math
 import importlib
 
+#try:
+#    import cpickle as pickle
+#except:
+#    import pickle
 
 #TIME_FACTOR = 168 # 1 irl hour = 1 week
 #TIME_FACTOR = 24 # 1 irl hour = 1 day
@@ -49,14 +52,14 @@ def degree(rad):
 def register(obj, oid=''):
     new_id = oid if oid else str(uuid.uuid4())
     try:
-        globalvars.ids[new_id] = obj
+        globalvars.universe.registry[new_id] = obj
         obj.id = new_id
     except:
         assert False, "global id collision!"
     return new_id
 
 def unregister(obj):
-    globalvars.ids.pop(obj.id)
+    globalvars.universe.registry.pop(obj.id)
 
 def quad_mean(x,y,wx=1,wy=1):
     return pow( (1.0*wx*x*x + wy*y*y)/(wx + wy) ,0.5)
@@ -130,11 +133,25 @@ generic_logger.addHandler(ch)
 
 generic_logger.debug("Logger initiated.")
 
+import pickle
+class MyPickler (pickle.Pickler):
+    def save(self, obj):
+        print 'pickling object', obj, 'of type', type(obj)
+        pickle.Pickler.save(self, obj)
+
+#import dill
+
 def autosave():
+    #try:
+    datafile = open(os.path.join('save','autosave'),'w')
     try:
-        datafile = open(os.path.join('save','autosave'),'w')
-        pickle.dump(globalvars.universe,datafile,2)        
+    #dill.detect.trace(True)
+    #dill.dump(globalvars.universe,datafile,dill.HIGHEST_PROTOCOL)        
+        MyPickler(datafile,pickle.HIGHEST_PROTOCOL).dump(globalvars.universe)
         datafile.close()
+
+    #    dill.detect.trace(True)
+    #    #dill.detect.badobjects(globalvars.universe, depth=2)
         generic_logger.info("Universe saved.  Superman given the day off.")
         return True
     except:
@@ -147,7 +164,7 @@ def autoload():
     try:
         datafile = open(os.path.join('save','autosave'),'r')
         #global universe
-        globalvars.universe = pickle.load(datafile)
+        globalvars.universe = dill.load(datafile)
         datafile.close()
         generic_logger.info("Universe loaded.  Initiating prime mover...")
         return True
