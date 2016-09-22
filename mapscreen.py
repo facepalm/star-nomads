@@ -16,6 +16,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 
+import math
+
 import globalvars
 import gps
 import starfield
@@ -211,6 +213,11 @@ class MapScreen(Screen):
         dx = self.location[0] - self.curr_loc[0] 
         dy = self.location[1] - self.curr_loc[1]
         
+        dist = math.sqrt(dx**2 + dy**2)
+        animate = False if self.curr_loc == [0,0] or dist >= 10000 else True
+        print "animate", animate, self.curr_loc, dist
+        self.ids['stars'].animation = animate
+        
         self.curr_loc = self.location
         self.ids['stars'].shift(dx,dy)
         #print self.ids['stars'].scale
@@ -222,9 +229,10 @@ class MapScreen(Screen):
         #self.ids['mapscale'].x = -globalvars.config['MAP SCALING']*self.location[0] + self.width/2 #dx*2#globalvars.config['MAP SCALING']
         #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
         
+        duration = 1.0 if animate else 0.1
         if not self.ids['mapscale'].touched:
-            anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration= 1.0 )#, t='in_out_sine')        
-            anim &= Animation( scale = globalvars.config['MAP SCALING'], duration= 1.0)       
+            anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
+            anim &= Animation( scale = globalvars.config['MAP SCALING'], duration = duration)       
             anim.start(self.ids['mapscale'])
             
         #self.ids['mapscale'].update_mapxy()

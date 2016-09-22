@@ -27,6 +27,7 @@ class Starfield(Widget):
         self.x = 0
         self.y = 0
         self.scale = .01000
+        self.animation = True
 
     def on_size(self, *largs):
         self.canvas.clear()
@@ -75,9 +76,10 @@ class Starfield(Widget):
 
     def update(self,dt):
         modifier = 0.3
+        duration = 1.0 if self.animation else 0.0
         for rectangle in self.rectangles:
             #rectangle.tex_coords = -(self.x * modifier), -(self.y * modifier), -(self.x * modifier + 1), -(self.y * modifier),  -(self.x * modifier + 1), -(self.y * modifier + 1), -(self.x * modifier), -(self.y * modifier + 1)
-            anim = Animation(tex_coords = [(self.x * modifier), (self.y * modifier), (self.x * modifier + 1), (self.y * modifier),  (self.x * modifier + 1), (self.y * modifier + 1), (self.x * modifier), (self.y * modifier + 1)], duration = 1.0 )
+            anim = Animation(tex_coords = [(self.x * modifier), (self.y * modifier), (self.x * modifier + 1), (self.y * modifier),  (self.x * modifier + 1), (self.y * modifier + 1), (self.x * modifier), (self.y * modifier + 1)], duration = duration )
             anim.start(rectangle)
             modifier /= 2 
 
