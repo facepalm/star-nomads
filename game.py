@@ -40,7 +40,7 @@ class Universe(object):
         self.map_nodes[str(self.map.map_coordinates)] = {'Map':self.map, 'Coords':self.map.map_coordinates}
         self.ship = ship.Premise()
         self.map.new_player_ship(self.ship)
-        globalvars.root.screen_manager.add_widget(self.map.display)
+        globalvars.root.switchScreen(self.map.display)
         
         self.galaxy_map.refresh()
         
@@ -78,7 +78,8 @@ class Universe(object):
         self.galaxy_map = galaxyscreen.GalaxyScreen( universe = self )
         
         globalvars.map = self.map
-        globalvars.root.screen_manager.add_widget(self.map.display)        
+        #globalvars.root.screen_manager.add_widget(self.map.display)        
+        globalvars.root.switchScreen(self.map.display)
         self.galaxy_map.refresh()
 
     def update(self,dt):

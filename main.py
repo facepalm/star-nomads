@@ -15,6 +15,7 @@ import util
 import globalvars
 import game
 import gps
+import menuscreen
 
 #graphics stuff
 
@@ -35,7 +36,7 @@ class GameRoot(AnchorLayout):
         super(GameRoot, self).__init__(*args, **kwargs)
         self.list_of_prev_screens = []
 
-    def onNextScreen(self, next_screen, transition='Slide'):
+    def onNextScreen(self, next_screen, transition='None'):
         if transition == 'None':
             self.screen_manager.transition = NoTransition()  
         else:
@@ -43,10 +44,13 @@ class GameRoot(AnchorLayout):
         if not self.list_of_prev_screens or (self.list_of_prev_screens[-1] is not self.screen_manager.current):
             self.list_of_prev_screens.append(self.screen_manager.current)
         self.screen_manager.current = next_screen
-
+        
     def onBackBtn(self):
         if self.list_of_prev_screens:
+            curr = self.screen_manager.current
             self.screen_manager.current = self.list_of_prev_screens.pop()
+            if not self.list_of_prev_screens:
+                self.list_of_prev_screens.append(curr)
             return True
         return False
         
@@ -54,6 +58,11 @@ class GameRoot(AnchorLayout):
         if not self.screen_manager.has_screen(next_screen.name):
             self.screen_manager.add_widget( next_screen )
         self.onNextScreen(next_screen.name)        
+        
+    #def hideScreen(self,screen):
+    #    if not self.screen_manager.has_screen(screen.name):
+    #        self.screen_manager.add_widget( screen )
+    #    self.list_of_prev_screens.append(screen.name)
 
 class GameApp(App):
 
@@ -80,6 +89,8 @@ class GameApp(App):
     def build(self):
         root = GameRoot()
         globalvars.root = root
+        menu = menuscreen.MenuScreen()
+        globalvars.root.switchScreen(menu)
         autoloaded = util.autoload() if globalvars.config['AUTOLOAD'] else False
         
                 
