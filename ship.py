@@ -3,6 +3,7 @@ from kivy.uix.image import Image
 import time
 import random
 import numpy as np
+import uuid
 #from functools import reduce
 
 import gps
@@ -25,6 +26,8 @@ class Ship(object):
         self.crew = 0
         if not hasattr(self, 'shipclass'): self.shipclass = 'Generic'
         if not hasattr(self, 'faction'): self.faction = 'NPC'
+        
+        self.registry = {}
         
         self.location = [0, 0]
         self.bearing = 0
@@ -121,9 +124,22 @@ class Ship(object):
                 
         print item.identity
         return False
+      
+    def register(self, obj, oid=''):
+        new_id = oid if oid else str(uuid.uuid4())
+        try:
+            self.registry[new_id] = obj
+            obj.id = new_id
+        except:
+            assert False, "global id collision!"
+        return new_id
+
+    def unregister(self, obj):
+        if obj.id in self.registry:
+            self.registry.pop(obj.id)    
         
-    def update(self,dt):
-        timeslice = dt/util.seconds(1,'day')
+    def update(self,secs):
+        timeslice = secs/util.seconds(1,'day')
         total_crew = sum(self.crew.values())
         if total_crew > 0:                        
             food_use = self.sub_res('Biomass', 2* 0.62 * total_crew * timeslice)
@@ -142,6 +158,11 @@ class Ship(object):
             #self.needs['Water']=Need('Water', self, 3.52, 3.52/86400.0, 3.52/600.0, self.new_drink_task, self.dehydration_hit,severity='HUMAN_BIOLOGICAL')
             #self.needs['WasteCapacitySolid']=Need('WasteCapacitySolid', self, 0.22, 0.22/192800.0, 0.22/300.0, self.number_2_task, self.code_brown)
             #self.needs['WasteCapacityLiquid']=Need('WasteCapacityLiquid', self, 3.87, 0.9675/21600.0, 3.87/30.0, self.number_1_task, self.code_yellow)  
+            
+        for obj in self.registry.values():
+            if hasattr(obj,'update'):
+                obj.update(secs)            
+        
 
 class Ark(Ship): #Player ship, or potentially player ship
     def __init__(self):        
@@ -186,7 +207,7 @@ class Ark(Ship): #Player ship, or potentially player ship
         
     def touched(self):
         #go to ship screen
-        if self.screen is None:
+        if not hasattr(self,'screen') or self.screen is None:
             self.screen = shippanel.ShipScreen(ship=self)
         globalvars.root.switchScreen(self.screen)
         print 'screen added'

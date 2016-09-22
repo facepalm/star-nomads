@@ -24,16 +24,16 @@ class Event(object):
         
         self.exclusion_radius = 50
         
-        self.mapimage = eventpanel.EventMapImage(event=self)
+        self.image = eventpanel.EventMapImage(event=self)
         
     def __getstate__(self):
         odict = self.__dict__.copy() # copy the dict since we change it
-        del odict['mapimage']              # remove gui entry
+        del odict['image']              # remove gui entry
         return odict
     
     def __setstate__(self,state):
-        self.__dict__.update(dict)   # update attributes
-        self.mapimage = eventpanel.EventMapImage(event=self)   
+        self.__dict__.update(state)   # update attributes
+        self.image = eventpanel.EventMapImage(event=self)   
         
     def update(self,secs):
         if self.spawn_in > 0:
@@ -51,7 +51,7 @@ class Event(object):
                 
     def discover(self,curmap=None):
         self.discovered = True        
-        self.mapimage.opacity = 1        
+        self.image.opacity = 1        
         if self.category == 'asteroid':
             #spawn asteroid
             if curmap:
@@ -68,7 +68,7 @@ class Event(object):
         
     def suicide(self):
         globalvars.map.unregister(self) #will no longer update        
-        self.mapimage.suicide()
+        self.image.suicide()
             
 class EventManager(object):
     jitter = 100 

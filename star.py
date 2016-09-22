@@ -33,7 +33,7 @@ def initialize_star(location,density,seed,widget,_map):
         if random.random() < 0.8:        
             newp = Planet(mass=masses[p],sun=star,orbit = random.random()*star.ice_line+star.burn_line)
             star.orbiting_bodies.append(newp)
-            widget.add_widget(newp.orbit_image)
+            widget.add_widget(newp.image)
         else:
             orbit = random.random()*star.ice_line+star.burn_line
             star.asteroid_belts.append(orbit)
@@ -122,16 +122,18 @@ class Star(object):
         
         
         #self.view = systempanel.SystemScreen(name=util.short_id(self.id)+"-system",primary=self)
+        
+        self.image = self.primary_image()
     
     def __getstate__(self):
         odict = self.__dict__.copy() # copy the dict since we change it
-        #del odict['image']              # remove gui entry
+        del odict['image']              # remove gui entry
         #if 'orbit_image' in odict: del odict['orbit_image']
         return odict
     
     def __setstate__(self,state):
         self.__dict__.update(state)   # update attributes
-        #self.image = self.get_image()    
+        self.image = self.primary_image()   
         #self.generate_orbital_image()
         #for o in self.orbiting_bodies:
             
@@ -267,25 +269,25 @@ class Planet(object):
         self.orbit_pos = random.random()*2*3.14159
         
         
-        self.image = planetimages.random_image(self)
-        
+        self.image_name = planetimages.random_image(self)
+        self.image = None
 
         #self.generate_primary_image()        
-        self.generate_orbital_image()                        
+        self.generate_image()                        
         
         #self.view = systempanel.SystemView(primary=self)
         #self.view = systempanel.SystemScreen(name=util.short_id(self.id)+"-system",primary=self)
         
     def __getstate__(self):
         odict = self.__dict__.copy() # copy the dict since we change it
-        #del odict['image']              # remove gui entry
-        if 'orbit_image' in odict: del odict['orbit_image']
+        del odict['image']              # remove gui entry
+        #if 'orbit_image' in odict: del odict['orbit_image']
         return odict
     
     def __setstate__(self,state):
         self.__dict__.update(state)   # update attributes
         #self.image = self.get_image()    
-        self.generate_orbital_image()
+        self.generate_image()
         
     def escape_velocity(self):
         mmu = 6.674E-11 * self.mass                
@@ -319,9 +321,9 @@ class Planet(object):
         return planetimages.load_panel(self, self.image)
         
     
-    def generate_orbital_image(self):         
-        self.orbit_image = planetimages.load_orbital(self, self.image,radius=self.img_radius)
-
+    def generate_image(self):         
+        self.image = planetimages.load_orbital(self, self.image_name,radius=self.img_radius)
+       
 
         
     '''def update(self,dt):

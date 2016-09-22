@@ -34,12 +34,12 @@ class ModuleImage(Image):
         
 
 class Module(object):
-    def __init__(self,**kwargs):
-        globalvars.map.register(self)
-        
+    def __init__(self,**kwargs):               
         self.name = 'Module'
         
         self.ship = kwargs['ship']
+        self.ship.register(self)
+        
         self.ship.crew_use[self.id] = 0
         
         self.room = kwargs['room'] if 'room' in kwargs else None

@@ -102,6 +102,10 @@ class Map(object): #more or less just a container for all of the things that hap
     def __setstate__(self,state):
         self.__dict__.update(state)   # update attributes
         self.display = mapscreen.MapScreen(map=self)
+        for obj in self.registry:            
+            if hasattr(self.registry[obj], 'image'): 
+                print self.registry[obj]
+                self.display.ids['mapscale'].add_widget(self.registry[obj].image)
 
     def register(self, obj, oid=''):
         new_id = oid if oid else str(uuid.uuid4())
@@ -133,7 +137,7 @@ class Map(object): #more or less just a container for all of the things that hap
             new_event = self.event_mgr.new(loc)
             if new_event:
                 #ping location
-                self.display.ids['mapscale'].add_widget(new_event.mapimage)
+                self.display.ids['mapscale'].add_widget(new_event.image)
                 #self.display.spawn_ping(location=new_event.location,extent=100.,color=new_event.color)
         if random.random() < 0.1:
             self.display.event_ping(extent=self.ship.sensor_strength(active=True))                
