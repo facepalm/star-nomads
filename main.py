@@ -59,6 +59,13 @@ class GameRoot(AnchorLayout):
             self.screen_manager.add_widget( next_screen )
         self.onNextScreen(next_screen.name)        
         
+    def initialize(self):
+        self.screen_manager.clear_widgets()
+        self.list_of_prev_screens = []
+        menu = menuscreen.MenuScreen()
+        self.switchScreen(menu)
+                    
+        
     #def hideScreen(self,screen):
     #    if not self.screen_manager.has_screen(screen.name):
     #        self.screen_manager.add_widget( screen )
@@ -89,8 +96,8 @@ class GameApp(App):
     def build(self):
         root = GameRoot()
         globalvars.root = root
-        menu = menuscreen.MenuScreen()
-        globalvars.root.switchScreen(menu)
+        #menu = menuscreen.MenuScreen()
+        globalvars.root.initialize()
         autoloaded = util.autoload() if globalvars.config['AUTOLOAD'] else False
         
                 

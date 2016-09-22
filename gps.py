@@ -13,6 +13,10 @@ speed = 0
 gps_scale = 100000
 last_update=0
 
+def hard_reset():
+    global lat, lon
+    lat = 0
+    lon = 0
 
 def update_location(**kwargs):
     global lat, lon, bearing, scale

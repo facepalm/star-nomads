@@ -83,8 +83,7 @@ class Map(object): #more or less just a container for all of the things that hap
         print 'Star distance',self.density
         #quit()
         
-        if not globalvars.map:
-            globalvars.map = self
+        globalvars.map = self
             
         self.event_mgr = event.EventManager()
         
