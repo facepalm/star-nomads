@@ -229,7 +229,7 @@ class MapScreen(Screen):
         #self.ids['mapscale'].x = -globalvars.config['MAP SCALING']*self.location[0] + self.width/2 #dx*2#globalvars.config['MAP SCALING']
         #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
         
-        duration = 1.0 if animate else 0.1
+        duration = 1.0 if animate else 0.01
         if not self.ids['mapscale'].touched:
             anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
             anim &= Animation( scale = globalvars.config['MAP SCALING'], duration = duration)       
