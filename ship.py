@@ -109,7 +109,7 @@ class Ship(object):
     def harvest(self,item):
         if not hasattr(item,'identity'): return False
         dist = util.vec_dist(self.location,item.loc)
-        if dist > 20: 
+        if dist > self.sensor_strength():
             print 'too far away!',dist
             return False
         if item.identity == 'asteroid': 

@@ -344,7 +344,7 @@ class Planet(object):
 
     def update(self,secs):
         asteroid_odds = self.mass / 1E26
-        if random.random() < (secs/util.seconds(6,'months'))*(asteroid_odds**0.5):
+        if random.random() < (min(secs,util.seconds(1,'day'))/util.seconds(6,'months'))*(asteroid_odds**0.5):
             #new 'roid
             angle = math.pi/4 + random.random()*math.pi/4
             if random.random() < 0.5: angle *= -1

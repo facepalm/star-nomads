@@ -230,6 +230,7 @@ class Resource(object):
         return self.amount >= amt
         
     def update(self,dt):
+        if self.demand == 0 and self.supply == 0: return
         diffsum = (self.demand - self.supply)/(self.demand + self.supply)
         frac = math.exp(-dt/self.tc)
         self.supply *= frac
