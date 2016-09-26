@@ -11,6 +11,7 @@ from PIL import Image
 import galaxyscreen
 import globalvars
 import gps
+import captainslog
 
 class Universe(object):    
     def __init__(self):
@@ -27,6 +28,8 @@ class Universe(object):
         
         self.ship=None
         
+        
+        self.status_log = captainslog.CaptainsLog()
         
         #generate player
         #generate ship

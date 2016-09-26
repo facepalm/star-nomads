@@ -165,6 +165,7 @@ def autosave():
 def autoload():
     try:
     #if True:
+        assert False
         datafile = open(os.path.join('save','autosave'),'r')
         #global universe
         globalvars.universe = pickle.load(datafile)

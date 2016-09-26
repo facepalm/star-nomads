@@ -133,10 +133,12 @@ kv = '''
                         mipmap: True                        
                         
             Button:
+                id: statusdisplay
                 size_hint: 0.5, 1.0
                 text_size: self.size[0]*0.9, self.size[1]*0.9
                 halign: 'left'
                 valign: 'middle'
+                on_press: self.parent.parent.parent.on_log_button()             
                 text:"Test text doo doo de doo tjlkasldkjadl\\n fhjklhdzfk jhzdslkf"                                                       
                     
                         
@@ -186,7 +188,10 @@ class MapScreen(Screen):
             globalvars.root.switchScreen(self.map.ship.storage.get_screen())   
             
     def on_galmappanel_button(self):
-        globalvars.root.switchScreen(self.map.universe.galaxy_map)      
+        globalvars.root.switchScreen(self.map.universe.galaxy_map)
+        
+    def on_log_button(self):
+        globalvars.root.switchScreen(globalvars.universe.status_log.screen)            
         
     def on_pre_enter(self):
         gps.start()
@@ -198,6 +203,9 @@ class MapScreen(Screen):
         print 'Resolution information:',Window.width, Window.height, globalvars.config['MAP SCALING']
         
         #Clock.schedule_interval(self.update, 0.1)               
+        
+        globalvars.universe.status_log.screen.status_display = self.ids['statusdisplay']
+        globalvars.universe.status_log.screen.refresh()
                 
     def on_leave(self):  
         self.displayed = False              
