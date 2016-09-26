@@ -153,7 +153,8 @@ class AsteroidBubble(Bubble):
         
     def on_harvest(self,*args):
         harv = globalvars.universe.ship.harvest(self.ast)
-        if harv: self.parent.remove_widget(self)
+        globalvars.universe.status_log.add(harv[1])
+        if harv[0]: self.parent.remove_widget(self)
         
         
 class AsteroidImage(Image):

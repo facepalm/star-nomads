@@ -111,7 +111,7 @@ class Ship(object):
         dist = util.vec_dist(self.location,item.loc)
         if dist > self.sensor_strength():
             print 'too far away!',dist
-            return False
+            return False, 'Too far away!'
         if item.identity == 'asteroid': 
             #search for free asteroid harvesting module
             for r in self.asteroid_processing:
@@ -120,10 +120,10 @@ class Ship(object):
                     room = self.find_room(r)
                     test = room.process_asteroid(item)
                     print test
-                    if test: return True
+                    if test: return True, 'Asteroid harvested!'
                 
         print item.identity
-        return False
+        return False, 'Uknown item!'
       
     def register(self, obj, oid=''):
         new_id = oid if oid else str(uuid.uuid4())
