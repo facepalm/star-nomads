@@ -112,7 +112,7 @@ class EmptyRoomBubble(Bubble):
         txt += 'Power: '+str(self.room['power'])+'\n'
         txt += 'Avail. Tokens:'
         
-        print txt
+        #print txt
         self.ids['room_info'].text = txt
         self.selection = None
         
@@ -128,7 +128,7 @@ class EmptyRoomBubble(Bubble):
         for i in modules.all_modules:
             v = modules.all_modules[i]
             if v['Size'] == self.room['size'] and v['Power'] <= self.room['power']:            
-                btn = Button(text=v['Name'], size_hint_y=None, height=44)
+                btn = Button(text=v['Name'], font_size='12dp', size_hint_y=None, height='50dp')
                 btn.entry = i
                 btn.bind(on_release = lambda btn: self.select(btn.entry))#self.ids['dropdown'].select(btn.text))
                 self.ids['dropdown'].add_widget(btn)          
@@ -155,8 +155,8 @@ class EmptyRoomBubble(Bubble):
         self.ids['room_info'].texture_update()        
         
         self.size = self.ids['room_info'].texture_size
-        self.width += 30
-        self.height += 80        
+        self.width += 50
+        self.height = '120dp'        
         
     def on_touch_down(self, touch):
         touch.push()
@@ -207,8 +207,8 @@ class ModuleBubble(Bubble):
         
         self.size = self.ids['module_info'].texture_size
         #print self.size
-        self.width += 10
-        self.height += 50
+        self.width += 30
+        self.height = '150dp'
         
     def suicide(self):
         if self.parent is not None: self.parent.remove_widget(self)        

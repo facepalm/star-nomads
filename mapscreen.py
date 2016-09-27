@@ -170,9 +170,6 @@ class MapScreen(Screen):
         
 
         self.name = 'Star Map -'+util.short_id(self.map.id)
-        print "#############New map!", self.name
-        #assert False
-        #quit()
         
         self.Builder = None
         
@@ -181,6 +178,8 @@ class MapScreen(Screen):
         
         self.ids['stars'].density = 500./self.map.density
         self.ids['stars'].on_size()
+        
+        self.accum_dist = 0
         
     def on_shippanel_button(self):
         if self.map and self.map.ship:
@@ -211,6 +210,9 @@ class MapScreen(Screen):
         globalvars.universe.status_log.screen.status_display = self.ids['statusdisplay']
         globalvars.universe.status_log.screen.refresh()
                 
+        self.curr_loc = [0,0]
+        self.on_location()        
+                
     def on_leave(self):  
         self.displayed = False              
         gps.stop()
@@ -226,12 +228,13 @@ class MapScreen(Screen):
         dy = self.location[1] - self.curr_loc[1]
         
         dist = math.sqrt(dx**2 + dy**2)
+        self.accum_dist += dist
         animate = False if self.curr_loc == [0,0] or dist >= 10000 else True
         print "animate", animate, self.curr_loc, dist
         self.ids['stars'].animation = animate
         
         self.curr_loc = self.location
-        self.ids['stars'].shift(dx,dy)
+        if animate: self.ids['stars'].shift(dx,dy)
         #print self.ids['stars'].scale
         self.ids['stars'].scale = 0.001*globalvars.config['MAP SCALING']*self.ids['mapscale'].scale
         
@@ -242,7 +245,8 @@ class MapScreen(Screen):
         #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
         
         duration = 1.0 if animate else 0.01
-        if not self.ids['mapscale'].touched:
+        if not self.ids['mapscale'].touched and self.accum_dist >= 20:
+            self.accum_dist = 0
             anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
             anim &= Animation( scale = globalvars.config['MAP SCALING'], duration = duration)       
             anim.start(self.ids['mapscale'])

@@ -138,9 +138,9 @@ class AsteroidBubble(Bubble):
         #resize?
         
         self.size = self.ids['asteroid_info'].texture_size
-        print self.size
-        self.width += 10
-        self.height += 40
+        #print self.size
+        self.width += 30
+        self.height = '100dp'
         
     def on_touch_down(self, touch):
         touch.push()

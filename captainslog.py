@@ -29,7 +29,7 @@ kv = '''
         
             StackLayout:
                 id: msglist
-                size_hint: 1.0,None            
+                size_hint: None ,None            
                 size: root.width, root.height
                 pos_hint: {'center_x': 0.5, 'center_y': .5}
                 padding: 20
@@ -79,12 +79,18 @@ class LogScreen(Screen):
             #print Window.width
             #msgs.width = Window.width
             #msgs.height = num_msg*40
+            #msgs.width = Window.width
+            w=Window.width
             for i in range(num_msg):
-                txt = Label(text=str(self.log.archive[i]['Time']),size_hint=[None,None], size = [0.2*Window.width,25])
+                txt = Label(text=str(self.log.archive[i]['Time']),size_hint=[None,None], size = [w/5.,50])
                 txt.text_size = txt.size
+                txt.halign = 'right'#text_size = txt.size
+                txt.valign = 'top'
                 msgs.add_widget(txt)    
-                msg = Label(text=self.log.archive[i]['Message'],size_hint=[None,None], size = [0.6*Window.width,25])
+                msg = Label(text=self.log.archive[i]['Message'],size_hint=[None,None], size = [3*w/5.,50])
                 msg.text_size = msg.size
+                msg.halign = 'left'
+                msg.valign = 'top'
                 msgs.add_widget(msg)
         
 
