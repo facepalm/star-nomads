@@ -168,7 +168,11 @@ class MapScreen(Screen):
         self.map = kwargs['map'] if 'map' in kwargs else None
         super(MapScreen,self).__init__(**kwargs)
         
+
         self.name = 'Star Map -'+util.short_id(self.map.id)
+        print "#############New map!", self.name
+        #assert False
+        #quit()
         
         self.Builder = None
         

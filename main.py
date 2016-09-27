@@ -7,7 +7,7 @@ from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.core.window import Window  
 from kivy.properties import ObjectProperty
-from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, SwapTransition, SlideTransition
+from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, SwapTransition, SlideTransition, FadeTransition, FallOutTransition
 from kivy.lang import Builder
 
 from intropanel import IntroPanelView
@@ -36,16 +36,17 @@ class GameRoot(AnchorLayout):
         super(GameRoot, self).__init__(*args, **kwargs)
         self.list_of_prev_screens = []
 
-    def onNextScreen(self, next_screen, transition='None'):
+    def onNextScreen(self, next_screen, transition='Slide'):
         if transition == 'None':
             self.screen_manager.transition = NoTransition()  
         else:
-            self.screen_manager.transition = SlideTransition()
+            self.screen_manager.transition = NoTransition()
         if not self.list_of_prev_screens or (self.list_of_prev_screens[-1] is not self.screen_manager.current):
             self.list_of_prev_screens.append(self.screen_manager.current)
         self.screen_manager.current = next_screen
         
     def onBackBtn(self):
+        print self.list_of_prev_screens
         if self.list_of_prev_screens:
             curr = self.screen_manager.current
             self.screen_manager.current = self.list_of_prev_screens.pop()
@@ -57,7 +58,7 @@ class GameRoot(AnchorLayout):
     def switchScreen(self,next_screen, transition='Slide'):
         if not self.screen_manager.has_screen(next_screen.name):
             self.screen_manager.add_widget( next_screen )
-        self.onNextScreen(next_screen.name)        
+        self.onNextScreen(next_screen.name, transition)        
         
     def initialize(self):
         self.screen_manager.clear_widgets()

@@ -163,9 +163,8 @@ def autosave():
         
     
 def autoload():
+    return False
     try:
-    #if True:
-        assert False
         datafile = open(os.path.join('save','autosave'),'r')
         #global universe
         globalvars.universe = pickle.load(datafile)
@@ -176,7 +175,6 @@ def autoload():
         generic_logger.info("Universe loaded.  Initiating prime mover...")
         return True
     except:
-    #    pass
         e = sys.exc_info()[0]
         generic_logger.warning("Autoload failed: %s" % e)
     return False

@@ -34,6 +34,8 @@ class Ship(object):
         
         self.storage = resources.ResourceModel()
         
+        self.player_ship = False
+        
         self.active_sensors={}
         self.passive_sensors={}
         self.crew_managed = {}
@@ -111,7 +113,7 @@ class Ship(object):
         dist = util.vec_dist(self.location,item.loc)
         if dist > self.sensor_strength():
             print 'too far away!',dist
-            return False, 'Too far away!'
+            return False, 'Harvestable object is too far away!'
         if item.identity == 'asteroid': 
             #search for free asteroid harvesting module
             for r in self.asteroid_processing:
@@ -173,6 +175,7 @@ class Ark(Ship): #Player ship, or potentially player ship
         self.image = shipimage.ShipImage(ship=self)
         self.screen = None
         
+        self.player_ship = True
         
     def get_location(self):
         #self.location = gps.get_location()

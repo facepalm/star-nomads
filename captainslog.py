@@ -80,10 +80,10 @@ class LogScreen(Screen):
             #msgs.width = Window.width
             #msgs.height = num_msg*40
             for i in range(num_msg):
-                txt = Button(text=str(self.log.archive[i]['Time']),size_hint=[None,None], size = [0.1*Window.width,50])
+                txt = Label(text=str(self.log.archive[i]['Time']),size_hint=[None,None], size = [0.2*Window.width,25])
                 txt.text_size = txt.size
                 msgs.add_widget(txt)    
-                msg = Button(text=self.log.archive[i]['Message'],size_hint=[None,None], size = [0.6*Window.width,50])
+                msg = Label(text=self.log.archive[i]['Message'],size_hint=[None,None], size = [0.6*Window.width,25])
                 msg.text_size = msg.size
                 msgs.add_widget(msg)
         
