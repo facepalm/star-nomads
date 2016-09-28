@@ -10,7 +10,7 @@ lon = 00
 bearing = 0
 speed = 0
 
-gps_scale = 100000
+#gps_scale = 100000
 last_update=0
 
 def hard_reset():
@@ -21,8 +21,13 @@ def hard_reset():
 def update_location(**kwargs):
     global lat, lon, bearing, scale
     print 'lat: {lat}, lon: {lon}'.format(**kwargs)
-    lat = kwargs['lat'] * gps_scale
-    lon = kwargs['lon'] * gps_scale
+    
+    #from http://stackoverflow.com/a/19356480
+    m_per_deg_lat = 111132.954 - 559.822 * math.cos( 2 * kwargs['lat'] ) + 1.175 * math.cos( 4 * kwargs['lat'])
+    m_per_deg_lon = 111132.954 * math.cos ( kwargs['lat'] )
+    
+    lat = kwargs['lat'] * m_per_deg_lat
+    lon = kwargs['lon'] * m_per_deg_lon
     bearing = kwargs['bearing']
     speed = kwargs['speed']
 
