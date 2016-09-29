@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg6559"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="ArkSymbol.svg"
+   inkscape:export-filename="/home/brad/Useless_Stuff/Coding/star-nomads/img/ark/MapSymbolSmall.png"
+   inkscape:export-xdpi="24.800564"
+   inkscape:export-ydpi="24.800564">
+  <defs
+     id="defs6561" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.24748737"
+     inkscape:cx="-714.26093"
+     inkscape:cy="1029.9156"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1455"
+     inkscape:window-height="777"
+     inkscape:window-x="93"
+     inkscape:window-y="46"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata6564">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="arc"
+       style="fill:#01e100;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path6567"
+       sodipodi:cx="383.26447"
+       sodipodi:cy="391.69897"
+       sodipodi:rx="185.15398"
+       sodipodi:ry="185.15398"
+       d="m 365.43268,575.99228 a 185.15398,185.15398 0 1 1 14.84233,0.83654"
+       sodipodi:start="1.6672537"
+       sodipodi:end="7.8701281"
+       sodipodi:open="true"
+       transform="matrix(0.7052234,0.70898516,-0.70898516,0.7052234,439.52287,-124.45934)"
+       inkscape:export-filename="/home/brad/Useless_Stuff/Coding/star-nomads/img/ark/presplash.png"
+       inkscape:export-xdpi="101.31085"
+       inkscape:export-ydpi="101.31085" />
+    <path
+       style="fill:#01e100;fill-opacity:1;stroke:none"
+       d="M 635.75899,447.14032 C 621.19787,589.44891 475.40991,649.03109 380.6567,622.59455 L 258.19703,744.59419 c -13.53455,14.60443 -19.09081,32.10616 -17.40349,45.42189 l 5.42032,243.97342 473.90753,-471.53724 c 6.44669,-8.95466 8.90502,-16.00429 0.39415,-28.88778 z"
+       id="path7083"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:export-filename="/home/brad/Useless_Stuff/Coding/star-nomads/img/ark/presplash.png"
+       inkscape:export-xdpi="101.31085"
+       inkscape:export-ydpi="101.31085" />
+    <path
+       style="fill:#01e100;fill-opacity:1;stroke:none"
+       d="M 647.59514,209.1542 C 577.83175,139.04747 455.90716,107.15194 353.13858,135.53303 l 83.66609,83.20358 c 45.85924,1.81576 98.4679,20.78837 139.87107,60.96071 z m 0.0716,-0.0713 -71.00817,70.63142 c 47.12425,48.36023 54.08536,84.6522 60.47524,140.29703 l 82.25201,83.71893 c 22.58731,-87.86499 14.49447,-207.50797 -71.719,-294.64745 z"
+       id="path7093"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccc"
+       inkscape:export-filename="/home/brad/Useless_Stuff/Coding/star-nomads/img/ark/presplash.png"
+       inkscape:export-xdpi="101.31085"
+       inkscape:export-ydpi="101.31085" />
+    <path
+       sodipodi:nodetypes="cccccccc"
+       inkscape:connector-curvature="0"
+       id="path7125"
+       d="M 409.47353,219.64782 C 267.0895,233.45167 206.73257,378.92059 232.66465,473.81308 L 110.01537,595.62211 C 95.339143,609.07878 77.808107,614.54185 64.501543,612.78373 L -179.43953,606.06555 294.61214,134.67327 c 8.98881,-6.39898 16.05143,-8.81976 28.88946,-0.24044 z"
+       style="fill:#01e100;fill-opacity:1;stroke:none"
+       inkscape:export-filename="/home/brad/Useless_Stuff/Coding/star-nomads/img/ark/presplash.png"
+       inkscape:export-xdpi="101.31085"
+       inkscape:export-ydpi="101.31085" />
+    <text
+       xml:space="preserve"
+       style="font-size:12.67777634px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:sans;-inkscape-font-specification:sans"
+       x="-678.95935"
+       y="641.1723"
+       id="text3755"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.72709288,-0.70235233,0.76166487,0.63959215,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan3757"
+         x="-678.95935"
+         y="641.1723"
+         style="font-size:101.42221069px;font-weight:600;fill:#ff7226;fill-opacity:1;font-family:FreeSans;-inkscape-font-specification:FreeSans Semi-Bold">Loading</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3759"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:sans;font-style:normal;font-weight:normal;font-size:18px;line-height:125%;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:sans;font-stretch:normal;font-variant:normal"><flowRegion
+         id="flowRegion3761"><rect
+           id="rect3763"
+           width="2230.4167"
+           height="1785.9497"
+           x="-771.75653"
+           y="-491.15094" /></flowRegion><flowPara
+         id="flowPara3765"></flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:12.67777634px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:sans;-inkscape-font-specification:sans"
+       x="602.81445"
+       y="-117.08341"
+       id="text3755-1"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.65130781,0.77315005,-0.68988313,0.71643058,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan3757-4"
+         x="602.81445"
+         y="-117.08341"
+         style="font-size:101.42221069px;font-style:normal;font-weight:600;text-align:center;text-anchor:middle;fill:#001fce;fill-opacity:1;font-family:FreeSans;-inkscape-font-specification:FreeSans Semi-Bold">Star</tspan><tspan
+         sodipodi:role="line"
+         x="602.81445"
+         y="9.6943274"
+         style="font-size:101.42221069px;font-style:normal;font-weight:600;text-align:center;text-anchor:middle;fill:#001fce;fill-opacity:1;font-family:FreeSans;-inkscape-font-specification:FreeSans Semi-Bold"
+         id="tspan3788">Nomads</tspan></text>
+  </g>
+</svg>
