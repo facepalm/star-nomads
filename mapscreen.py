@@ -44,7 +44,6 @@ kv = '''
         do_collide_after_children: True
         auto_bring_to_front: False
         do_rotation: False
-        mapxy: self.parent.location[1]+self.parent.width/2,self.parent.location[0]+self.parent.height/2
         
         Image:
             size: 1,1
@@ -241,7 +240,7 @@ class MapScreen(Screen):
         self.ids['stars'].scale = 0.001*globalvars.config['MAP SCALING']*self.ids['mapscale'].scale
         
         #print 'map',self.ids['mapscale'].mapxy
-        self.ids['mapscale'].mapxys = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2, self.ids['mapscale'].scale]
+        #self.ids['mapscale'].mapxys = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2, self.ids['mapscale'].scale]
         
         #self.ids['mapscale'].x = -globalvars.config['MAP SCALING']*self.location[0] + self.width/2 #dx*2#globalvars.config['MAP SCALING']
         #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
@@ -310,14 +309,13 @@ class MapScreen(Screen):
     #    print 'loc changed!'        
                 
 class MapScatterPlane(ScatterPlane):
-    mapxys = ListProperty([0,0,1])
     
     def __init__(self,**kwargs):
         super(MapScatterPlane,self).__init__(**kwargs)                
         self.trans = None
-        self.update_mapxy()
         self.touched = False
         self.scale_anim = False
+        self.touch_event = None
         
     def on_transform_with_touch(self,touch):
         self.touch()                   
@@ -329,55 +327,16 @@ class MapScatterPlane(ScatterPlane):
 
     def touch(self):
         self.touched = True
+        if self.touch_event is None:
+            self.touch_event = Clock.schedule_once(self.reset_touch,1)
+        else:
+            self.touch_event.timeout = 1
         if self.parent.anim: self.parent.anim.cancel(self) #Animation.cancel_all(self, 'scale')
     
-    '''    
-    #from https://github.com/kivy/kivy/wiki/Menu-on-long-touch    
-    def menu(self, touch, *args):
-        menu = BoxLayout(
-                size_hint=(None, None),
-                orientation='vertical',
-                center=touch.pos)
-        menu.add_widget(Button(text='a'))
-        menu.add_widget(Button(text='b'))
-        close = Button(text='close')
-        close.bind(on_release=partial(self.close_menu, menu))
-        menu.add_widget(close)
-        self.parent.add_widget(menu)    
-        
-    def close_menu(self, widget, *args):
-        self.parent.remove_widget(widget)        
-        
-    def create_clock(self, touch, *args):
-        callback = partial(self.menu, touch)
-        Clock.schedule_once(callback, 1)
-        touch.ud['event'] = callback
-
-    def delete_clock(self, touch, *args):
-        if 'event' in touch.ud: Clock.unschedule(touch.ud['event'])    
-        
-    def on_touch_down(self,*args):
-        self.create_clock(*args)
-        return False
-    
-    def on_touch_up(self,*args):
-        self.delete_clock(*args)
-        return False   '''
-        
-        
-        
-    def update_mapxy(self,*args): 
-        self.touched=False  
-        pass#self.pos = self.mapxy
-        '''if self.trans:
-            self.trans.xy = self.mapxy[0],self.mapxy[1]
-        else:     
-            with self.canvas.before:
-                PushMatrix()                                             
-                self.trans = Translate(self.mapxy[0],self.mapxy[1])                                 
-            with self.canvas.after:
-                PopMatrix()  ''' 
-
+    def reset_touch(self,*args):        
+        self.touch_event = None
+        self.touched = False
+                       
     
     def ping(self,location=None,extent=10,duration=None,delay=0.,color=[1.,1.,1.,1.],speed_factor=1.0):
         if not duration: duration = extent/(PING_SPEED*speed_factor)
