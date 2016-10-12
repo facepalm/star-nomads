@@ -181,6 +181,8 @@ class MapScreen(Screen):
         
         self.accum_dist = 0
         
+        self.anim = None
+        
     def on_shippanel_button(self):
         if self.map and self.map.ship:
         
@@ -250,6 +252,7 @@ class MapScreen(Screen):
             anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
             anim &= Animation( scale = globalvars.config['MAP SCALING'], duration = duration)       
             anim.start(self.ids['mapscale'])
+            self.anim = anim
             
         #self.ids['mapscale'].update_mapxy()
         
@@ -314,13 +317,19 @@ class MapScatterPlane(ScatterPlane):
         self.trans = None
         self.update_mapxy()
         self.touched = False
+        self.scale_anim = False
         
     def on_transform_with_touch(self,touch):
-        self.touched = True           
+        self.touch()                   
         
     def on_touched(self,touch):
-        self.touched = True   
+        self.touch()      
+        
         return False
+
+    def touch(self):
+        self.touched = True
+        if self.parent.anim: self.parent.anim.cancel(self) #Animation.cancel_all(self, 'scale')
     
     '''    
     #from https://github.com/kivy/kivy/wiki/Menu-on-long-touch    
