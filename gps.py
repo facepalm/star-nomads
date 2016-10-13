@@ -10,6 +10,7 @@ lat = 00
 lon = 00
 bearing = 0
 speed = 0
+accuracy = 1000
 
 #gps_scale = 100000
 last_update=0
@@ -20,7 +21,7 @@ def hard_reset():
     lon = 0
 
 def update_location(**kwargs):
-    global lat, lon, bearing, scale
+    global lat, lon, bearing, scale, accuracy
     print 'lat: {lat}, lon: {lon}'.format(**kwargs)
     
     #from http://stackoverflow.com/a/19356480
@@ -31,6 +32,7 @@ def update_location(**kwargs):
     lon = kwargs['lon'] * m_per_deg_lon
     bearing = kwargs['bearing']
     speed = kwargs['speed']
+    accuracy = kwargs['accuracy']
 
 try:
     gps.configure(on_location=update_location)
@@ -52,12 +54,14 @@ def stop():
     
 def get_location():
     import random
-    global lat, lon, last_update
+    global lat, lon, last_update, accuracy
     tc = 1 if not last_update else (time.time()-last_update)*10
     #print time.time()
     last_update = time.time()
-    if not use_gps: lon += 5*tc*(random.random() ) #* gps_scale/100000
-    if not use_gps: lat += 2.5*tc*(random.random() )
+    if not use_gps: 
+        lon += 5*tc*(random.random() ) #* gps_scale/100000
+        lat += 2.5*tc*(random.random() )
+        accuracy = 1
     #lon += (random.random() )/10
     #if random.random() < 0.05: 
     #    print 'should trigger!'

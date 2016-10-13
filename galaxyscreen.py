@@ -44,13 +44,13 @@ class GalaxyScreen(Screen):
         plane.canvas.after.add(Color(1,0.1,0.1,1))
         for m in self.universe.map_nodes:
             coords = self.universe.map_nodes[m]['Map'].galactic_coordinates
-            dot = Line(circle=(coords[0],coords[1],2))
+            dot = Line(circle=(coords[0],coords[1],2),width=2)
             plane.canvas.after.add(dot)
             
         plane.canvas.after.add(Color(1,.9,0.1,1))
         if globalvars.map:
             coords = globalvars.map.galactic_coordinates
-            dot = Line(circle=(coords[0],coords[1],1))
+            dot = Line(circle=(coords[0],coords[1],1),width=1.5)
             plane.canvas.after.add(dot)
             plane.pos = [-plane.scale*coords[0] + Window.width/2,-plane.scale*coords[1] + Window.height/2]
                             

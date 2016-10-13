@@ -9,7 +9,7 @@ from kivy.uix.scatter import ScatterPlane
 from kivy.graphics.texture import Texture
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, NumericProperty
 from kivy.graphics import Line, Color, Rotate, PushMatrix, PopMatrix, Translate
 from kivy.animation import Animation
 from kivy.uix.boxlayout import BoxLayout
@@ -45,11 +45,17 @@ kv = '''
         auto_bring_to_front: False
         do_rotation: False
         
-        Image:
-            size: 1,1
-            color: 1,0,0,1
-            center: self.parent.parent.location
-        
+        #Image:
+        #    size: 1,1
+        #    color: 1,1,0,1
+        #    center: self.parent.parent.location
+        canvas.before:
+            Color:
+                rgba: .2, .2, .2, .5
+            Ellipse: 
+                pos: self.parent.location[0] - self.parent.accuracy,self.parent.location[1] - self.parent.accuracy
+                size: 2*self.parent.accuracy,2*self.parent.accuracy
+                    
       
                                                                                  
             
@@ -148,7 +154,7 @@ kv = '''
         Label:
             pos_hint: {'top': 1.00, 'left': 0.2}
             size_hint: 0.5,0.05
-            text: '%02.02e %02.02e' % (self.parent.parent.location[0], self.parent.parent.location[1])
+            text: '%02.02e %02.02e %d' % (self.parent.parent.location[0], self.parent.parent.location[1], self.parent.parent.accuracy)
             id: loclabel 
         Label:
             pos_hint: {'top': 0.95, 'left': 0.1}
@@ -162,6 +168,7 @@ Builder.load_string(kv)
 
 class MapScreen(Screen):
     location = ListProperty([0, 0])
+    accuracy = NumericProperty(50)
 
     def __init__(self,**kwargs):
         self.map = kwargs['map'] if 'map' in kwargs else None
@@ -222,6 +229,7 @@ class MapScreen(Screen):
         #self.location = gps.get_location()
         self.ids['gpslabel'].text = 'ON' if gps.use_gps else 'OFF'
         self.ids['mapscale'].touched=False  
+        self.accuracy = gps.accuracy
         return self.displayed
         
     def on_location(self, *args):
@@ -245,7 +253,7 @@ class MapScreen(Screen):
         #self.ids['mapscale'].x = -globalvars.config['MAP SCALING']*self.location[0] + self.width/2 #dx*2#globalvars.config['MAP SCALING']
         #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
         
-        duration = 1.0 if animate else 0.01
+        duration = 1.0 if animate and self.accuracy < 20 else 0.01
         if not self.ids['mapscale'].touched and self.accum_dist >= 20:
             self.accum_dist = 0
             anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
