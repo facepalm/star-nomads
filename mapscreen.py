@@ -27,6 +27,9 @@ from functools import partial
 
 PING_SPEED = 50.
 
+btn_icons = {'Dock' : 'img/icon/noun-project/icon54-port.png',
+             'Build': 'img/icon/noun-project/rob-armes-mining-tools.png'}
+
 kv = '''
 <MapScreen@Screen>:
     name: 'star map'    
@@ -102,23 +105,26 @@ kv = '''
                         size_hint: 0.9,0.9
                         pos_hint: {'center_x': 0.5, 'center_y': .5}
                         mipmap: True
-                    
+                                
+                        
             Button:
                 size_hint: None, 1.0
                 width: self.height
                 pos_hint: {'x': 0.0, 'left': 1.00}
-                id: warehousebtn   
-                on_press: self.parent.parent.parent.on_respanel_button()             
+                status: 'DOCK'
+                id: dockbuildbtn   
+                on_press: self.parent.parent.parent.on_dockbuild_button()             
                 BoxLayout:
                     pos: self.parent.pos
                     size: self.parent.size
                     
                     Image:
-                        source: 'img/icon/noun-project/victor-fedyuk-clipboard.png'
+                        id: dockbuildimg
+                        source: 'img/icon/noun-project/icon54-port.png'
                         color: 0.1, 1.0, 0.1, 1.0
                         size_hint: 0.9,0.9
                         pos_hint: {'center_x': 0.5, 'center_y': .5}
-                        mipmap: True  
+                        mipmap: True                        
                         
             Button:
                 size_hint: None, 1.0
@@ -200,6 +206,16 @@ class MapScreen(Screen):
             
     def on_galmappanel_button(self):
         globalvars.root.switchScreen(self.map.universe.galaxy_map)
+
+    def on_dockbuild_button(self):        
+        btn = self.ids['dockbuildbtn']
+        print "Attempting to dock and/or build something:", btn.status
+        if btn.status == 'DOCK':
+            obj = self.map.fetch_objects(self.location,self.map.ship.sensor_strength() )
+            print obj
+            if obj == []: return False
+            if len(obj) > 1: #m
+                print 'More than one dockable in range!  resolve'
         
     def on_log_button(self):
         globalvars.root.switchScreen(globalvars.universe.status_log.screen)            
@@ -230,6 +246,19 @@ class MapScreen(Screen):
         self.ids['gpslabel'].text = 'ON' if gps.use_gps else 'OFF'
         self.ids['mapscale'].touched=False  
         self.accuracy = gps.accuracy
+        
+        #check if the dockbuild button should be dock or build
+        obj = self.map.fetch_objects(self.location,10)
+        btn = self.ids['dockbuildbtn']
+        if obj == [] and btn.status == 'DOCK':
+            self.ids['dockbuildimg'].source = btn_icons['Build']
+            btn.status = 'BUILD'
+            btn.texture_update()
+        elif obj != [] and btn.status == 'BUILD':
+            self.ids['dockbuildimg'].source = btn_icons['Dock']
+            btn.status = 'DOCK'
+            btn.texture_update()
+        
         return self.displayed
         
     def on_location(self, *args):

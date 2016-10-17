@@ -110,7 +110,7 @@ def short_id(long_id):
     return string.upper(long_id[0:4])                                                
                                          
 def vec_dist(a,b):
-    diff = b-a
+    diff = np.array(b)-np.array(a)
     return np.sqrt( np.vdot( diff , diff ) )
 
 def fig2rgb_array(fig):

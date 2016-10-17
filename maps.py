@@ -184,7 +184,9 @@ class Map(object): #more or less just a container for all of the things that hap
         #print closest.info(), best_dist / globalvars.M_TO_AU, closest.snow_line
         return closest
         
-                
+    def fetch_objects(self,loc,rad=10):
+        return list(filter((lambda x: hasattr(x,'location') and util.vec_dist(x.location,loc) <= rad ), self.registry.values()))
+                            
         
     def new_player_ship(self,ship):
         #TODO remove old ship if present?

@@ -193,7 +193,11 @@ class Ark(Ship): #Player ship, or potentially player ship
             self.bearing=0
         else:    
             #get speed
-            speed = 0.1 * dt # m/s
+            
+            if self.player_ship:
+                speed = dist 
+            else:
+                speed = 0.1 * dt # m/s
             frac = min(1., speed / dist )
             
             
