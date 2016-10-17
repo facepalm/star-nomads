@@ -44,7 +44,7 @@ def initialize_star(location,density,seed,widget,_map):
 
 class Star(object):
     def __init__(self, solar_masses, location, name=None, logger=None, seed=None):
-        self.loc = location
+        self.location = location
         self.seed = seed
         self.is_sun = True
         globalvars.map.register(self)
@@ -141,8 +141,8 @@ class Star(object):
 
     def primary_image(self):
         frac = 0.3        
-        img = Image(source='img/sun/generic_sun.png',color=self.color,mipmap=True,center=self.loc.tolist(),allow_stretch=False,size_hint=(None, None),size=(round(75*frac*self.radius), round(75*frac*self.radius)))
-        img.center=self.loc.tolist()
+        img = Image(source='img/sun/generic_sun.png',color=self.color,mipmap=True,center=self.location.tolist(),allow_stretch=False,size_hint=(None, None),size=(round(75*frac*self.radius), round(75*frac*self.radius)))
+        img.center=self.location.tolist()
         return img
         
     def random_habitable_orbit(self):
@@ -173,11 +173,11 @@ class Star(object):
     def random_location(self,rough_orbit=3):
         orbit = rough_orbit*(0.9+0.2*random.random())        
         pos = 2 * math.pi * random.random()
-        return [float(self.loc[0] + math.cos(pos)*orbit), \
-                float(self.loc[1] + math.sin(pos)*orbit)]
+        return [float(self.location[0] + math.cos(pos)*orbit), \
+                float(self.location[1] + math.sin(pos)*orbit)]
                 
     def loc_to_orbit(self,loc):        
-        return util.vec_dist(self.loc, np.array(loc))/globalvars.M_TO_AU
+        return util.vec_dist(self.location, np.array(loc))/globalvars.M_TO_AU
     
     def update(self,secs):
         for b in self.asteroid_belts:
@@ -192,8 +192,8 @@ class Star(object):
     
         orbit_dist = globalvars.M_TO_AU * rad
     
-        loc =       [float(self.loc[0] + math.cos(angle)*orbit_dist), \
-                     float(self.loc[1] + math.sin(angle)*orbit_dist)]
+        loc =       [float(self.location[0] + math.cos(angle)*orbit_dist), \
+                     float(self.location[1] + math.sin(angle)*orbit_dist)]
                      
         if hidden:
             globalvars.map.event_mgr.new(loc,'asteroid')
@@ -209,7 +209,7 @@ class Planet(object):
         self.mass = mass if mass else 1E21*random.paretovariate(2)
         self.name = name if name else 'Planet'#util.planet_name(self)
         self.primary=sun
-        self.location = self.primary.loc
+        self.location = self.primary.location
         self.orbit = orbit                        
         
         #estimate radius, based off Earth
@@ -272,8 +272,13 @@ class Planet(object):
         self.image_name = planetimages.random_image(self)
         self.image = None
 
+        orbit_dist = globalvars.M_TO_AU * self.orbit
+        self.location = [float(self.location[0] + math.cos(self.orbit_pos)*orbit_dist), \
+                         float(self.location[1] + math.sin(self.orbit_pos)*orbit_dist)]
+
         #self.generate_primary_image()        
         self.generate_image()                        
+        
         
         #self.view = systempanel.SystemView(primary=self)
         #self.view = systempanel.SystemScreen(name=util.short_id(self.id)+"-system",primary=self)

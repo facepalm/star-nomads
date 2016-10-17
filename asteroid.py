@@ -20,10 +20,10 @@ class Asteroid(object):
         differentiation = max(0.,min(1.,differentiation))
         self.differentiation = differentiation
             
-        self.loc = location if location is not None else self.star.random_location() if self.star is not None else [0,0]
+        self.location = location if location is not None else self.star.random_location() if self.star is not None else [0,0]
         
         #get point in space (inner, outer, kuiper, oort, deep) and location (orbit, belt, deep)
-        self.position = self.star.proximity(self.loc) if self.star is not None else 'Deep space'
+        self.position = self.star.proximity(self.location) if self.star is not None else 'Deep space'
                 
         #generate properties
         self.basic_types = ['Metallics','Silicates','Hydrates','Organics']
@@ -76,8 +76,8 @@ class Asteroid(object):
     def get_image(self,reset=False):
         frac = 0.3      
         if not reset and self.image is not None: return self.image  
-        img = AsteroidImage(source='img/generic_asteroid.png',color=self.coloration(),mipmap=True,center=self.loc.tolist(),allow_stretch=False,size_hint=(None, None),size=(10,10),asteroid=self)
-        img.center=self.loc.tolist()
+        img = AsteroidImage(source='img/generic_asteroid.png',color=self.coloration(),mipmap=True,center=self.location.tolist(),allow_stretch=False,size_hint=(None, None),size=(10,10),asteroid=self)
+        img.center=self.location.tolist()
         self.image = img
         return img        
         

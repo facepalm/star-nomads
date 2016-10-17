@@ -150,7 +150,7 @@ class OrbitImage(PlanetImage):
         #print self.planet.primary
         #print dir(self.planet.primary)
         
-        primloc = self.planet.location
+        primloc = self.planet.primary.location
         
         orbit_scale = 1.5 #helpful to reposition orbits
         
