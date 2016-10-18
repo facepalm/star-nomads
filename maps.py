@@ -184,8 +184,12 @@ class Map(object): #more or less just a container for all of the things that hap
         #print closest.info(), best_dist / globalvars.M_TO_AU, closest.snow_line
         return closest
         
-    def fetch_objects(self,loc,rad=10):
-        return list(filter((lambda x: hasattr(x,'location') and util.vec_dist(x.location,loc) <= rad ), self.registry.values()))
+    def fetch_objects(self,loc,rad=10,exclude_player = True):
+        firstlist = list(filter((lambda x: hasattr(x,'location') and util.vec_dist(x.location,loc) <= rad ), self.registry.values()))
+        if exclude_player:
+            return list(filter((lambda x: not hasattr(x,'player_ship') or not x.player_ship ), firstlist))
+        else:
+            return firstlist
                             
         
     def new_player_ship(self,ship):
