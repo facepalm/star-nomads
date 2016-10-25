@@ -26,13 +26,19 @@ Armature
 New Resources
 
 Tier 0:
-    Ore
+    Unrefined Ore
+    Crystallines
+    Exotics
     
 Tier 1:
-    Duralloy - material heavy, power light
-    Phlogiston - material medium, power heavy
-    Computronium - material light, power medium
+    Duralloy - ore heavy, crystal light, power medium
+    Phlogiston - ore medium, crystal medium, power heavy
+    Nanochips - ore light, crystal heavy, power light
 
+Tier 2: (mostly salvage-only)
+    Phlebotinum - exotics + crystal + phlogiston
+    Computronium - exotics + ore + nanochips
+    Unobtanium - exotics + phlogiston + duralloy
 
 
 Old Resources

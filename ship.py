@@ -15,6 +15,7 @@ import resources
 
 import modules
 import asteroid
+import ai
 
 def power_scaling(power=1):
     return 10**power
@@ -28,6 +29,8 @@ class Ship(object):
         if not hasattr(self, 'faction'): self.faction = 'NPC'
         
         self.registry = {}
+
+        if not hasattr(self, 'ai'): self.ai = ai.AI(self)
         
         self.location = [0, 0]
         self.bearing = 0
