@@ -16,6 +16,7 @@ import resources
 import modules
 import asteroid
 import ai
+import community
 
 def power_scaling(power=1):
     return 10**power
@@ -24,7 +25,7 @@ class Ship(object):
     def __init__(self):
         globalvars.map.register(self)
         self.rooms = []        
-        self.crew = 0
+        self.crew = community.Community()
         if not hasattr(self, 'shipclass'): self.shipclass = 'Generic'
         if not hasattr(self, 'faction'): self.faction = 'NPC'
         
@@ -97,7 +98,7 @@ class Ship(object):
         return power - p_u + offset >= amt
         
     def crew_available(self, amt, offset = 0):
-        crew = self.crew['Trained Crew']
+        crew = self.crew.trained_crew() 
         c_u = sum(self.crew_use.values())
         return crew - c_u + offset >= amt        
         
@@ -145,7 +146,7 @@ class Ship(object):
         
     def update(self,secs):
         timeslice = secs/util.seconds(1,'day')
-        total_crew = sum(self.crew.values())
+        total_crew = self.crew.population()#sum(self.crew.values())
         if total_crew > 0:                        
             food_use = self.sub_res('Biomass', 2* 0.62 * total_crew * timeslice)
             food_use /= 2.
@@ -254,8 +255,7 @@ class Premise(Ark): #default ship
                         {'size':2, 'power':2, 'loc':   [-200,-250], 'module': None }, #impulse drive
                         {'size':2, 'power':2, 'loc':   [ 200,-250], 'module': modules.SmelterSz2(ship=self) }] #foundry
 
-        self.crew = {   'Civilian'  : random.randint(500,600), 
-                        'Trained Crew' : random.randint(500,600) }                        
+        self.crew.spawn_pop(2000)
                                 
         self.add_res('Biomass',50000)
         self.add_res('Water',10000)

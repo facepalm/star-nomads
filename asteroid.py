@@ -44,9 +44,14 @@ class Asteroid(object):
             self.composition.sub('Hydrates',0.9*self.composition.amount('Hydrates'))
             
         print 'Asteroid mass:', self.mass()
+        
+        self.base = None
             
     def mass(self):
         return self.composition.tot_amt()            
+        
+    def description(self):
+        pass
         
     def split(self,amt):
         if amt <= 0: return None
@@ -100,6 +105,8 @@ class Asteroid(object):
         out += 'Stony' if self.basic_types[0] == 'Silicates' else 'Metal' if self.basic_types[0] == 'Metallics' else 'Chondrite' if self.basic_types[0] == 'Organics' else 'Icy'
         out += ' ({0:1.2f}%)\n'.format(100.*self.composition.amount(self.basic_types[0])/self.mass()) 
         out += 'Estimated yield: ' + "{0:0.1e}".format(self.mass()) + ' kg'
+        out += '\n\n'
+        if not self.base: out += 'No station detected.  Build one?'
         return out
         
                 
