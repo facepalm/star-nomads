@@ -24,6 +24,7 @@ import starfield
 import numpy as np
 import util
 from functools import partial
+import buildscreen
 
 PING_SPEED = 50.
 
@@ -216,7 +217,11 @@ class MapScreen(Screen):
             if obj == []: return False
             if len(obj) > 1: #m
                 print 'More than one dockable in range!  resolve'
-        
+        elif btn.status == 'BUILD':
+            print 'Attempting to build something'
+            #build window?
+            globalvars.root.switchScreen(buildscreen.BuildScreen(location=self.location)) 
+            
     def on_log_button(self):
         globalvars.root.switchScreen(globalvars.universe.status_log.screen)            
         

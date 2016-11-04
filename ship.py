@@ -51,8 +51,8 @@ class Ship(object):
         self.asteroid_processing = {}
         self.hyperspace_charge = {}
         
-        self.crew = {   'Civilian'  : 0, 
-                        'Trained Crew' : 0 }
+        '''self.crew = {   'Civilian'  : 0, 
+                        'Trained Crew' : 0 }'''
         
         if not hasattr(self, 'image'): self.image = shipimage.ShipImage(ship=self)
 

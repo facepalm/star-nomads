@@ -355,7 +355,7 @@ class Planet(object):
             if random.random() < 0.5: angle *= -1
             rad = self.orbit * (0.9 + random.random()*0.2)
         
-            primloc = self.primary.loc                
+            primloc = self.primary.location                
             orbit_dist = globalvars.M_TO_AU * rad
         
             loc =       [float(primloc[0] + math.cos(self.orbit_pos+angle)*orbit_dist), \

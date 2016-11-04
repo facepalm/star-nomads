@@ -9,6 +9,7 @@ from kivy.core.window import Window
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, SwapTransition, SlideTransition, FadeTransition, FallOutTransition
 from kivy.lang import Builder
+#from kivy.Window import Window
 
 from intropanel import IntroPanelView
 import util
@@ -20,6 +21,10 @@ import menuscreen
 #graphics stuff
 
 Builder.load_string("""
+<Widget>:
+    font_size: dp(16)
+    font_name: 'TranscendsGames.otf'
+
 <GameRoot>:  
     screen_manager: screen_manager
     ScreenManager:
@@ -55,9 +60,13 @@ class GameRoot(AnchorLayout):
             return True
         return False
         
-    def switchScreen(self,next_screen, transition='Slide'):
+    def switchScreen(self,next_screen, transition='Slide', replace = False):
         if not self.screen_manager.has_screen(next_screen.name):
             self.screen_manager.add_widget( next_screen )
+        elif replace:
+            old_screen = self.screen_manager.get_screen(next_screen.name)
+            self.screen_manager.remove_widget( old_screen )
+            self.screen_manager.add_widget( next_screen )    
         self.onNextScreen(next_screen.name, transition)        
         
     def initialize(self):

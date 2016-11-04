@@ -5,7 +5,7 @@ import numpy as np
 class Community(object):
     def __init__(self,dna=None,population= 0 ):
         if dna is None: 
-            dna = np.random(20)
+            dna = np.random.rand(20)
         self.dna = dna #a set of variables representing various personality factors of the community        
         self.spawn_pop(population)
         
