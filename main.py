@@ -22,7 +22,7 @@ import menuscreen
 
 Builder.load_string("""
 <Widget>:
-    font_size: dp(16)
+    font_size: dp(18)
     font_name: 'TranscendsGames.otf'
 
 <GameRoot>:  
