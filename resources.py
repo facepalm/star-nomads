@@ -15,6 +15,24 @@ import globalvars
 
 
 resources = {
+                #tier 0
+                'Ore' : {'name':'Unrefined Ore', 'restype':'Basic', 'baseval':10},
+                'Crystal' : {'name':'Crystallines', 'restype':'Basic', 'baseval':10},
+                'Exotic' : {'name':'Exotic Materials', 'restype':'Basic', 'baseval':1000},
+                
+                
+                #Tier 1:
+                'Duralloy' : {'name':'Duralloy', 'restype':'Basic', 'baseval':30},  #- ore heavy, crystal light, power medium
+                'Phlogiston' : {'name':'Phlogiston', 'restype':'Basic', 'baseval':35}, #- ore medium, crystal medium, power heavy
+                'Nanochips' : {'name':'Nanochips', 'restype':'Basic', 'baseval':30}, #- ore light, crystal heavy, power light
+
+                #Tier 2: (mostly salvage-only)
+                'Phlebotinum' : {'name':'Unapplied Phlebotinum', 'restype':'Basic', 'baseval':2000}, #- exotics + crystal + phlogiston
+                'Computronium' : {'name':'Reserve Computronium', 'restype':'Basic', 'baseval':2000}, #- exotics + ore + nanochips
+                'Unobtanium' : {'name':'Obtained Unobtanium', 'restype':'Basic', 'baseval':2000}, #- exotics + phlogiston + duralloy 
+                            
+                            
+
                 'Slag': {'name':'Slag', 'restype':'Basic', 'baseval':5}, #crap tier, rejects from other process that need processing just to be raw again
                 'Waste': {'name':'Waste', 'restype':'Basic', 'baseval':5},    
         

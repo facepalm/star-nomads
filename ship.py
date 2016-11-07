@@ -168,7 +168,17 @@ class Ship(object):
         for obj in self.registry.values():
             if hasattr(obj,'update'):
                 obj.update(secs)            
+
+class Station(Ship):
+    def __init__(self):            
+        self.style = 'Generic' #generic lichen orbital
         
+        self.shipclass = 'Station'
+        self.faction = 'Player'  
+        Ship.__init__(self)
+        
+        
+            
 
 class Ark(Ship): #Player ship, or potentially player ship
     def __init__(self):        

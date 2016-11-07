@@ -8,10 +8,11 @@ import numpy as np
 import globalvars
 
 #manager for ship images & icons
-ship_dict = {   'Ark': {'prefix':'img/ark/', 'coords':[26,41]},
-                'Station' : '',
+ship_dict = {   'Ark': {'prefix':'img/ark/', 'style':{'Generic':'MapShip.png'}, 'coords':[26,41]},
+                'Station' : {'prefix':'img/icon/noun-project', 'style':{'Generic':'focus-lab-space-station.png'}, 'coords':[25,25]},
                 'Capital' : '',
                 'Generic' : ''
+                ''
                 }
 
 
@@ -23,7 +24,7 @@ class ShipImage(Image):
     def __init__(self,**kwargs):
         self.ship = kwargs['ship'] 
         if self.ship:   
-            self.source = ship_dict[self.ship.shipclass]['prefix']+ '/MapShip.png'
+            self.source = ship_dict[self.ship.shipclass]['prefix']+ ship_dict[self.ship.shipclass]['style']['Generic']
         #print self.source, self.ship.shipclass
         kwargs['mipmap'] = True
         super(ShipImage, self).__init__(**kwargs)
