@@ -27,76 +27,15 @@ import numpy as np
 import util
 from functools import partial
 
+from listscreen import ListScreen, ListScreenEntry
 
-kv = '''
-<BuildScreen@Screen>:
-    name: 'Build screen'
-    
-    ScrollView:
-        
-    
-        StackLayout:
-            size_hint: 1.0, None
-            id: entries
-            
-            canvas.before:
-                Color:
-                    rgb: 0.2, 0.2, 0.2
-                Rectangle:
-                    pos:  self.pos
-                    size: self.size
-        
-        
-                
-<ListScreenEntry@StackLayout>:
-    id: items
-    orientation: 'tb-lr'
-    padding: 5,5,5,5
-
-    #horizontal bar
-            
-
-    canvas.before:
-        Color:
-            rgb: 0.1, 0.1, 0.1            
-        Rectangle:
-            pos:  self.pos
-            size: self.size
-            
-    canvas.after:
-        Color:
-            rgb: 0.5, 0.5, 0.5            
-        Rectangle:
-            pos:  self.pos
-            size: self.width, dp(5)     
-                                  
-'''
-
-Builder.load_string(kv)
-
-class ListScreenEntry(StackLayout):
-    verticality = NumericProperty(0)    
-    def addText(self,text=''):
-        newtext = Label(text=text,markup=True, size_hint= (1.0,None) )
-        newtext.height = 15
-        self.add_widget(newtext)
-
-        self.verticality += newtext.height
-        self.size = (Window.width,self.verticality)        
-        print self.size, self.minimum_size
-        
         
 
-class BuildScreen(Screen):
-    location = ListProperty([0, 0])
+class BuildScreen(ListScreen):
     
     def __init__(self,**kwargs):     
-        Screen.__init__(self,**kwargs) 
-        self.location = kwargs['location']
-
-        hdrLbl = ListScreenEntry()
-        hdrLbl.addText('[b]TITLE OF PAGE[/b]')
-        self.ids['entries'].add_widget(hdrLbl)
+        if 'name' not in kwargs: kwargs['name'] = 'Build Screen'
+        ListScreen.__init__(self,**kwargs)         
         
         testLbl = ListScreenEntry()
         testLbl.addText('Test of label text')
