@@ -247,7 +247,7 @@ class Quarters(Cabin):
         self.img_dict['icon']='img/icon/noun-project/icon54-housing-2.png'
         self.housing = 1000
         
-        self.recipe = [{'Name':'Process Hydrates', 'Inputs': {'Hydrates':200}, 'Outputs': {'Water':196,'Organics':2,'Silicates':2}, 'Duration' : util.seconds(1,'hour')}]
+        #self.recipe = [{'Name':'Process Hydrates', 'Inputs': {'Hydrates':200}, 'Outputs': {'Water':196,'Organics':2,'Silicates':2}, 'Duration' : util.seconds(1,'hour')}]
         
 class ResidentialBlock(Cabin):  
 
@@ -346,7 +346,7 @@ class PhlebCycler(Reactor):
     def __init__(self,**kwargs):
         Reactor.__init__(self,**kwargs) 
         self.power_supplied = 2
-        self.recipe =[ {'Name':'Operating', 'Inputs':{'Charged Phlebotinum': 2}, 'Outputs':{'Depleted Phlebotinum':2}, 'Duration':util.seconds(1,'day')}]
+        self.recipe =[ {'Name':'Operating', 'Inputs':{'Charged Phlebotinum': 1}, 'Outputs':{'Depleted Phlebotinum':1}, 'Duration':util.seconds(1,'day')}]
         
                 
 
@@ -355,7 +355,8 @@ class PhlebGenerator(Reactor):
     def __init__(self,**kwargs):
         Reactor.__init__(self,**kwargs) 
         self.power_supplied = 3
-        self.recipe = [{'Name':'Operating', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')}]
+        self.recipe = [{'Name':'Operating', 'Inputs':{}, 'Outputs':{}, 'Duration':util.seconds(1,'day')},
+                       {'Name':'Charging', 'Inputs':{'Depleted Phlebotinum': 1}, 'Outputs':{'Charged Phlebotinum': 1}, 'Duration':util.seconds(1,'day')}]
         self.img_dict['icon']='img/icon/noun-project/ryan-lerch-three-prong-outlet.png'
         
         
@@ -406,9 +407,11 @@ class SmelterSz2(Module):
     def __init__(self,**kwargs):
         Module.__init__(self,**kwargs)
         
-        self.recipe = [{'Name':'Smelt Metal', 'Inputs': {'Metallics':5000}, 'Outputs': {'Metals':2500,'Slag':2500}, 'Duration' : util.seconds(1,'hour')},
+        '''self.recipe = [{'Name':'Smelt Metal', 'Inputs': {'Metallics':5000}, 'Outputs': {'Metals':2500,'Slag':2500}, 'Duration' : util.seconds(1,'hour')},
                        {'Name':'Reclaim Slag', 'Inputs': {'Slag':5000}, 'Outputs': {'Metallics':1000,'Silicates':3000,'Reactives':1000}, 'Duration' : util.seconds(1,'hour')},
-                       {'Name':'Purify Silicon', 'Inputs': {'Silicates':5000, 'Carbon':1600, 'Oxygen':2133}, 'Outputs': {'Silicon':1866,'Reactives':1000,'Carbon Dioxide':5866}, 'Duration' : util.seconds(1,'hour')}]
+                       {'Name':'Purify Silicon', 'Inputs': {'Silicates':5000, 'Carbon':1600, 'Oxygen':2133}, 'Outputs': {'Silicon':1866,'Reactives':1000,'Carbon Dioxide':5866}, 'Duration' : util.seconds(1,'hour')}]'''
+        
+        self.recipe = [{'Name':'Smelt Duralloy', 'Inputs': {'Ore':1000,'Crystal':500}, 'Outputs': {'Duralloy':1500}, 'Duration' : util.seconds(1,'hour')}]
                        
         self.img_dict['icon']='img/icon/noun-project/icon54-factory-chimney.png'
         self.img_dict['displaysize'] = False            
@@ -421,7 +424,8 @@ class GreenhouseSz1(Module):
 
         self.multiplier = 1000
         
-        self.recipe = [{'Name':'Grow baby grow', 'Inputs': {'Organics':1.*self.multiplier,'Water':0.9*self.multiplier,'Carbon Dioxide':1.1*self.multiplier}, 'Outputs': {'Oxygen':0.8*self.multiplier, 'Biomass':1.3*self.multiplier, 'Organics':0.9*self.multiplier}, 'Duration' : util.seconds(1,'hour')}]
+        self.recipe = [{'Name':'Grow Crops', 'Inputs': {}, 'Outputs': {'Goods':1.*self.multiplier}, 'Duration' : util.seconds(1,'hour')}]
+                        #{'Name':'Grow baby grow', 'Inputs': {'Organics':1.*self.multiplier,'Water':0.9*self.multiplier,'Carbon Dioxide':1.1*self.multiplier}, 'Outputs': {'Oxygen':0.8*self.multiplier, 'Biomass':1.3*self.multiplier, 'Organics':0.9*self.multiplier}, 'Duration' : util.seconds(1,'hour')}]
                        #{'Name':'Compost Organics', 'Inputs': {'Organics':100,'Water':10}, 'Outputs': {'Fertilizer':10,'Carbon Dioxide':10}, 'Duration' : util.seconds(1,'hour')}]    
                        
         self.biomass = 0

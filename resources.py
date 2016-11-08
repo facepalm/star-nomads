@@ -27,7 +27,7 @@ resources = {
                 'Nanochips' : {'name':'Nanochips', 'restype':'Basic', 'baseval':30}, #- ore light, crystal heavy, power light
 
                 #Tier 2: (mostly salvage-only)
-                'Phlebotinum' : {'name':'Unapplied Phlebotinum', 'restype':'Basic', 'baseval':2000}, #- exotics + crystal + phlogiston
+                'RawPhleb' : {'name':'Unapplied Phlebotinum', 'restype':'Basic', 'baseval':2000}, #- exotics + crystal + phlogiston
                 'Computronium' : {'name':'Reserve Computronium', 'restype':'Basic', 'baseval':2000}, #- exotics + ore + nanochips
                 'Unobtanium' : {'name':'Obtained Unobtanium', 'restype':'Basic', 'baseval':2000}, #- exotics + phlogiston + duralloy 
                             

@@ -267,12 +267,13 @@ class Premise(Ark): #default ship
 
         self.crew.spawn_pop(2000)
                                 
-        self.add_res('Biomass',50000)
-        self.add_res('Water',10000)
-        self.add_res('Oxygen',10000)                                
-        self.add_res('Carbon Dioxide',10000)  
+        #self.add_res('Biomass',50000)
+        #self.add_res('Water',10000)
+        #self.add_res('Oxygen',10000)                                
+        #self.add_res('Carbon Dioxide',10000)  
                                 
     def update(self,dt):
         Ark.update(self,dt)                                
         #print self.storage 
+        print self.crew.trained_crew()
        

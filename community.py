@@ -9,7 +9,7 @@ class Community(object):
         self.dna = dna #a set of variables representing various personality factors of the community        
         self.spawn_pop(population)
         
-    def spawn_pop(self,dna=None, new_pop = 0 ):
+    def spawn_pop(self, new_pop = 0, dna=None ):
         if dna: self.dna = dna
         self.children = new_pop/3
         self.civilians = new_pop/4
