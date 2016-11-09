@@ -1,6 +1,7 @@
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
@@ -88,7 +89,43 @@ class ListScreenEntry(StackLayout):
         self.size = (Window.width,self.verticality)        
         print self.size
         
+    def addButton(self,text='',btntxt = '',callback=None):
+        entrysize = [0,0]
+        horiz = Widget(size_hint= (1.0,None))#orientation = 'lr-tb',padding=(5,5,5,5))
         
+        newtext = Label(text=text,markup=True, size_hint= (1.0,None) )
+        newtext.texture_update()
+        newtext.size = newtext.texture_size
+        
+        entrysize = [ entrysize[0] + newtext.width , max(entrysize[1],newtext.height) ]        
+        
+        #horiz.center = (Window.width/2,-entrysize[1]/2)
+        newtext.center = (Window.width/2-entrysize[0]/2-5, -entrysize[1]/2) #- newtext.width
+        horiz.add_widget(newtext)
+        
+        btn = Button(text=btntxt)
+        if callback is not None: btn.bind(on_press=callback)
+    
+        btn.texture_update()
+        btn.size = btn.texture_size
+        btn.width += 10
+        btn.height += 10
+        entrysize = [ entrysize[0] + btn.width , max(entrysize[1], btn.height) ]
+        btn.center = (Window.width/2+btn.width/2+5, -btn.height/2) #- newtext.width
+        horiz.add_widget(btn)
+        
+        newtext.center = (Window.width/2-newtext.width/2-5,-entrysize[1]/2)
+        #horiz.size = (entrysize[0], entrysize[1])
+
+        horiz.size=(entrysize[0],entrysize[1]+7)
+        print entrysize
+        #horiz.center = (Window.width/2,-entrysize[1]/2)
+                              
+        self.verticality += entrysize[1]+7
+        self.size = (Window.width,self.verticality)        
+        self.add_widget(horiz)
+
+        print self.verticality        
 
 class ListScreen(Screen):
     location = ListProperty([0, 0])
@@ -107,7 +144,11 @@ class ListScreen(Screen):
         testLbl = ListScreenEntry()
         testLbl.addText('Test of label text')
         testLbl.addText('Test line 2')
-        testLbl.addText('Test line 3')
+        testLbl.addText('Test line 5')
+        
+        testLbl.addButton('Test btn:','press!',None)
+        
+        testLbl.addText('Test line 4')
         
         self.ids['entries'].add_widget(testLbl)
         
