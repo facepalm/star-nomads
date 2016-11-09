@@ -38,10 +38,21 @@ class BuildScreen(ListScreen):
         ListScreen.__init__(self,**kwargs)         
         
         testLbl = ListScreenEntry()
-        testLbl.addText('Test of label text')
-        testLbl.addText('Test line 2')
-        testLbl.addText('Test line 3')
+        testLbl.addText('Lichen station')
+        testLbl.addText('Built of scraps and spares, lichens are the most tenacious and adaptable station type, capable of accomodating a little bit of everything as needed.')
+        testLbl.addText('Cost: <calculate costs>')
+        
+        testLbl.addButton('Build this station:','BUILD',None)
         
         self.ids['entries'].add_widget(testLbl)
         
+        testLbl = ListScreenEntry()
+        testLbl.addText('Orbital station')
+        testLbl.addText('Built of yadda yadda yadds')
+        testLbl.addText('Cost: <calculate costs>')
+        
+        testLbl.addButton('Build this station:','BUILD',None)
+        
+        
+        self.ids['entries'].add_widget(testLbl)
 

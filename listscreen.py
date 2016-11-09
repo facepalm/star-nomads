@@ -2,6 +2,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
@@ -76,6 +77,25 @@ kv = '''
 
 Builder.load_string(kv)
 
+class MultiLineLabel(Label):
+    def __init__(self, **kwargs):
+        super(MultiLineLabel, self).__init__( **kwargs)
+        self.text_size = self.size
+        self.bind(size= self.on_size)
+        self.bind(text= self.on_text_changed)
+        self.size_hint_y = None # Not needed here
+
+    def on_size(self, widget, size):
+        self.text_size = size[0], None
+        self.texture_update()
+        if self.size_hint_y == None and self.size_hint_x != None:
+            self.height = self.texture_size[1]
+        elif self.size_hint_x == None and self.size_hint_y != None:
+            self.width  = self.texture_size[0]
+
+    def on_text_changed(self, widget, text):
+        self.on_size(self, self.size)
+
 class ListScreenEntry(StackLayout):
     verticality = NumericProperty(10)    
     
@@ -91,35 +111,40 @@ class ListScreenEntry(StackLayout):
         
     def addButton(self,text='',btntxt = '',callback=None):
         entrysize = [0,0]
-        horiz = Widget(size_hint= (1.0,None))#orientation = 'lr-tb',padding=(5,5,5,5))
+        horiz = RelativeLayout(size_hint= (1.0,None))#orientation = 'lr-tb',padding=(5,5,5,5))
         
         newtext = Label(text=text,markup=True, size_hint= (1.0,None) )
         newtext.texture_update()
         newtext.size = newtext.texture_size
-        
+        newtext.size_hint = (None,None)
         entrysize = [ entrysize[0] + newtext.width , max(entrysize[1],newtext.height) ]        
         
         #horiz.center = (Window.width/2,-entrysize[1]/2)
-        newtext.center = (Window.width/2-entrysize[0]/2-5, -entrysize[1]/2) #- newtext.width
-        horiz.add_widget(newtext)
+        #(Window.width/2-entrysize[0]/2-5, -entrysize[1]/2) #- newtext.width
+        
         
         btn = Button(text=btntxt)
         if callback is not None: btn.bind(on_press=callback)
     
+        btn.size_hint = (None,None)
         btn.texture_update()
         btn.size = btn.texture_size
+        print newtext.size, btn.size
         btn.width += 10
         btn.height += 10
         entrysize = [ entrysize[0] + btn.width , max(entrysize[1], btn.height) ]
-        btn.center = (Window.width/2+btn.width/2+5, -btn.height/2) #- newtext.width
-        horiz.add_widget(btn)
-        
-        newtext.center = (Window.width/2-newtext.width/2-5,-entrysize[1]/2)
-        #horiz.size = (entrysize[0], entrysize[1])
 
         horiz.size=(entrysize[0],entrysize[1]+7)
+        btn.center = (Window.width/2 + btn.width/2+5, btn.height/2+5) #- newtext.width                
+        newtext.center = (Window.width/2 - newtext.width/2-5,btn.height/2+5)#(Window.width/2-newtext.width/2-5,-entrysize[1]/2)
+        #horiz.size = (entrysize[0], entrysize[1])
+
+
         print entrysize
         #horiz.center = (Window.width/2,-entrysize[1]/2)
+        
+        horiz.add_widget(newtext)
+        horiz.add_widget(btn)       
                               
         self.verticality += entrysize[1]+7
         self.size = (Window.width,self.verticality)        
@@ -141,7 +166,7 @@ class ListScreen(Screen):
         self.ids['entries'].add_widget(ttlLbl)
         
         
-        testLbl = ListScreenEntry()
+        '''testLbl = ListScreenEntry()
         testLbl.addText('Test of label text')
         testLbl.addText('Test line 2')
         testLbl.addText('Test line 5')
@@ -150,6 +175,6 @@ class ListScreen(Screen):
         
         testLbl.addText('Test line 4')
         
-        self.ids['entries'].add_widget(testLbl)
+        self.ids['entries'].add_widget(testLbl)'''
         
 
