@@ -23,8 +23,9 @@ class ShipImage(Image):
        
     def __init__(self,**kwargs):
         self.ship = kwargs['ship'] 
-        if self.ship:   
+        if self.ship and 'source' not in kwargs:   
             self.source = ship_dict[self.ship.shipclass]['prefix']+ ship_dict[self.ship.shipclass]['style']['Generic']
+
         #print self.source, self.ship.shipclass
         kwargs['mipmap'] = True
         super(ShipImage, self).__init__(**kwargs)
