@@ -50,13 +50,15 @@ class GameRoot(AnchorLayout):
             self.list_of_prev_screens.append(self.screen_manager.current)
         self.screen_manager.current = next_screen
         
-    def onBackBtn(self):
-        print self.list_of_prev_screens
+    def onBackBtn(self,remove=False):        
         if self.list_of_prev_screens:
             curr = self.screen_manager.current
-            self.screen_manager.current = self.list_of_prev_screens.pop()
+            curr_screen = self.screen_manager.current_screen
+            self.screen_manager.current = self.list_of_prev_screens.pop()            
             if not self.list_of_prev_screens:
                 self.list_of_prev_screens.append(curr)
+            elif remove:
+                self.screen_manager.remove_widget( curr_screen )
             return True
         return False
         

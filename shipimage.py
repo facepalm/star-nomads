@@ -9,7 +9,7 @@ import globalvars
 
 #manager for ship images & icons
 ship_dict = {   'Ark': {'prefix':'img/ark/', 'style':{'Generic':'MapShip.png'}, 'coords':[26,41]},
-                'Station' : {'prefix':'img/icon/noun-project', 'style':{'Generic':'focus-lab-space-station.png'}, 'coords':[25,25]},
+                'Station' : {'prefix':'img/icon/noun-project/', 'style':{'Generic':'focus-lab-space-station.png'}, 'coords':[25,25]},
                 'Capital' : '',
                 'Generic' : ''
                 ''
@@ -29,18 +29,23 @@ class ShipImage(Image):
         kwargs['mipmap'] = True
         super(ShipImage, self).__init__(**kwargs)
         
+        self.initialized = False
+        
         self.size = [20,30]#[self.texture.size[0]/2, self.texture.size[1]/2]
         
         self.rotation = None
         
-        self.coords = self.ship.get_location()
+        self.coords = self.ship.get_location()  #will place image at correct position    
+                
+        #self.center = self.coords#[0,0]
         
-        self.place_image()
-        
-        self.center = [0,0]
+        #print 'coordscoordscoords',self.coords
+        #self.place_image()                
         
         if self.ship.faction == 'Player':
             self.color = [0,0.9,0.1,1]
+            
+        self.initialized = True
 
     def on_touch_down(self, touch):
         return False
@@ -62,12 +67,16 @@ class ShipImage(Image):
 
     def on_coords(self,*args):
         #self.center = self.coords    
-        self.place_image()   
-        anim = Animation(center = [self.coords[0],self.coords[1]], duration=1.0)
-        anim.start(self)
-        anim = Animation(origin = [self.coords[0],self.coords[1],0.0], duration=1.0)
-        anim.start(self.rotation)
-        pass
+        if self.initialized:
+            self.place_image()   
+            anim = Animation(center = [self.coords[0],self.coords[1]], duration=1.)
+            anim.start(self)
+            anim = Animation(origin = [self.coords[0],self.coords[1],0.0], duration=1.)
+            anim.start(self.rotation)
+            pass
+        else:
+            self.center = self.coords
+            self.place_image()             
         
     def on_bearing(self,*args):        
         self.place_image()

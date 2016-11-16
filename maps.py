@@ -201,12 +201,17 @@ class Map(object): #more or less just a container for all of the things that hap
         self.display.ids['mapscale'].add_widget(self.ship.image)
 
     def spawn(self,item,loc,system=None):
+        if system is None: system = self.which_system(loc)
         if item=='asteroid':
-            print 'Spawning asteroid! '
-            if system is None: system = self.which_system(loc)
+            print 'Spawning asteroid! '            
             ast = asteroid.Asteroid(location=np.array(loc),star = system)
             self.objects.append(ast)
             self.display.ids['mapscale'].add_widget(ast.get_image())
+        elif item is not None and not isinstance(item, basestring):
+            #we're given something to spawn
+            item.location = np.array(loc)
+            if item not in self.objects: self.objects.append(item)
+            self.display.ids['mapscale'].add_widget(item.get_image())
             
     def systemcoord(self,loc):
         nloc = self.density * (np.array(loc) // self.density)

@@ -22,10 +22,12 @@ def power_scaling(power=1):
     return 10**power
 
 class Ship(object):
-    def __init__(self):
+    def __init__(self,**kwargs):
         globalvars.map.register(self)
         self.rooms = []        
         self.crew = community.Community()
+        
+        
         if not hasattr(self, 'shipclass'): self.shipclass = 'Generic'
         if not hasattr(self, 'faction'): self.faction = 'NPC'
         
@@ -33,7 +35,7 @@ class Ship(object):
 
         if not hasattr(self, 'ai'): self.ai = ai.AI(self)
         
-        self.location = [0, 0]
+        self.location = kwargs['location'] if 'location' in kwargs else [0, 0]
         self.bearing = 0
         
         self.storage = resources.ResourceModel()
@@ -65,6 +67,9 @@ class Ship(object):
     def __setstate__(self,state):
         self.__dict__.update(state)   # update attributes
         self.image = shipimage.ShipImage(ship=self)
+
+    def get_image(self):
+        return self.image
 
     def has_res(self,res_name,amt):
         return self.storage.has(res_name,amt)
@@ -170,14 +175,22 @@ class Ship(object):
                 obj.update(secs)            
 
 class Station(Ship):
-    def __init__(self):            
+    def __init__(self,**kwargs):            
         self.style = 'Generic' #generic lichen orbital
         
         self.shipclass = 'Station'
         self.faction = 'Player'  
-        Ship.__init__(self)
+        Ship.__init__(self,**kwargs)
         
+
+class Lichen(Station):
+    def __init__(self,**kwargs):            
+        self.style = 'Lichen' #generic lichen orbital
         
+        self.shipclass = 'Station'
+        self.faction = 'Player'  
+        Ship.__init__(self,**kwargs)
+                
             
 
 class Ark(Ship): #Player ship, or potentially player ship
@@ -276,4 +289,5 @@ class Premise(Ark): #default ship
         Ark.update(self,dt)                                
         #print self.storage 
         print self.crew.trained_crew()
+       
        
