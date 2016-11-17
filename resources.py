@@ -267,27 +267,27 @@ class Resource(object):
 class SoftResourceModel(object):
     res = dict()
     
-    def check(name):              
-        if 'name' not in res:
-            res[name] = { 'supply':{}, 'demand:'{} }
+    def check(self, name):              
+        if 'name' not in self.res:
+            self.res[name] = { 'supply':{}, 'demand':{} }
             
-    def __ratio__(name):  
+    def __ratio__(self, name):  
         self.check(name)
         #returns 1.0 if supply >= demand, else modified efficiency     
-        totsup = 1.*sum(f for f in res[name]['supply'].values())                
-        totdem = 1.*sum(f for f in res[name]['demand'].values())    
-        if totdem == 0
+        totsup = 1.*sum(f for f in self.res[name]['supply'].values())                
+        totdem = 1.*sum(f for f in self.res[name]['demand'].values())    
+        if totdem == 0:
             return 1.0 if totsup > 0 else 0.0
         return min(1.0, totsup/totdem)
     
-    def supply(source,name,amt):
+    def supply(self, source,name,amt):
         self.check(name)
-        res[name]['supply'][source] = amt
+        self.res[name]['supply'][source] = amt
         return self.__ratio__(name)
         
-    def demand(source,name,amt):
+    def demand(self, source,name,amt):
         self.check(name)
-        res[name]['demand'][source] = amt
+        self.res[name]['demand'][source] = amt
         return self.__ratio__(name)
 
 #    def __init__(self):
