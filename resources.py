@@ -264,6 +264,35 @@ class Resource(object):
         #    self.tc *= 0.9
 
 
+class SoftResourceModel(object):
+    res = dict()
+    
+    def check(name):              
+        if 'name' not in res:
+            res[name] = { 'supply':{}, 'demand:'{} }
+            
+    def has(name): 
+        self.check(name)
+        #returns 1.0 if supply >= demand, else modified efficiency     
+        totsup = 1.*sum(f for f in res[name]['supply'].values())                
+        totdem = 1.*sum(f for f in res[name]['demand'].values())    
+        if totdem == 0
+            return 1.0 if totsup > 0 else 0.0
+        return min(1.0, totsup/totdem)
+    
+    def supply(source,name,amt):
+        self.check(name)
+        res[name]['supply'][source] = amt
+        return self.has(name)
+        
+    def demand(source,name,amt):
+        self.check(name)
+        res[name]['demand'][source] = amt
+        return self.has(name)
+
+#    def __init__(self):
+
+
 #testing            
 if __name__ == "__main__":
     test = Resource('Test')

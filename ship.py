@@ -39,6 +39,8 @@ class Ship(object):
         self.bearing = 0
         
         self.storage = resources.ResourceModel()
+
+        self.ledger = resources.SoftResourceModel()
         
         self.player_ship = False
         
