@@ -73,6 +73,12 @@ class Ship(object):
     def get_image(self):
         return self.image
 
+    def supply(self,source,res_name,amt):
+        return self.ledger.supply(source,res_name,amt)
+        
+    def demand(self,source,res_name,amt):
+        return self.ledger.demand(source,res_name,amt)   
+
     def has_res(self,res_name,amt):
         return self.storage.has(res_name,amt)
         

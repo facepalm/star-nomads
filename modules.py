@@ -102,7 +102,8 @@ class Module(object):
             self.color= [0.5, 0.5, 0.5, 1.0]
         
         self.active = False            
-        self.ship.power_use[self.id] = 0
+        
+        self.ship.demand(self.id,'Power',0)
                     
         if not self.toggled:
             self.status = 'Mothballed'
@@ -133,14 +134,14 @@ class Module(object):
         if self.activity['Name'] not in ['Idle','Waiting for storage'] and self.activity['Duration'] > 0:                
             self.active = True
             self.activity['Duration'] -= secs 
-            self.status = 'Operational'#'Job: ' + self.activity['Name'] +' '+ str(self.activity['Duration'])
-            self.ship.power_use[self.id] = self.power_needed   
+            self.status = 'Operational'
+            self.ship.demand(self.id,'Power', self.power_needed)
             if self.activity['Duration'] <= 0: #end job
                 self.finish_job()                            
         else:
             #idle
             self.status = 'Idling'      
-            self.ship.power_use[self.id] = 0
+            self.ship.demand(self.id,'Power', 0)
             self.active = False              
           
             
@@ -151,7 +152,7 @@ class Module(object):
                                                                                                                                                             
         else: #pick a new activity
             #check if we can power up
-            if not self.ship.power_available(self.power_needed,offset=self.ship.power_use[self.id]):                  
+            if random.random() > self.ship.demand(self.id, 'Power', self.power_needed):                  
                 self.status = 'Idling: Low Power' 
                 self.activity = self.idle_activity.copy()
                 return

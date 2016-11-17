@@ -271,7 +271,7 @@ class SoftResourceModel(object):
         if 'name' not in res:
             res[name] = { 'supply':{}, 'demand:'{} }
             
-    def has(name): 
+    def __ratio__(name):  
         self.check(name)
         #returns 1.0 if supply >= demand, else modified efficiency     
         totsup = 1.*sum(f for f in res[name]['supply'].values())                
@@ -283,12 +283,12 @@ class SoftResourceModel(object):
     def supply(source,name,amt):
         self.check(name)
         res[name]['supply'][source] = amt
-        return self.has(name)
+        return self.__ratio__(name)
         
     def demand(source,name,amt):
         self.check(name)
         res[name]['demand'][source] = amt
-        return self.has(name)
+        return self.__ratio__(name)
 
 #    def __init__(self):
 
