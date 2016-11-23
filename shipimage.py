@@ -9,7 +9,7 @@ import globalvars
 
 #manager for ship images & icons
 ship_dict = {   'Ark': {'prefix':'img/ark/', 'style':{'Generic':'MapShip.png'}, 'coords':[26,41]},
-                'Station' : {'prefix':'img/icon/noun-project/', 'style':{'Generic':'focus-lab-space-station.png'}, 'coords':[25,25]},
+                'Station' : {'prefix':'img/icon/noun-project/', 'style':{'Generic':'focus-lab-space-station.png', 'Lichen':'oliviu-stoian-station.png'}, 'coords':[25,25]},
                 'Capital' : '',
                 'Generic' : ''
                 ''
@@ -24,7 +24,7 @@ class ShipImage(Image):
     def __init__(self,**kwargs):
         self.ship = kwargs['ship'] 
         if self.ship and 'source' not in kwargs:   
-            self.source = ship_dict[self.ship.shipclass]['prefix']+ ship_dict[self.ship.shipclass]['style']['Generic']
+            self.source = ship_dict[self.ship.shipclass]['prefix']+ ship_dict[self.ship.shipclass]['style'][self.ship.style]
 
         #print self.source, self.ship.shipclass
         kwargs['mipmap'] = True
@@ -33,6 +33,7 @@ class ShipImage(Image):
         self.initialized = False
         
         self.size = [20,30]#[self.texture.size[0]/2, self.texture.size[1]/2]
+        self.orig_size = [20,30]
         
         self.rotation = None
         
@@ -47,6 +48,14 @@ class ShipImage(Image):
             self.color = [0,0.9,0.1,1]
             
         self.initialized = True
+        self.allow_stretch = True
+
+        self.map = globalvars.map
+        
+    def on_mapscale(self,mapscale=None):
+        self.size = (np.array(self.orig_size)*min(4.,2./mapscale.scale)).tolist()
+        self.center = self.center
+        self.on_coords(self.coords)
 
     def on_touch_down(self, touch):
         return False

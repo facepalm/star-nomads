@@ -59,6 +59,7 @@ class Ship(object):
                         'Trained Crew' : 0 }'''
         
         if not hasattr(self, 'image'): self.image = shipimage.ShipImage(ship=self, **kwargs)
+        
 
     def __getstate__(self):
         odict = self.__dict__.copy() # copy the dict since we change it
@@ -197,7 +198,7 @@ class Lichen(Station):
         
         self.shipclass = 'Station'
         self.faction = 'Player'  
-        kwargs['source'] = 'img/icon/noun-project/oliviu-stoian-station.png'
+        #kwargs['source'] = 'img/icon/noun-project/oliviu-stoian-station.png'
         
         Ship.__init__(self,**kwargs)
                 

@@ -361,9 +361,13 @@ class MapScatterPlane(ScatterPlane):
         self.touch_event = None
         
     def on_transform_with_touch(self,touch):
+        #self.parent.map.scale = self.scale
+        for c in self.children:
+            if hasattr(c,'on_mapscale'): c.on_mapscale(self)
         self.touch()                   
         
     def on_touched(self,touch):
+        
         self.touch()      
         
         return False

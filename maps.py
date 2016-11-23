@@ -40,6 +40,8 @@ class Map(object): #more or less just a container for all of the things that hap
         self.galactic_coordinates = tweak_coords(self.map_coordinates)
         self.mapseed = self.galactic_coordinates[0] + 1024*self.galactic_coordinates[1]
         random.seed(self.mapseed)
+
+        self.scale = 2
         
         #generate coordinate offset
         #off_r = random.random()*2 + 3
