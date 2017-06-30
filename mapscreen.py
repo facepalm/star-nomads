@@ -240,13 +240,18 @@ class MapScreen(Screen):
         globalvars.universe.status_log.screen.refresh()
                 
         self.curr_loc = [0,0]
-        self.on_location()        
+        self.update_location()        
                 
     def on_leave(self):  
         self.displayed = False              
         gps.stop()
         
-    def update(self,dt):
+    def on_enter(self):
+        #self.ids['mapscale'].scale = globalvars.config['MAP SCALING']
+        self.ids['mapscale'].propagate_scale()
+        self.update_location()    
+        
+    def update(self,dt=0):
         #self.location = gps.get_location()
         self.ids['gpslabel'].text = 'ON' if gps.use_gps else 'OFF'
         self.ids['mapscale'].touched=False  
@@ -267,14 +272,17 @@ class MapScreen(Screen):
         
         return self.displayed
         
-    def on_location(self, *args):
+    def on_location(self,*args):    
+        pass
+        
+    def update_location(self, *args):
         dx = self.location[0] - self.curr_loc[0] 
         dy = self.location[1] - self.curr_loc[1]
         
         dist = math.sqrt(dx**2 + dy**2)
         self.accum_dist += dist
         animate = False if self.curr_loc == [0,0] or dist >= 10000 else True
-        print "animate", animate, self.curr_loc, dist
+        print "animate", animate, self.curr_loc, dist, gps.bearing
         self.ids['stars'].animation = animate
         
         self.curr_loc = self.location
@@ -362,14 +370,15 @@ class MapScatterPlane(ScatterPlane):
         
     def on_transform_with_touch(self,touch):
         #self.parent.map.scale = self.scale
-        for c in self.children:
-            if hasattr(c,'on_mapscale'): c.on_mapscale(self)
+        self.propagate_scale()
         self.touch()                   
         
-    def on_touched(self,touch):
+    def propagate_scale(self):
+        for c in self.children:
+            if hasattr(c,'on_mapscale'): c.on_mapscale(self)    
         
-        self.touch()      
-        
+    def on_touched(self,touch):        
+        self.touch()              
         return False
 
     def touch(self):
@@ -383,6 +392,7 @@ class MapScatterPlane(ScatterPlane):
     def reset_touch(self,*args):        
         self.touch_event = None
         self.touched = False
+        self.parent.update_location()
                        
     
     def ping(self,location=None,extent=10,duration=None,delay=0.,color=[1.,1.,1.,1.],speed_factor=1.0):
