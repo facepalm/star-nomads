@@ -190,7 +190,7 @@ class Station(Ship):
         self.shipclass = 'Station'
         self.faction = 'Player'  
         Ship.__init__(self,**kwargs)
-        
+                                
 
 class Lichen(Station):
     def __init__(self,**kwargs):            
@@ -202,6 +202,7 @@ class Lichen(Station):
         
         Ship.__init__(self,**kwargs)
                 
+
             
 
 class Ark(Ship): #Player ship, or potentially player ship
