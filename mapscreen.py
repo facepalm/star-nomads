@@ -74,13 +74,13 @@ kv = '''
             orientation: 'lr-bt'
             
             pos_hint: {'top': 1.00, 'right': 1.00}
-            Image:
-                mipmap: True
-                size_hint: 0.1, 0.1
-                pos_hint: {'x': 0.0, 'left': 1.00}
-                id: systemposition
-                source: 'img/icon/sun.png'
-                color: 1.0, 0.95, 0.05, 1.0
+            #Image:
+            #    mipmap: True
+            #    size_hint: 0.1, 0.1
+            #    pos_hint: {'x': 0.0, 'left': 1.00}
+            #    id: systemposition
+            #    source: 'img/icon/sun.png'
+            #    color: 1.0, 0.95, 0.05, 1.0
                 
         BoxLayout:
             id: menus
@@ -196,6 +196,9 @@ class MapScreen(Screen):
         
         self.anim = None
         
+        self.touched = False
+        self.touch_event = None
+        
     def on_shippanel_button(self):
         if self.map and self.map.ship:
         
@@ -254,7 +257,7 @@ class MapScreen(Screen):
     def update(self,dt=0):
         #self.location = gps.get_location()
         self.ids['gpslabel'].text = 'ON' if gps.use_gps else 'OFF'
-        self.ids['mapscale'].touched=False  
+        self.touched=False  
         self.accuracy = gps.accuracy
         
         #check if the dockbuild button should be dock or build
@@ -275,6 +278,14 @@ class MapScreen(Screen):
     def on_location(self,*args):    
         pass
         
+    def reset_camera(self,duration=0.01):
+        self.accum_dist = 0
+        anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
+        anim &= Animation( scale = globalvars.config['MAP SCALING'], duration = duration)       
+        anim.start(self.ids['mapscale'])
+        self.anim = anim
+        #Clock.schedule_once(self.ids['mapscale'].propagate_scale,duration)
+        
     def update_location(self, *args):
         dx = self.location[0] - self.curr_loc[0] 
         dy = self.location[1] - self.curr_loc[1]
@@ -290,48 +301,11 @@ class MapScreen(Screen):
         #print self.ids['stars'].scale
         self.ids['stars'].scale = 0.001*globalvars.config['MAP SCALING']*self.ids['mapscale'].scale
         
-        #print 'map',self.ids['mapscale'].mapxy
-        #self.ids['mapscale'].mapxys = [-self.ids['mapscale'].scale*self.location[0] + self.width/2,-self.ids['mapscale'].scale*self.location[1] + self.height/2, self.ids['mapscale'].scale]
-        
-        #self.ids['mapscale'].x = -globalvars.config['MAP SCALING']*self.location[0] + self.width/2 #dx*2#globalvars.config['MAP SCALING']
-        #self.ids['mapscale'].y = -globalvars.config['MAP SCALING']*self.location[1] + self.height/2#dy*2#globalvars.config['MAP SCALING']
-        
         duration = 1.0 if animate and self.accuracy < 20 else 0.01
-        if not self.ids['mapscale'].touched and self.accum_dist >= 20:
-            self.accum_dist = 0
-            anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
-            anim &= Animation( scale = globalvars.config['MAP SCALING'], duration = duration)       
-            anim.start(self.ids['mapscale'])
-            self.anim = anim
+        if not self.touched and self.accum_dist >= 20:           
+            print "resetting camera!"
+            self.reset_camera(duration=duration)
             
-        #self.ids['mapscale'].update_mapxy()
-        
-        #print Clock.time()
-        #print self.ids['mapscale'].x, self.ids['mapscale'].y
-        
-        sys = self.map.which_system(self.location)
-        
-        #if sys is None:
-            #we're in deep space
-        self.ids['systemposition'].source= ''
-        self.ids['systemposition'].color = [0.,0.05,0.1,1.0]
-        if sys is not None:
-            pos = sys.proximity(self.location)
-            if pos == 'Near star':
-                self.ids['systemposition'].source = 'img/icon/fire.png'
-                self.ids['systemposition'].color  = [1.0, 0.5, 0.05, 1.0]
-            elif pos == 'Goldilocks': #TODO find a good planetary symbol
-                self.ids['systemposition'].source = 'img/icon/sun.png'
-                self.ids['systemposition'].color  = [0.5, 0.95, 0.05, 1.0]
-            elif pos == 'Inner system':
-                self.ids['systemposition'].source = 'img/icon/sun.png'
-                self.ids['systemposition'].color  = [1.0, 0.95, 0.05, 1.0]
-            elif pos == 'Outer system':
-                self.ids['systemposition'].source = 'img/icon/snowflake.png'
-                self.ids['systemposition'].color  = [0.75, 0.75, 0.95, 1.0]
-            elif pos == 'Kuiper belt':
-                self.ids['systemposition'].source = 'img/icon/icecube.png'
-                self.ids['systemposition'].color  = [0.5, 0.5, 0.95, 1.0]
         
     def spawn_ping(self,**kwargs):
         self.ids['mapscale'].ping(**kwargs)  
@@ -356,44 +330,37 @@ class MapScreen(Screen):
         else:
             super(TabTextInput, self)._keyboard_on_key_down(window, keycode, text, modifiers)    
         
-    #    print args
-    #    print 'loc changed!'        
+    def touch(self):
+        self.touched = True
+        if self.touch_event is not None:
+            self.touch_event.cancel()
+        self.touch_event = Clock.schedule_once(self.reset_touch,1)
+        if self.anim: self.anim.cancel(self)
+    
+    def reset_touch(self,*args):
+        self.touch_event = None
+        self.touched = False
+        self.reset_camera()
                 
 class MapScatterPlane(ScatterPlane):
     
     def __init__(self,**kwargs):
         super(MapScatterPlane,self).__init__(**kwargs)                
         self.trans = None
-        self.touched = False
         self.scale_anim = False
-        self.touch_event = None
         
     def on_transform_with_touch(self,touch):
-        #self.parent.map.scale = self.scale
         self.propagate_scale()
-        self.touch()                   
+        self.parent.touch()                   
         
-    def propagate_scale(self):
+    def propagate_scale(self,*args):
         for c in self.children:
             if hasattr(c,'on_mapscale'): c.on_mapscale(self)    
         
     def on_touched(self,touch):        
-        self.touch()              
+        self.parent.touch()              
         return False
-
-    def touch(self):
-        self.touched = True
-        if self.touch_event is None:
-            self.touch_event = Clock.schedule_once(self.reset_touch,1)
-        else:
-            self.touch_event.timeout = 1
-        if self.parent.anim: self.parent.anim.cancel(self) #Animation.cancel_all(self, 'scale')
-    
-    def reset_touch(self,*args):        
-        self.touch_event = None
-        self.touched = False
-        self.parent.update_location()
-                       
+               
     
     def ping(self,location=None,extent=10,duration=None,delay=0.,color=[1.,1.,1.,1.],speed_factor=1.0):
         if not duration: duration = extent/(PING_SPEED*speed_factor)

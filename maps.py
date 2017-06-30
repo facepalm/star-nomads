@@ -123,7 +123,6 @@ class Map(object): #more or less just a container for all of the things that hap
 
     def update(self,secs):
         loc = None
-        #if self.ship is not None:
         loc = gps.get_location()
         self.display.location = loc
         self.display.update_location()
