@@ -124,7 +124,7 @@ class Map(object): #more or less just a container for all of the things that hap
     def update(self,secs):
         loc = None
         loc = gps.get_location()
-        if gps.accuracy <= 20: self.display.location = loc
+        if gps.accuracy <= 25: self.display.location = loc
         self.display.update_location()
         self.display.update(secs)
         self.update_starmap()

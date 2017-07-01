@@ -25,7 +25,7 @@ def hard_reset():
 @mainthread
 def update_location(**kwargs):
     global lat, lon, bearing, scale, accuracy
-    print 'lat: {lat}, lon: {lon}'.format(**kwargs)
+    print 'lat: {lat}, lon: {lon}, accuracy:{accuracy}'.format(**kwargs)
     
     #from http://stackoverflow.com/a/19356480
     m_per_deg_lat = 111132.954 - 559.822 * math.cos( 2 * kwargs['lat'] ) + 1.175 * math.cos( 4 * kwargs['lat'])
@@ -38,8 +38,8 @@ def update_location(**kwargs):
     accuracy = kwargs['accuracy']
 
 @mainthread
-def on_status(self, stype, status):
-    print 'GPS status: type={}\n{}'.format(stype, status)
+def on_status(self, **kwargs):
+    print 'GPS status: ', kwargs
 
 try:
     gps.configure(on_location=update_location, on_status=on_status)
