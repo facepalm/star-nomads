@@ -4,6 +4,8 @@ import math
 
 from plyer import gps
 
+from kivy.clock import mainthread
+
 use_gps = True
 gps_on = False
 lat = 00
@@ -20,6 +22,7 @@ def hard_reset():
     lat = 0
     lon = 0
 
+@mainthread
 def update_location(**kwargs):
     global lat, lon, bearing, scale, accuracy
     print 'lat: {lat}, lon: {lon}'.format(**kwargs)
@@ -34,18 +37,24 @@ def update_location(**kwargs):
     speed = kwargs['speed']
     accuracy = kwargs['accuracy']
 
+@mainthread
+def on_status(self, stype, status):
+    print 'GPS status: type={}\n{}'.format(stype, status)
+
 try:
-    gps.configure(on_location=update_location)
+    gps.configure(on_location=update_location, on_status=on_status)
 except Exception as ex:
     template = "An exception of type {0} occured. Arguments: {1!r}"
     message = template.format(type(ex).__name__, ex.args)
     print message
     use_gps = False   
     
-def start():  
+def start():
+    out = 'Dummy'  
     if use_gps:       
-        gps.start(1000, 0)
+        out = gps.start(1000, 0)
         gps_on = True
+    return out    
 
 def stop():
     if use_gps:

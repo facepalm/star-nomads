@@ -161,7 +161,7 @@ kv = '''
         Label:
             pos_hint: {'top': 1.00, 'left': 0.2}
             size_hint: 0.5,0.05
-            text: '%02.02e %02.02e %d' % (self.parent.parent.location[0], self.parent.parent.location[1], self.parent.parent.accuracy)
+            text: '%d %d %d' % (self.parent.parent.location[0], self.parent.parent.location[1], self.parent.parent.accuracy)
             id: loclabel 
         Label:
             pos_hint: {'top': 0.95, 'left': 0.1}
@@ -229,7 +229,8 @@ class MapScreen(Screen):
         globalvars.root.switchScreen(globalvars.universe.status_log.screen)            
         
     def on_pre_enter(self):
-        gps.start()
+        gps_status = gps.start()
+        print "Turning GPS on, result ", gps_status
         self.displayed = True
         
         min_side = min(Window.width, Window.height)
@@ -256,7 +257,7 @@ class MapScreen(Screen):
         
     def update(self,dt=0):
         #self.location = gps.get_location()
-        self.ids['gpslabel'].text = 'ON' if gps.use_gps else 'OFF'
+        self.ids['gpslabel'].text = 'ON' if gps.gps_on else 'OFF'
         self.touched=False  
         self.accuracy = gps.accuracy
         
