@@ -55,7 +55,7 @@ class ShipImage(Image):
     def on_mapscale(self,mapscale=None):
         self.size = (np.array(self.orig_size)*min(4.,2./mapscale.scale)).tolist()
         self.center = self.center
-        self.on_coords(self.coords)
+        self.on_coords(self.coords, instant=True)
 
     def on_touch_down(self, touch):
         return False
@@ -75,9 +75,9 @@ class ShipImage(Image):
             return False
         return super(ShipImage, self).on_touch_down(touch)
 
-    def on_coords(self,*args):
-        #self.center = self.coords    
-        if self.initialized:
+    def on_coords(self,*args,**kwargs):
+        instant = kwargs['instant'] if 'instant' in kwargs else False
+        if self.initialized and not instant:
             self.place_image()   
             anim = Animation(center = [self.coords[0],self.coords[1]], duration=1.)
             anim.start(self)

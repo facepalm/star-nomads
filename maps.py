@@ -23,7 +23,7 @@ def tweak_coords(coords,dist=5):
     randomness = 0.25
     off_r = random.gauss(0,dist/randomness)
     off_t = random.random()*2*3.14159
-    new_coords = [round(coords[0] + off_r*math.cos(off_t)), round(coords[1] + off_r*math.sin(off_t))]
+    new_coords = [int(coords[0] + off_r*math.cos(off_t)), int(coords[1] + off_r*math.sin(off_t))]
     
     random.setstate(state)
     return new_coords
@@ -78,7 +78,6 @@ class Map(object): #more or less just a container for all of the things that hap
         
         self.ship = ship  #convenience link to get location information
         
-
         stars = self.universe.galaxy_stars[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
         self.density = int(250 / (stars/255.)**1.25) #avg disctance between stars, where 1 km == 1 ly
         self.dust = self.universe.galaxy_dust[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
