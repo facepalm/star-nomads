@@ -27,15 +27,18 @@ def update_location(**kwargs):
     global lat, lon, bearing, scale, accuracy
     print 'lat: {lat}, lon: {lon}, accuracy:{accuracy}'.format(**kwargs)
     
-    #from http://stackoverflow.com/a/19356480
-    m_per_deg_lat = 111132.954 - 559.822 * math.cos( 2 * kwargs['lat'] ) + 1.175 * math.cos( 4 * kwargs['lat'])
-    m_per_deg_lon = 111132.954 * math.cos ( kwargs['lat'] )
+    lat_frac = kwargs['lat']/90.
     
-    lat = kwargs['lat'] * m_per_deg_lat
-    lon = kwargs['lon'] * m_per_deg_lon
+    #from http://stackoverflow.com/a/19356480
+    m_per_deg_lat = 111132.954 - 559.822 * math.cos( 2 * lat_frac ) + 1.175 * math.cos( 4 * lat_frac )
+    m_per_deg_lon = 111132.954 * math.cos ( lat_frac )
+        
     bearing = kwargs['bearing']
     speed = kwargs['speed']
     accuracy = kwargs['accuracy']
+    
+    lat = kwargs['lat'] * m_per_deg_lat
+    lon = kwargs['lon'] * m_per_deg_lon
 
 @mainthread
 def on_status(self, **kwargs):
@@ -65,16 +68,11 @@ def get_location():
     import random
     global lat, lon, last_update, accuracy
     tc = 1 if not last_update else (time.time()-last_update)*10
-    #print time.time()
     last_update = time.time()
     if not use_gps: 
         lon += 5*tc*(random.random() ) #* gps_scale/100000
         lat += 2.5*tc*(random.random() )
         accuracy = 1
-    #lon += (random.random() )/10
-    #if random.random() < 0.05: 
-    #    print 'should trigger!'
-    #    return [10,10]
     return [lon, lat]    
     
 def get_bearing():
