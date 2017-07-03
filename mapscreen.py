@@ -281,10 +281,15 @@ class MapScreen(Screen):
         
     def reset_camera(self,duration=0.01):
         self.accum_dist = 0
-        anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
-        anim &= Animation( scale = globalvars.config['MAP SCALING'], duration = duration)       
-        anim.start(self.ids['mapscale'])
-        self.anim = anim
+        if duration > 0.3:
+            anim = Animation( pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2], duration = duration )#, t='in_out_sine')        
+            anim &= Animation( scale = globalvars.config['MAP SCALING'], duration = duration)       
+            anim.start(self.ids['mapscale'])
+            self.anim = anim
+        else: #just do it instantly, don't bother animating
+            self.ids['mapscale'].scale = globalvars.config['MAP SCALING']
+            self.ids['mapscale'].pos = [-globalvars.config['MAP SCALING']*self.location[0] + self.width/2,-globalvars.config['MAP SCALING']*self.location[1] + self.height/2]
+            #self.ids['mapscale'].propagate_scale()
         #Clock.schedule_once(self.ids['mapscale'].propagate_scale,duration)
         
     def update_location(self, *args):
@@ -362,6 +367,8 @@ class MapScatterPlane(ScatterPlane):
         self.parent.touch()              
         return False
                
+    def on_scale(self,*args):
+        self.propagate_scale()           
     
     def ping(self,location=None,extent=10,duration=None,delay=0.,color=[1.,1.,1.,1.],speed_factor=1.0):
         if not duration: duration = extent/(PING_SPEED*speed_factor)
