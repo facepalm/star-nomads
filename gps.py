@@ -41,8 +41,8 @@ def update_location(**kwargs):
     lon = kwargs['lon'] * m_per_deg_lon
 
 @mainthread
-def on_status(self, **kwargs):
-    print 'GPS status: ', kwargs
+def on_status(self, *args, **kwargs):
+    print 'GPS status: ',args, kwargs
 
 try:
     gps.configure(on_location=update_location, on_status=on_status)
