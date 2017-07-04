@@ -79,7 +79,7 @@ class Map(object): #more or less just a container for all of the things that hap
         self.ship = ship  #convenience link to get location information
         
         stars = self.universe.galaxy_stars[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
-        self.density = int(250 / (stars/255.)**1.25) #avg disctance between stars, where 1 km == 1 ly
+        self.density = int(250 / (stars/255.)**1.05) #avg distance between stars (in meters), where 1 km == 1 ly
         self.dust = self.universe.galaxy_dust[ self.galactic_coordinates[0], self.galactic_coordinates[1]]
         print 'Star distance',self.density
         #quit()
@@ -123,7 +123,7 @@ class Map(object): #more or less just a container for all of the things that hap
     def update(self,secs):
         loc = None
         loc = gps.get_location()
-        if gps.accuracy <= 50: self.display.location = loc
+        if gps.accuracy <= 25: self.display.location = loc
         self.display.update_location()
         self.display.update(secs)
         self.update_starmap()

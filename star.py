@@ -106,7 +106,7 @@ class Star(object):
             self.color = np.array([155, 176, 255,255])/saturation 
         
         #tone down luminosity, which leads to crazy (but accurate!) distances with bright stars        
-        self.luminosity = pow( self.luminosity , 0.75)
+        self.luminosity = pow( self.luminosity , 0.70)
         
         self.habitable_start = 0.80 * pow( self.luminosity ,0.5) #0.8
         self.habitable_end = 5 * pow( self.luminosity ,0.5)   #1.4

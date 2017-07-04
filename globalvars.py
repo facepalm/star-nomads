@@ -2,7 +2,7 @@ import json
 
 ids=dict()
 
-M_TO_AU = 10.
+M_TO_AU = 15.
 
 config = {
     'TIME FACTOR' : 360,
