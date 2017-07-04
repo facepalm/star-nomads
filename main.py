@@ -22,8 +22,8 @@ import menuscreen
 
 Builder.load_string("""
 <Widget>:
-    font_size: dp(18)
-    font_name: 'TranscendsGames.otf'
+    font_size: dp(12)
+    font_name: '2015 Cruiser.ttf'
 
 <GameRoot>:  
     screen_manager: screen_manager
