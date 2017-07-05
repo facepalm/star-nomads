@@ -207,7 +207,7 @@ class Planet(object):
         globalvars.map.register(self)
         self.is_sun = False
         self.mass = mass if mass else 1E21*random.paretovariate(2)
-        self.name = name if name else 'Planet'#util.planet_name(self)
+        self.name = name if name else 'Planet'
         self.primary=sun
         self.location = self.primary.location
         self.orbit = orbit                        
