@@ -6,8 +6,10 @@ import math
 def population_genetics(planet=None):
     out = dict()
     out['culture'] = np.random.rand(20)
-    out['biological needs'] = np.random.rand(8) # TODO should match homeworld
+    out['biological needs'] = np.random.rand(8) if planet is None else planet.attributes['resources']
     out['biological needs'] /= np.sum(out['biological needs'])
+    
+    return out
     
 
 def planet_attributes(planet):
@@ -17,12 +19,12 @@ def planet_attributes(planet):
     if p.type == 'Gas Giant':
         # all atmosphere, no terrain
         
-        out_struct['resources'][4:] = np.power(10*np.random.rand(4),3)
-        out_struct['resources'][:4] = np.power(10*np.random.rand(4),.3)
+        out_struct['resources'][4:] = np.power(10*np.random.rand(4),2)
+        out_struct['resources'][:4] = np.power(10*np.random.rand(4),.5)
     elif p.type in ['Planetoid','Dwarf Planet']:
         # atmosphere limited or nonexistent
-        out_struct['resources'][:4] = np.power(10*np.random.rand(4),3)
-        out_struct['resources'][4:] = np.power(10*np.random.rand(4),.3)
+        out_struct['resources'][:4] = np.power(10*np.random.rand(4),2)
+        out_struct['resources'][4:] = np.power(10*np.random.rand(4),.5)
            
     out_struct['resources'] /= np.sum(out_struct['resources']) # so one "resource draw" will pull this ratio
     
@@ -34,5 +36,14 @@ if __name__ == "__main__":
     test_planet = stubPlanet()
     test_planet.type = 'Planetoid'
     test_planet.radius = 1000
+    test_planet.attributes = planet_attributes(test_planet)
     
-    print planet_attributes(test_planet)
+    print 'Planet resources', test_planet.attributes
+    
+    pop1 = population_genetics(test_planet)
+    pop2 = population_genetics(test_planet)
+    
+    print pop1
+    print pop2
+    
+    print stats.pearsonr(pop1['culture'],pop2['culture'])
