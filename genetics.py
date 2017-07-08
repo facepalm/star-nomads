@@ -6,8 +6,10 @@ import math
 def population_genetics(planet=None):
     out = dict()
     out['culture'] = np.random.rand(20)
-    out['biological needs'] = np.random.rand(8) if planet is None else planet.attributes['resources']
-    out['biological needs'] /= np.sum(out['biological needs'])
+    out['culture var'] = np.random.rand(20)
+    out['bio needs'] = np.random.rand(8) if planet is None else planet.attributes['resources']
+    out['bio needs'] /= np.sum(out['bio needs'])
+    out['bio needs var'] = np.multiply(np.random.rand(8),out['bio needs'])
     
     return out
     
@@ -45,5 +47,7 @@ if __name__ == "__main__":
     
     print pop1
     print pop2
-    
+
+    for c in range(len(pop1['culture'])):
+        print stats.ttest_ind_from_stats(pop1['culture'][c],np.sqrt(pop1['culture var'][c]),10,pop2['culture'][c],np.sqrt(pop2['culture var'][c]),10)
     print stats.pearsonr(pop1['culture'],pop2['culture'])
