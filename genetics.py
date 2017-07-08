@@ -3,13 +3,24 @@ from scipy import stats
 import numpy as np
 import math
 
+def sampling_tick(array,stdarray):
+    for a in range(len(array)):
+        samples = stats.norm.rvs(loc=array[a],scale=stdarray[a],size=10)
+        samples[samples < 0] = 0
+        samples[samples > 1] = 1
+        array[a] = samples.mean()
+        stdarray[a] = samples.std()
+        stdarray[stdarray< 0.05] = 0.05
+        
+    return array, stdarray
+
 def population_genetics(planet=None):
     out = dict()
     out['culture'] = np.random.rand(20)
-    out['culture var'] = np.random.rand(20)
+    out['culture std'] = np.random.rand(20)
     out['bio needs'] = np.random.rand(8) if planet is None else planet.attributes['resources']
     out['bio needs'] /= np.sum(out['bio needs'])
-    out['bio needs var'] = np.multiply(np.random.rand(8),out['bio needs'])
+    out['bio needs std'] = np.multiply(np.random.rand(8),out['bio needs'])
     
     return out
     
@@ -49,5 +60,11 @@ if __name__ == "__main__":
     print pop2
 
     for c in range(len(pop1['culture'])):
-        print stats.ttest_ind_from_stats(pop1['culture'][c],np.sqrt(pop1['culture var'][c]),10,pop2['culture'][c],np.sqrt(pop2['culture var'][c]),10)
+        print stats.ttest_ind_from_stats(pop1['culture'][c],np.sqrt(pop1['culture std'][c]),10,pop2['culture'][c],np.sqrt(pop2['culture std'][c]),10)
     print stats.pearsonr(pop1['culture'],pop2['culture'])
+    print
+    for i in range(1000):
+        print
+        pop1['culture'],pop1['culture std'] = sampling_tick(pop1['culture'],pop1['culture std'])
+        print pop1['culture']
+        print pop1['culture std']
