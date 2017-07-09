@@ -3,14 +3,17 @@ from scipy import stats
 import numpy as np
 import math
 
-def sampling_tick(array,stdarray):
-    for a in range(len(array)):
-        samples = stats.norm.rvs(loc=array[a],scale=stdarray[a],size=10)
-        samples[samples < 0] = 0
-        samples[samples > 1] = 1
-        array[a] = samples.mean()
-        stdarray[a] = samples.std()
-        stdarray[stdarray< 0.05] = 0.05
+def sample_pop(mean,std,size=10):
+    samples = stats.norm.rvs(loc=mean,scale=std,size=size)
+    samples[samples < 0] = 0
+    samples[samples > 1] = 1
+    return samples.mean(), samples.std()
+
+def sampling_update(array,stdarray):
+    tick = np.array( [sample_pop(array[a],stdarray[a]) for a in range(len(array))])
+    array, stdarray = tick[:,0], tick[:,1]
+
+    stdarray[stdarray< 0.005] = 0.05
         
     return array, stdarray
 
@@ -65,6 +68,6 @@ if __name__ == "__main__":
     print
     for i in range(1000):
         print
-        pop1['culture'],pop1['culture std'] = sampling_tick(pop1['culture'],pop1['culture std'])
+        pop1['culture'],pop1['culture std'] = sampling_update(pop1['culture'],pop1['culture std'])
         print pop1['culture']
         print pop1['culture std']
