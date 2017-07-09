@@ -1,6 +1,7 @@
 
 from scipy import stats
 import numpy as np
+import random
 import math
 
 def sample_pop(mean,std,size=10):
@@ -17,13 +18,15 @@ def sampling_update(array,stdarray):
         
     return array, stdarray
 
-def population_genetics(planet=None):
+
+def random_population(planet=None):
     out = dict()
+    out['population'] = 10000 * random.random()
     out['culture'] = np.random.rand(20)
     out['culture std'] = np.random.rand(20)
     out['bio needs'] = np.random.rand(8) if planet is None else planet.attributes['resources']
     out['bio needs'] /= np.sum(out['bio needs'])
-    out['bio needs std'] = np.multiply(np.random.rand(8),out['bio needs'])
+    out['bio needs std'] = np.random.rand(8)
     
     return out
     
@@ -47,6 +50,37 @@ def planet_attributes(planet):
     out_struct['area'] = test_planet.radius # not really AREA, but we can TODO that when we use it
     return out_struct    
 
+
+def compare_traits(trt1,trt2,std1,std2,pop1=10,pop2=10):
+    out = 1.0
+    for c in range(len(trt1)):
+        out *= stats.ttest_ind_from_stats(trt1[c],std1[c],pop1,trt2[c],std2[c],pop2)[1]
+    return out
+
+
+class population():
+    def __init__(self,planet=None):
+        self.planet=planet
+        self.factions=[]           
+        
+    def spawn_on(self,planet=None):    
+        # seeds a small (random) population on a planet
+        if planet is None: planet = self.planet
+        if self.factions == []:        
+            self.factions.append(random_population(planet=planet))
+        
+    def evolve_on(self,planet=None):
+        # seeds a small (random) population on a planet and tweaks values until death or adaptation
+        # technology is not factored in -> evolution, remember?
+        if planet is None: planet = self.planet
+        if self.factions == []:        
+            self.factions.append(random_population())
+    
+                    
+            
+        
+
+
 if __name__ == "__main__":
     class stubPlanet(object): pass
     test_planet = stubPlanet()
@@ -56,17 +90,18 @@ if __name__ == "__main__":
     
     print 'Planet resources', test_planet.attributes
     
-    pop1 = population_genetics(test_planet)
-    pop2 = population_genetics(test_planet)
+    pop1 = random_population(test_planet)
+    pop2 = random_population()
     
     print pop1
     print pop2
 
-    for c in range(len(pop1['culture'])):
-        print stats.ttest_ind_from_stats(pop1['culture'][c],np.sqrt(pop1['culture std'][c]),10,pop2['culture'][c],np.sqrt(pop2['culture std'][c]),10)
+    '''for c in range(len(pop1['culture'])):
+        print stats.ttest_ind_from_stats(pop1['culture'][c],np.sqrt(pop1['culture std'][c]),10,pop2['culture'][c],np.sqrt(pop2['culture std'][c]),10)'''
+    print compare_traits(pop2['bio needs'],test_planet.attributes['resources'],pop2['bio needs std'],0.25*np.random.rand(8),10,10)
     print stats.pearsonr(pop1['culture'],pop2['culture'])
     print
-    for i in range(1000):
+    for i in range(1):
         print
         pop1['culture'],pop1['culture std'] = sampling_update(pop1['culture'],pop1['culture std'])
         print pop1['culture']
