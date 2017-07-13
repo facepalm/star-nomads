@@ -14,7 +14,7 @@ bearing = 0
 speed = 0
 accuracy = 1000
 
-#gps_scale = 100000
+gps_scale = 5. #1 meter in GPS is 5m in game
 last_update=0
 
 def hard_reset():
@@ -30,15 +30,15 @@ def update_location(**kwargs):
     lat_frac = kwargs['lat']/90.
     
     #from http://stackoverflow.com/a/19356480
-    m_per_deg_lat = 111132.954 - 559.822 * math.cos( 2 * lat_frac ) + 1.175 * math.cos( 4 * lat_frac )
-    m_per_deg_lon = 111132.954 * math.cos ( lat_frac )
+    m_per_deg_lat = gps_scale * ( 111132.954 - 559.822 * math.cos( 2 * lat_frac ) + 1.175 * math.cos( 4 * lat_frac ) )
+    m_per_deg_lon = gps_scale * ( 111132.954 * math.cos ( lat_frac ) )
         
     bearing = kwargs['bearing']
     speed = kwargs['speed']
     accuracy = kwargs['accuracy']
     
-    lat = kwargs['lat'] * m_per_deg_lat
-    lon = kwargs['lon'] * m_per_deg_lon
+    lat = ( kwargs['lat'] * m_per_deg_lat ) % 100000
+    lon = ( kwargs['lon'] * m_per_deg_lon ) % 100000
 
 @mainthread
 def on_status(self, *args, **kwargs):
