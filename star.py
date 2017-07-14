@@ -27,7 +27,7 @@ def initialize_star(location,density,seed,widget,_map):
     widget.add_widget(img)    
     #widget.add_widget(Image(size_hint=(None, None),size=(1,1),pos=loc.tolist(),color=[1,0,0,1]))
     
-    num_plan = random.randrange(5)
+    num_plan = random.randrange(10)
     masses = 1E24*10**(np.random.random( size=max(num_plan,1))*8 - 3)
     for p in range(num_plan):
         if random.random() < 0.8:        
@@ -112,8 +112,8 @@ class Star(object):
         self.habitable_end = 5 * pow( self.luminosity ,0.5)   #1.4
         
         self.burn_line = 0.5 * pow( self.luminosity ,0.5)
-        self.snow_line = 10 * pow( self.luminosity ,0.5) #3
-        self.ice_line = 20 * pow( self.luminosity ,0.5) #10
+        self.snow_line = 3 * pow( self.luminosity ,0.5)
+        self.ice_line = 10 * pow( self.luminosity ,0.5) 
         self.system_line = 30 * pow( self.luminosity ,0.5) #40, arbitrary
         
         self.explored = 0.0
@@ -272,7 +272,7 @@ class Planet(object):
         self.image_name = planetimages.random_image(self)
         self.image = None
 
-        orbit_dist = globalvars.M_TO_AU * self.orbit
+        orbit_dist = pow( globalvars.M_TO_AU * self.orbit, 0.5 ) 
         self.location = [float(self.location[0] + math.cos(self.orbit_pos)*orbit_dist), \
                          float(self.location[1] + math.sin(self.orbit_pos)*orbit_dist)]
 
