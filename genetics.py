@@ -19,14 +19,15 @@ def sampling_update(array,stdarray):
     return array, stdarray
 
 
-def random_population(planet=None):
+def random_population(planet=None,init_pop=False):
     out = dict()
-    out['population'] = 10000 * random.random()
+    out['population'] = 10000 * random.random() if init_pop else 0
     out['culture'] = np.random.rand(20)
     out['culture std'] = np.random.rand(20)
     out['bio needs'] = np.random.rand(8) if planet is None else planet.attributes['resources']
     out['bio needs'] /= np.sum(out['bio needs'])
     out['bio needs std'] = np.random.rand(8)
+    out['energy needs'] = np.random.rand() #fraction of needs that can be satisfied with pure energy
     
     return out
     
@@ -47,7 +48,6 @@ def planet_attributes(planet):
            
     out_struct['resources'] /= np.sum(out_struct['resources']) # so one "resource draw" will pull this ratio
     
-    out_struct['area'] = test_planet.radius # not really AREA, but we can TODO that when we use it
     return out_struct    
 
 
@@ -66,25 +66,39 @@ def compare_traits(trt1,trt2,std1,std2,pop1=10,pop2=10,method='harmonic'):
     return out
 
 
-class population():
+class Population():
     def __init__(self,planet=None):
         self.planet=planet
         self.factions=[]           
         
+    def total_pop(self):
+        return np.sum([ f['population'] for f in self.factions ] ) 
+        
     def spawn_on(self,planet=None):    
         # seeds a small (random) population on a planet
         if planet is None: planet = self.planet
+        if self.planet is None: self.planet = planet
         if self.factions == []:        
             self.factions.append(random_population(planet=planet))
         
     def evolve_on(self,planet=None):
         # seeds a small (random) population on a planet and tweaks values until death or adaptation
         # technology is not factored in -> evolution, remember?
+        if self.planet is None: self.planet = planet
         if planet is None: planet = self.planet
         if self.factions == []:        
             self.factions.append(random_population())
-    
-                    
+        for f in self.factions:
+            comp = compare_traits(f['bio needs'],planet.attributes['resources'],f['bio needs std'],0.25*np.random.rand(8),10,10)
+            if random.random() < comp:
+                #population survived!
+                f['bio needs'] = planet.attributes['resources']                                
+                
+                #calculate density
+                parea = planet.surface_area() / 1000000 #km^2                                
+                pop_density = 1. # souls per km^2
+                
+                f['population'] = parea * pop_density
             
         
 

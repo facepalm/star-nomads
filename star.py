@@ -13,6 +13,8 @@ import planetimages
 import globalvars
 import util
 
+import genetics
+
 def initialize_star(location,density,seed,widget,_map):
     random.seed(seed)
     np.random.seed(seed if seed < 4000000000 else seed//1000000)
@@ -280,7 +282,15 @@ class Planet(object):
         self.location = [float(self.location[0] + math.cos(self.orbit_pos)*orbit_dist), \
                          float(self.location[1] + math.sin(self.orbit_pos)*orbit_dist)]
 
-        #print 'Planet orbit and insolation:', self.orbit, self.insolation()
+        self.attributes = genetics.planet_attributes(self)
+
+        print 'Planet orbit and insolation:', self.orbit, self.insolation()
+
+        population = genetics.Population()
+        population.evolve_on(self)
+        
+        self.population = population if population.total_pop() > 500 else None
+        #if self.population: print "Life found a way!", self.population.total_pop(), self.surface_area()/1000000
 
         self.generate_image()                        
                        
@@ -297,6 +307,9 @@ class Planet(object):
         
     def insolation(self):
         return self.primary.luminosity_at(self.orbit)    
+        
+    def surface_area(self):
+        return 4 * math.pi * self.radius ** 2    
         
     def escape_velocity(self):
         mmu = 6.674E-11 * self.mass                
