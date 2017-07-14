@@ -17,7 +17,7 @@ def initialize_star(location,density,seed,widget,_map):
     random.seed(seed)
     np.random.seed(seed if seed < 4000000000 else seed//1000000)
     if random.random() < 0.1: return None #chance there's no star here
-    primary_star_mass = np.random.triangular(0.25,0.8,1.6)#wald(mean=1.5, scale=1.0, size=1)
+    primary_star_mass = np.random.triangular(0.25,1.0,1.6)#wald(mean=1.5, scale=1.0, size=1)
     randomness = 0.25
     dl = np.array([random.gauss(0,randomness),random.gauss(0,randomness)])
     loc = dl*density + np.array(location)
@@ -160,6 +160,10 @@ class Star(object):
     def add_exploration(self,amt=0.0001,limit=0.1):
         if self.explored < limit: self.explored += amt   
         
+    def luminosity_at(self,orbit):
+        return pow( self.luminosity ,0.5 ) * pow( 1. / orbit , 2)
+            
+        
     def proximity(self,loc=None):
         if loc is None: return 'Deep space'
         dist = self.loc_to_orbit(loc)
@@ -276,13 +280,10 @@ class Planet(object):
         self.location = [float(self.location[0] + math.cos(self.orbit_pos)*orbit_dist), \
                          float(self.location[1] + math.sin(self.orbit_pos)*orbit_dist)]
 
-        #self.generate_primary_image()        
+        #print 'Planet orbit and insolation:', self.orbit, self.insolation()
+
         self.generate_image()                        
-        
-        
-        #self.view = systempanel.SystemView(primary=self)
-        #self.view = systempanel.SystemScreen(name=util.short_id(self.id)+"-system",primary=self)
-        
+                       
     def __getstate__(self):
         odict = self.__dict__.copy() # copy the dict since we change it
         del odict['image']              # remove gui entry
@@ -293,6 +294,9 @@ class Planet(object):
         self.__dict__.update(state)   # update attributes
         #self.image = self.get_image()    
         self.generate_image()
+        
+    def insolation(self):
+        return self.primary.luminosity_at(self.orbit)    
         
     def escape_velocity(self):
         mmu = 6.674E-11 * self.mass                
