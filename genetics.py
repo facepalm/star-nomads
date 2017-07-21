@@ -1,11 +1,11 @@
 
-from scipy import stats
+#from scipy import stats
 import numpy as np
 import random
 import math
 
 def sample_pop(mean,std,size=10):
-    samples = stats.norm.rvs(loc=mean,scale=std,size=size)
+    samples = np.random.normal(loc=mean,scale=std,size=size)
     samples[samples < 0] = 0
     samples[samples > 1] = 1
     return samples.mean(), samples.std()
@@ -54,13 +54,17 @@ def planet_attributes(planet):
 def compare_traits(trt1,trt2,std1,std2,pop1=10,pop2=10,method='harmonic'):
     outt = np.empty(len(trt1),np.float32)
     for c in range(len(trt1)):
-        outt[c] = stats.ttest_ind_from_stats(trt1[c],std1[c],pop1,trt2[c],std2[c],pop2)[1]
+        s1,s2 = std1[c]**2, std2[c]**2
+        t = abs((trt1[c] - trt2[c]) / np.sqrt(pow(s1,2)/pop1 + pow(s2,2)/pop2 )) # welch's t-test
+        #df = (pow(s1,2)/pop1 + pow(s2,2)/pop2)**2 / (pow(s1,4)/((pop1-1)*pop1**2) + pow(s2,4)/((pop2-1)*pop2**2))
+        outt[c] =  max(np.exp(-0.5*t**2),0.001)
+        print t,outt[c]
     if method == 'multiply':
         out = reduce((lambda x, y: x * y), outt)
     elif method == 'geometric':
-        out = stats.gmean(outt)
+        out = pow( reduce( (lambda x,y: x * y ), outt), 1./len(outt) )
     elif method == 'harmonic':
-        out = stats.hmean(outt)        
+        out = pow( 1.*reduce( (lambda x,y: pow( x, -1) + pow( y, -1) ), outt)/len(outt), -1 )
     else:
         out = 1.0
     return out
@@ -121,7 +125,7 @@ if __name__ == "__main__":
     '''for c in range(len(pop1['culture'])):
         print stats.ttest_ind_from_stats(pop1['culture'][c],np.sqrt(pop1['culture std'][c]),10,pop2['culture'][c],np.sqrt(pop2['culture std'][c]),10)'''
     print compare_traits(pop2['bio needs'],test_planet.attributes['resources'],pop2['bio needs std'],0.25*np.random.rand(8),10,10)
-    print stats.pearsonr(pop2['bio needs'],test_planet.attributes['resources'])
+    print np.corrcoef(pop2['bio needs'],test_planet.attributes['resources'])
     print
     for i in range(1):
         print
