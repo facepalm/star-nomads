@@ -5,7 +5,7 @@ from kivy.app import App
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.image import Image
 from kivy.clock import Clock
-from kivy.core.window import Window  
+from kivy.core.window import Window
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, SwapTransition, SlideTransition, FadeTransition, FallOutTransition
 from kivy.lang import Builder
@@ -18,6 +18,8 @@ import game
 import gps
 import menuscreen
 
+import profile
+
 #graphics stuff
 
 Builder.load_string("""
@@ -25,14 +27,14 @@ Builder.load_string("""
     font_size: dp(12)
     font_name: '2015 Cruiser.ttf'
 
-<GameRoot>:  
+<GameRoot>:
     screen_manager: screen_manager
     ScreenManager:
         id: screen_manager
         """)
 
 
-class GameRoot(AnchorLayout):  
+class GameRoot(AnchorLayout):
     #blatantly swiped from http://www.pygopar.com/kivys-screenmanager-and-back-button/
     """ Root widget for app """
     screen_manager = ObjectProperty(None)
@@ -43,41 +45,41 @@ class GameRoot(AnchorLayout):
 
     def onNextScreen(self, next_screen, transition='Slide'):
         if transition == 'None':
-            self.screen_manager.transition = NoTransition()  
+            self.screen_manager.transition = NoTransition()
         else:
             self.screen_manager.transition = NoTransition()
         if not self.list_of_prev_screens or (self.list_of_prev_screens[-1] is not self.screen_manager.current):
             self.list_of_prev_screens.append(self.screen_manager.current)
         self.screen_manager.current = next_screen
-        
-    def onBackBtn(self,remove=False):        
+
+    def onBackBtn(self,remove=False):
         if self.list_of_prev_screens:
             curr = self.screen_manager.current
             curr_screen = self.screen_manager.current_screen
-            self.screen_manager.current = self.list_of_prev_screens.pop()            
+            self.screen_manager.current = self.list_of_prev_screens.pop()
             if not self.list_of_prev_screens:
                 self.list_of_prev_screens.append(curr)
             elif remove:
                 self.screen_manager.remove_widget( curr_screen )
             return True
         return False
-        
+
     def switchScreen(self,next_screen, transition='Slide', replace = False):
         if not self.screen_manager.has_screen(next_screen.name):
             self.screen_manager.add_widget( next_screen )
         elif replace:
             old_screen = self.screen_manager.get_screen(next_screen.name)
             self.screen_manager.remove_widget( old_screen )
-            self.screen_manager.add_widget( next_screen )    
-        self.onNextScreen(next_screen.name, transition)        
-        
+            self.screen_manager.add_widget( next_screen )
+        self.onNextScreen(next_screen.name, transition)
+
     def initialize(self):
         self.screen_manager.clear_widgets()
         self.list_of_prev_screens = []
         menu = menuscreen.MenuScreen()
         self.switchScreen(menu)
-                    
-        
+
+
     #def hideScreen(self,screen):
     #    if not self.screen_manager.has_screen(screen.name):
     #        self.screen_manager.add_widget( screen )
@@ -89,11 +91,20 @@ class GameApp(App):
         super(GameApp, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.onBackBtn)
 
+    def on_start(self):
+        self.profile = profile.Profile()
+        #print dir(self.profile)
+        #self.profile.enable()
+
+    def on_stop(self):
+        #self.profile.disable()
+        self.profile.dump_stats('star-nomads.profile')
+
     def on_pause(self,*args):
         print "Pausing!"
         gps.stop()
         return True
-        
+
     def on_resume(self):
         print "Resuming!"
         pass
@@ -111,29 +122,29 @@ class GameApp(App):
         #menu = menuscreen.MenuScreen()
         globalvars.root.initialize()
         autoloaded = util.autoload() if globalvars.config['AUTOLOAD'] else False
-        
-                
-        if not autoloaded:            
+
+
+        if not autoloaded:
             #generate universe
-            
+
             globalvars.universe = game.Universe()
             #root.screen_manager.add_widget( IntroPanelView() )
-            #root.onNextScreen('introscreen','None')            
+            #root.onNextScreen('introscreen','None')
             #autosave?
             util.autosave()
-            
-        
-        
-        #globalvars.root.add_widget (globalvars.universe.primary.view)#())                
+
+
+
+        #globalvars.root.add_widget (globalvars.universe.primary.view)#())
         #print globalvars.universe.primary.view.id
         #globalvars.universe.primary.view.update(clear=True)
-        
-        Clock.schedule_interval(globalvars.universe.update, 1./1.)        
-        
+
+        Clock.schedule_interval(globalvars.universe.update, 1./1.)
+
         return root
-        
-        
-        
+
+
+
 
 if __name__ == '__main__':
     GameApp().run()

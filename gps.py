@@ -29,7 +29,7 @@ def update_location(**kwargs):
 
     tc = 1 if not last_update else (time.time()-last_update)
     last_update = time.time()
-    
+
 
     lat_frac = kwargs['lat']/90.
 
@@ -73,6 +73,7 @@ def get_location():
     global lat, lon, last_update, accuracy
 
     if not use_gps: #sham update method for testing on desktop
+        tc = 1
         lon += 5*tc*(random.random() ) #* gps_scale/100000
         lat += 2.5*tc*(random.random() )
         accuracy = 1

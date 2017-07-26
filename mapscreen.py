@@ -25,6 +25,7 @@ import numpy as np
 import util
 from functools import partial
 import buildscreen
+import time
 
 PING_SPEED = 50.
 
@@ -258,7 +259,8 @@ class MapScreen(Screen):
 
     def update(self,dt=0):
         #self.location = gps.get_location()
-        self.ids['gpslabel'].text = 'ON' if gps.gps_on else 'OFF'
+        #self.ids['gpslabel'].text = 'ON' if gps.gps_on else 'OFF'
+        self.ids['gpslabel'].text = str(time.time())
         self.touched=False
         self.accuracy = gps.accuracy
         self.speed = gps.speed
