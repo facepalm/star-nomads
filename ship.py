@@ -54,6 +54,8 @@ class Ship(object):
         self.storage_limit = {}
         self.asteroid_processing = {}
         self.hyperspace_charge = {}
+
+        self.goop = 0.0
         
         '''self.crew = {   'Civilian'  : 0, 
                         'Trained Crew' : 0 }'''
