@@ -267,7 +267,7 @@ class MapScreen(Screen):
 
         #check if the dockbuild button should be dock or build
         obj = self.map.fetch_objects(self.location,10)
-        print obj
+        #print obj
         btn = self.ids['dockbuildbtn']
         if obj == [] and btn.status == 'DOCK':
             self.ids['dockbuildimg'].source = btn_icons['Build']

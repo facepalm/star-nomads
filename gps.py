@@ -11,7 +11,7 @@ gps_on = False
 lat = 00
 lon = 00
 bearing = 0
-speed = 0
+speed = 0.
 accuracy = 1000
 
 gps_scale = 5. #1 meter in GPS is 5m in game
@@ -24,7 +24,7 @@ def hard_reset():
 
 @mainthread
 def update_location(**kwargs):
-    global lat, lon, bearing, scale, accuracy, last_update
+    global lat, lon, bearing, scale, accuracy, last_update, speed
     print 'lat: {lat}, lon: {lon}, accuracy:{accuracy}'.format(**kwargs)
 
     tc = 1 if not last_update else (time.time()-last_update)

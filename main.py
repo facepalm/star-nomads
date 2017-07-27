@@ -18,7 +18,7 @@ import game
 import gps
 import menuscreen
 
-import profile
+#import cProfile
 
 #graphics stuff
 
@@ -92,13 +92,14 @@ class GameApp(App):
         Window.bind(on_keyboard=self.onBackBtn)
 
     def on_start(self):
-        self.profile = profile.Profile()
-        #print dir(self.profile)
+        pass
+        #self.profile = cProfile.Profile()
         #self.profile.enable()
 
     def on_stop(self):
+        pass
         #self.profile.disable()
-        self.profile.dump_stats('star-nomads.profile')
+        #self.profile.dump_stats('star-nomads.profile')
 
     def on_pause(self,*args):
         print "Pausing!"

@@ -42,8 +42,8 @@ def get_skew(skew = 'linear'):
     return 0
 
 def sround(num):
-    base = math.floor(num)    
-    return int(base + 1) if random.random() < num%1 else int(base)       
+    base = math.floor(num)
+    return int(base + 1) if random.random() < num%1 else int(base)
 
 def radian(deg):
     return 3.14159*deg/180
@@ -65,26 +65,26 @@ def unregister(obj):
 
 def quad_mean(x,y,wx=1,wy=1):
     return pow( (1.0*wx*x*x + wy*y*y)/(wx + wy) ,0.5)
-    
+
 def timestring(seconds):
     seconds = int(seconds)
     time=''
-    div, rem = (seconds/(2592000*12),seconds%(2592000*12))    
+    div, rem = (seconds/(2592000*12),seconds%(2592000*12))
     if div: time = ''.join([time,str(div),' year ' if div==1 else ' years ' ])
     seconds = rem
-    div, rem = (seconds/(2592000),seconds%(2592000))    
+    div, rem = (seconds/(2592000),seconds%(2592000))
     if div: time = ''.join([time,str(div),' month ' if div==1 else ' months ' ])
     seconds = rem
-    div, rem = (seconds/(86400),seconds%(86400))    
+    div, rem = (seconds/(86400),seconds%(86400))
     if div: time = ''.join([time,str(div),' day ' if div==1 else ' days ' ])
     seconds = rem
-    div, rem = (seconds/(3600),seconds%(3600))    
+    div, rem = (seconds/(3600),seconds%(3600))
     if div: time = ''.join([time,str(div),' hour ' if div==1 else ' hours ' ])
     seconds = rem
     time = ''.join([time,str(seconds),' seconds' ])
-    return time    
-    
-    
+    return time
+
+
 def short_timestring(seconds):
     seconds = int(seconds)
     if seconds > 2592000*12:
@@ -96,19 +96,23 @@ def short_timestring(seconds):
     if seconds > 3600:
         return '%.2f hours' % (seconds/3600.)
     return '%.2f seconds' % seconds
-    
+
 def seconds(time=1,units='minutes'):
     return time*60 if units == 'minutes' or units == 'minute' \
                                          else time*3600 if units == 'hours' or units == 'hour' \
                                          else time*86400 if units=='days' or units == 'day' \
                                          else time*2592000 if units=='months' or units == 'month' \
                                          else time*2592000*12 if units=='years' or units == 'year' \
-                                         else 10    
-                                         
-                                         
+                                         else 10
+
+
 def short_id(long_id):
-    return string.upper(long_id[0:4])                                                
-                                         
+    return string.upper(long_id[0:4])
+
+def simple_2vec_dist(a,b):
+    d = [b[0] - a[0], b[1] - a[1] ]
+    return np.sqrt( d[0]*d[0] + d[1]*d[1] )
+
 def vec_dist(a,b):
     diff = np.array(b)-np.array(a)
     return np.sqrt( np.vdot( diff , diff ) )
@@ -148,7 +152,7 @@ def autosave():
     datafile = open(os.path.join('save','autosave'),'w')
     #try:
     #dill.detect.trace(True)
-    #dill.dump(globalvars.universe,datafile,dill.HIGHEST_PROTOCOL)        
+    #dill.dump(globalvars.universe,datafile,dill.HIGHEST_PROTOCOL)
     pickle.Pickler(datafile,pickle.HIGHEST_PROTOCOL).dump(globalvars.universe)
     datafile.close()
 
@@ -160,8 +164,8 @@ def autosave():
     #    e = sys.exc_info()[0]
     #    generic_logger.warning("Autosave failed: %s" % e)
     return False
-        
-    
+
+
 def autoload():
     return False
     try:
@@ -178,4 +182,3 @@ def autoload():
         e = sys.exc_info()[0]
         generic_logger.warning("Autoload failed: %s" % e)
     return False
-        
