@@ -214,18 +214,17 @@ class MapScreen(Screen):
         globalvars.root.switchScreen(self.map.universe.galaxy_map)
 
     def on_dockbuild_button(self):
+        obj = self.map.fetch_objects(self.location,self.map.ship.sensor_strength() )
         btn = self.ids['dockbuildbtn']
         print "Attempting to dock and/or build something:", btn.status
-        if btn.status == 'DOCK':
-            obj = self.map.fetch_objects(self.location,self.map.ship.sensor_strength() )
-            print obj
-            if obj == []: return False
-            if len(obj) > 1: #m
-                print 'More than one dockable in range!  resolve'
-        elif btn.status == 'BUILD':
+        if obj == []: # build
             print 'Attempting to build something'
             #build window?
             globalvars.root.switchScreen(buildscreen.BuildScreen(location=self.location))
+        else: #dock
+            if len(obj) > 1: #m
+                print 'More than one dockable in range!  resolve'
+            #dock to obj[0]                        
 
     def on_log_button(self):
         globalvars.root.switchScreen(globalvars.universe.status_log.screen)
@@ -265,6 +264,7 @@ class MapScreen(Screen):
         self.accuracy = gps.accuracy
         self.speed = gps.speed
 
+        '''
         #check if the dockbuild button should be dock or build
         obj = self.map.fetch_objects(self.location,10)
         #print obj
@@ -277,6 +277,7 @@ class MapScreen(Screen):
             self.ids['dockbuildimg'].source = btn_icons['Dock']
             btn.status = 'DOCK'
             btn.texture_update()
+        '''
 
         return self.displayed
 

@@ -12,11 +12,13 @@ config = {
     'MAP SCALING': 2.
 }
 
+SIMULATE_RESOURCES = False
+
 def save_config():
     outfile = file('config.txt','w')
     json.dump( config, outfile, indent = 4, separators = (',', ': ') )
     outfile.close()
-   
+
 def load_config():
     try:
         outfile = file('config.txt','r')
@@ -26,8 +28,8 @@ def load_config():
     global config
     config = json.load( outfile )
     outfile.close()
-    
-save_config()    
+
+save_config()
 load_config()
 
 scenario = None
